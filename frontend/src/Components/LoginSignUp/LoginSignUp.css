@@ -1,7 +1,7 @@
 .container {
     display: flex;
     flex-direction: column;
-    margin:auto;
+    margin: 50px auto;
     /* margin-top: 200px; */
     width: 500px;
     background: #fff;
