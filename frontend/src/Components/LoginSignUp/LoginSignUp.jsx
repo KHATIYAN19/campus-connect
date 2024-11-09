@@ -33,18 +33,18 @@ const LoginSignUp = () => {
                 <img src={password_icon} alt="password_icon" />
                 <input type="password" placeholder='Password'/>
             </div>
-            <div className="input">
+            {action==="Login"?<div></div>:<div className="input">
                 <img src={year_icon} alt="year_icon" width="32" height="23"/>
                 <input type="year" placeholder='Year'/>
-            </div>
-            <div className="input">
+            </div>}
+            {action==="Login"?<div></div>:<div className="input">
                 <img src={user_icon} alt="password_icon" />
                 <select className='dropdown' placeholder='Role'>
                     <option value="" disabled selected>Select Role</option>
                     <option value="admin">Admin</option>
                     <option value="student">Student</option>
                 </select>
-            </div>
+            </div>}
         </div>
         {action==="Sign Up"?<div></div>:<div className="forget-password">Forgot Password?<span> Click Here!</span> </div>}
         <div className="submit-container">
