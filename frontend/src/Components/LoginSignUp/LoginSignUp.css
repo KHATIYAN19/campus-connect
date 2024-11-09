@@ -1,14 +1,14 @@
 .container {
     display: flex;
     flex-direction: column;
-    margin: 100px 100px 50px 800px;
+    margin:auto;
     /* margin-top: 200px; */
     width: 500px;
     background: #fff;
     padding-bottom: 30px;
     border-radius: 10px;
+    height: full;
 }
-
 .header {
     display: flex;
     flex-direction: column;
@@ -17,20 +17,17 @@
     width: 100%;
     margin-top: 20px;
 }
-
 .text {
     color : #c78c06;
     font-size: 48px;
     font-weight: 700;
 }
-
 .underline {
     width: 61px;
     height: 6px;
     background: #c78c06;
     border-radius: 9px;
 }
-
 .inputs {
     margin-top: 30px;
     display: flex;
