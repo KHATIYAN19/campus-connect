@@ -2,18 +2,15 @@ const Job=require("../Models/jobModel");
 const User=require("../Models/userModel");
 exports.post_job=async(req,res)=>{
    try{
-    let id=(req.params.id);
+    let id=req.user.id;
     const {company,description,salary,location,position}=req.body;
-    if(!id||!company||!description||!salary||!location||!position){
+    if(!company||!description||!salary||!location||!position){
        return res.status(400).json({
             message:"All feild required",
             success:false
        })
     }
-    console.log("!");
     const user=await User.find({_id:id});
-    console.log("2");
-    console.log(user);
     if(!user){
         return res.send({
            message:"User didnot exist",
@@ -26,7 +23,7 @@ exports.post_job=async(req,res)=>{
          salary,
          location,
          position,
-         postby:user._id
+         postby:id
     })
     return res.status(200).json({
        message:"Job created Successfully",
@@ -53,9 +50,7 @@ exports.apply=async(req,res)=>{
       try{
          var job_id = req.params.id;
          var user_id =req.user.id;
-         console.log(job_id,user_id);
          const  data=await Job.findOne({_id:job_id});
-         console.log(data);
          if(!data){
             return res.status(400).json({
                message:"No job found",
@@ -63,7 +58,6 @@ exports.apply=async(req,res)=>{
             })
          }
          const  user_data=await User.findOne({_id:user_id});
-         console.log(user_data);
          if(!user_data){
             return res.status(400).json({
                message:"No User found",
@@ -77,8 +71,7 @@ exports.apply=async(req,res)=>{
          return res.status(200).json({
             message:"applied successfully",
             success:true,
-            res1,
-            res2
+            data:res2
          })
       }catch(e){
          return res.status(200).json({

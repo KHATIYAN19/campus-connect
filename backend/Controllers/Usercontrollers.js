@@ -35,6 +35,7 @@ exports.signup = async (req, res) => {
             email,
             password: hashedpass,
         })
+        Data.password=undefined;
         return res.status(200).json({
             success: true,
             message: "User Signup Successfully",

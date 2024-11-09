@@ -9,7 +9,7 @@ const jobSchema=mongoose.Schema({
             requires:true,
         },
         salary:{
-            type:Number,
+            type:String,
             requires:true,
         },
         location:{
