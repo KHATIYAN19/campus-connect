@@ -6,7 +6,7 @@ import password_icon from '../Assets/password.png'
 import phone_icon from '../Assets/phone.png'
 import year_icon from '../Assets/year.png'
 import axios from 'axios';
-
+import { toast } from 'react-toastify'
 const Signup = ({setLogin}) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -14,11 +14,10 @@ const Signup = ({setLogin}) => {
     const [password, setPassword] = useState('');
     const [year, setYear] = useState('');
     const [role, setRole] = useState('');
-
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://localhost:8080/signup', {
+            const response = await axios.post('http://localhost:8080/signup', {
                 name,
                 email,
                 phone,
@@ -26,10 +25,15 @@ const Signup = ({setLogin}) => {
                 year,
                 role
             });
-            console.log('Sign up successful:', response.data);
-            setLogin(true);
+            const signup=response.data.success;
+            if(signup){
+                 toast.success(response.data.Data.name.toUpperCase() + " Signup Successfully");
+                 setLogin(true);
+            }else{
+                toast.error(response.data.message);
+            }
         } catch (error) {
-            console.error('Error during sign-up:', error);
+            toast.error(error.response.data.message);
         }
     };
     return (
@@ -38,10 +42,10 @@ const Signup = ({setLogin}) => {
                 <div className="text">SignUp</div>
                 <div className="underline"></div>
             </div>
-            <form className="inputs" >
+            <form className="inputs" onSubmit={handleSignUp} >
                 <div className="input">
                     <img src={user_icon} alt="user_icon" />
-                    <input type="text" placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} />
+                    <input type="text" placeholder='Name' value={name} onChange={(e) => {setName(e.target.value); }} />
                 </div>
                 <div className="input">
                     <img src={email_icon} alt="email_icon" />

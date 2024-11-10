@@ -8,11 +8,7 @@ const jobRoute=require("./Routes/jobRoute");
 const auth=require("./Middlewares/userMiddleware");
 require('dotenv').config();
 
-app.use(cors({
-    origin: 'https://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 
 app.use(cookieParser());
 app.use(express.json());

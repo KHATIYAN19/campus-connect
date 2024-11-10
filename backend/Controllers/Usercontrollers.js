@@ -61,8 +61,8 @@ exports.login=async (req,res)=>{
         const user=await User.findOne({email});
         if(!user){
             return res.status(400).json({
-                success:false,
-                message:"No user available"
+                success:true,
+                message:"No user available",
              })
         }
         const payload={
@@ -81,7 +81,6 @@ exports.login=async (req,res)=>{
              user.password=undefined;
              user.Applied=undefined;
              req.token=token;
-             console.log("req toem",req.token);
             return res.cookie("token",token,options).status(200).json({
                 success:true,
                 message:"User login",
@@ -93,8 +92,7 @@ exports.login=async (req,res)=>{
                 success:false,
                 message:"Email or password is incorrect"
              })
-        }
-        
+        } 
     }catch(e){
         return res.status(400).json({
             success:false,

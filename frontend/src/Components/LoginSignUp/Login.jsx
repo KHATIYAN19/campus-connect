@@ -3,7 +3,7 @@ import './LoginSignUp.css'
 import email_icon from '../Assets/email.png'
 import password_icon from '../Assets/password.png'
 import axios from 'axios';
-
+import { toast } from 'react-toastify';
 const Login = ({setLogin}) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -14,9 +14,18 @@ const Login = ({setLogin}) => {
             email,
             password
         });
-        console.log('Login successful:', response.data);
+        console.log(" response" ,response);
+        const login=response.data.success;
+        console.log(login ,"login");
+        console.log(response.data.message);
+        if(login){
+             toast.success("welcome back " + (response.data.user.name).toUpperCase());
+             setLogin(true);
+        }else{
+            toast.error(response.data.message);
+        }
     } catch (error) {
-        console.error('Error during login:', error);
+        toast.error(error.response.data.message);
     }
   };
   return (
@@ -25,7 +34,7 @@ const Login = ({setLogin}) => {
         <div className="text">Login</div>
         <div className="underline"></div>
     </div>
-    <form className="inputs"  >
+    <form className="inputs" onSubmit={handleLogin}  >
        
         <div className="input">
             <img src={email_icon} alt="email_icon" />
