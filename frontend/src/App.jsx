@@ -1,11 +1,15 @@
 import React from 'react'
-import LoginSignUp from './Components/LoginSignUp/LoginSignUp.jsx';
-
+import Login from './Components/LoginSignUp/Login.jsx';
+import Signup from './Components/LoginSignUp/Signup.jsx';
+import { useState } from 'react';
 function App() {
+    const [login,setLogin]=useState(false);
   return (
     <>
       <div>
-        <LoginSignUp />
+        {
+            login? <Login setLogin={setLogin}></Login>:<Signup setLogin={setLogin}></Signup>
+        }
       </div>
     </>
   );
