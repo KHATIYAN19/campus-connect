@@ -38,6 +38,10 @@ const userSchema=mongoose.Schema({
             type:Date
          }
       },
+      key:{
+        type:String,
+        required:true
+      },
       Applied:[ { 
         type:mongoose.Schema.Types.ObjectId,
          ref: 'Job' }
