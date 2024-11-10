@@ -1,24 +1,36 @@
 const express=require("express");
+const cors = require("cors");
 const app=express();
-var cookieParser = require('cookie-parser')
-app.use(cookieParser())
+var cookieParser = require('cookie-parser');
 const Dbconnect=require("./Utils/DbConnections");
 const userRoute=require("./Routes/userRoute");
 const jobRoute=require("./Routes/jobRoute");
 const auth=require("./Middlewares/userMiddleware");
-require('dotenv').config()
+require('dotenv').config();
+
+app.use(cors({
+    origin: 'https://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(cookieParser());
 app.use(express.json());
 app.use("/",userRoute);
 app.use("/",jobRoute);
 app.use(express.urlencoded({extended:true}));
+
+
 app.listen(process.env.PORT,()=>{
-    console.log(`App is listen ${process.env.PORT}`)
-})
+    console.log(`App is listening on ${process.env.PORT}`);
+});
 // app.get("/find",(auth),async (req,res)=>{
 //      res.status(200).json({
 //         message:"wlcm back",
 //         user:req.body
 //      })
 // });
+
 Dbconnect();
+
 
