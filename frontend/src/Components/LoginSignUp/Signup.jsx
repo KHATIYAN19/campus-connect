@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import {NavLink} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './LoginSignUp.css'
 import user_icon from '../Assets/person.png'
 import email_icon from '../Assets/email.png'
@@ -7,15 +9,19 @@ import phone_icon from '../Assets/phone.png'
 import year_icon from '../Assets/year.png'
 import axios from 'axios';
 import { toast } from 'react-toastify'
-const Signup = ({setLogin}) => {
+const Signup = ({}) => {
+    const navigate=useNavigate();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [year, setYear] = useState('');
     const [role, setRole] = useState('');
+    const [key,setKey]=useState('');
     const handleSignUp = async (e) => {
+       
         e.preventDefault();
+        
         try {
             const response = await axios.post('http://localhost:8080/signup', {
                 name,
@@ -23,12 +29,13 @@ const Signup = ({setLogin}) => {
                 phone,
                 password,
                 year,
-                role
+                role,
+                key
             });
             const signup=response.data.success;
             if(signup){
                  toast.success(response.data.Data.name.toUpperCase() + " Signup Successfully");
-                 setLogin(true);
+                 navigate("/login");
             }else{
                 toast.error(response.data.message);
             }
@@ -64,6 +71,10 @@ const Signup = ({setLogin}) => {
                     <input type="number" placeholder='Year' value={year} onChange={(e) => setYear(e.target.value)} />
                 </div>
                 <div className="input">
+                   <img src={year_icon} alt="year_icon" width="32" height="23" />
+                    <input type="text" placeholder='Secret Key for Reset Password' value={key} onChange={(e) => setKey(e.target.value)} />
+                </div>
+                <div className="input">
                     <img src={user_icon} alt="password_icon" />
                     <select className='dropdown' placeholder='Role' value={role} onChange={(e) => setRole(e.target.value)}>
                         <option value="" disabled>Select Role</option>
@@ -75,11 +86,8 @@ const Signup = ({setLogin}) => {
                     <button type="submit" className="submitBtn">
                         Submit
                     </button>
-                    <div
-                        className={"submit gray"}
-                        onClick={()=>{setLogin(true)}}
-                    >
-                        Login
+                    <div className={"submit gray"}>
+                         <NavLink to="/login">Login</NavLink>
                     </div>
                 </div>
             </form>

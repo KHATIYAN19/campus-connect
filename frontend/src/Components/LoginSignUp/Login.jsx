@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import './LoginSignUp.css'
 import email_icon from '../Assets/email.png'
 import password_icon from '../Assets/password.png'
+import { NavLink } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 const Login = ({setLogin}) => {
@@ -14,15 +15,14 @@ const Login = ({setLogin}) => {
             email,
             password
         });
-        console.log(" response" ,response);
         const login=response.data.success;
-        console.log(login ,"login");
-        console.log(response.data.message);
         if(login){
-             toast.success("welcome back " + (response.data.user.name).toUpperCase());
+            localStorage.setItem("user",JSON.stringify(response.data.user));
+             toast.success("WELCOME BACK " + (response.data.user.name).toUpperCase());
+             console.log(JSON.parse(localStorage.getItem("user")));
              setLogin(true);
         }else{
-            toast.error(response.data.message);
+         toast.error(response.data.message);
         }
     } catch (error) {
         toast.error(error.response.data.message);
@@ -50,18 +50,15 @@ const Login = ({setLogin}) => {
                     <button type="submit" className="submitBtn">
                         Submit
                     </button>
-                    <div
-                        className={"submit gray"}
-                        onClick={()=>setLogin(false)}
-                    >
-                        SignUp
+                    <div className={"submit gray"}>
+                         <NavLink to="/signup">Signup</NavLink>
                     </div>
                 </div>
     </div>
   
   </form>
   
-  { <div className="forget-password">Forgot Password?<span> Click Here!</span> </div>}
+  { <div className="forget-password">Forgot Password?<span> <NavLink to="/reset-password"> Click Here!</NavLink></span> </div>}
     
 </div>
   )
