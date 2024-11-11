@@ -4,8 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 exports.signup = async (req, res) => {
     try {
-        const { name, phone, email, year, role, password } = req.body;
-        if (!name || !phone || !email || !year || !role || !password) {
+        const { name, phone, email, year, role, password,key } = req.body;
+        if (!name || !phone || !email || !year || !role || !password||!key) {
             return res.status(400).json({
                 message: "All Feild required !",
                 success: false
@@ -33,6 +33,7 @@ exports.signup = async (req, res) => {
             year,
             phone,
             email,
+            key,
             password: hashedpass,
         })
         Data.password=undefined;
@@ -120,6 +121,54 @@ exports.user_applications = async (req, res) => {
         return res.status(400).json({
             message: "Something went wrong !please try again",
             success: false
+        })
+    }
+}
+
+
+exports.reset = async (req, res) => {
+    try{
+         const {email,password,key}=req.body;
+         if(!email||!password||!key){
+            return res.status(400).json({
+                success:false,
+                message:"All feild required"
+             })
+         }
+         const user=await User.findOne({email});
+        if(!user){
+            return res.status(400).json({
+                success:false,
+                message:"No user available",
+             })
+        }
+        if(user.key!==key){
+            return res.status(400).json({
+                success:false,
+                message:"Invalid Secret Key",
+             })
+        }
+        let hashedpass;
+        try {
+            hashedpass = await bcrypt.hash(password, 10);
+        } catch (e) {
+            return res.status(400).json({
+                success: false,
+                message: "Error in Hashing"
+            })
+        }
+        user.password=hashedpass;
+        user.save();
+        
+        return res.status(200).json({
+            success:true,
+            message:"Password Reset"
+        })
+
+    }catch(e){
+        return res.status(400).json({
+            success:false,
+            message:"Something went wrong !"
         })
     }
 }
