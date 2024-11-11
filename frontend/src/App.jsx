@@ -42,9 +42,11 @@ function App() {
         //         </div>
         //     )}
         // </div>
-        <>
-                <RouterProvider router= {appRouter}/>
-        </>
+        // <>
+        //         <RouterProvider router= {appRouter}/>
+        // </>
+
+        <Homepage/>
     );
 }
 
