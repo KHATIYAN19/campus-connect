@@ -5,7 +5,7 @@ import password_icon from '../Assets/password.png'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'react-toastify';
-const Login = ({setLogin}) => {
+const Login = ({}) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const handleLogin = async (e) => {
@@ -31,7 +31,7 @@ const Login = ({setLogin}) => {
   return (
     <div className='container'>
     <div className="header">
-        <div className="text">Login</div>
+        <div className="text  ">LOGIN</div>
         <div className="underline"></div>
     </div>
     <form className="inputs" onSubmit={handleLogin}  >

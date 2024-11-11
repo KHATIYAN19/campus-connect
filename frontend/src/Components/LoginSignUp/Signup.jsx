@@ -19,9 +19,7 @@ const Signup = ({}) => {
     const [role, setRole] = useState('');
     const [key,setKey]=useState('');
     const handleSignUp = async (e) => {
-       
         e.preventDefault();
-        
         try {
             const response = await axios.post('http://localhost:8080/signup', {
                 name,
@@ -46,7 +44,7 @@ const Signup = ({}) => {
     return (
         <div className='container'>
             <div className="header">
-                <div className="text">SignUp</div>
+                <div className="text">SIGNUP</div>
                 <div className="underline"></div>
             </div>
             <form className="inputs" onSubmit={handleSignUp} >
@@ -71,7 +69,7 @@ const Signup = ({}) => {
                     <input type="number" placeholder='Year' value={year} onChange={(e) => setYear(e.target.value)} />
                 </div>
                 <div className="input">
-                   <img src={year_icon} alt="year_icon" width="32" height="23" />
+                <img src={password_icon} alt="password_icon" />
                     <input type="text" placeholder='Secret Key for Reset Password' value={key} onChange={(e) => setKey(e.target.value)} />
                 </div>
                 <div className="input">
