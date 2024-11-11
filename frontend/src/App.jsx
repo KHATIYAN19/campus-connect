@@ -9,6 +9,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Route,Routes } from 'react-router-dom';
 import ResetPassword from './Components/LoginSignUp/ResetPassword.jsx';
 
+
 // const appRouter = createBrowserRouter ([
 //     {path:'/', element:<Homepage/>},
 //     {path:'/login', element:<Login/>},
@@ -25,29 +26,6 @@ function App() {
     // };
 
     return (
-        // <div className="App">
-        //     {isAuthenticated ? (
-        //         <Homepage /> 
-        //     ) : (
-        //         <div>
-        //             {loginView ? (
-        //                 <Login 
-        //                     setLogin={setLoginView} 
-        //                     onLoginSuccess={handleLoginSuccess} 
-        //                 />
-        //             ) : (
-        //                 <Signup 
-        //                     setLogin={setLoginView} 
-        //                     onSignupSuccess={handleLoginSuccess} 
-        //                 />
-        //             )}
-        //         </div>
-        //     )}
-        // </div>
-        // <>
-        //         <RouterProvider router= {appRouter}/>
-        // </>
-         
         <Routes>
          <Route path="/" element={<Homepage/>}/>
         
@@ -56,6 +34,7 @@ function App() {
          <Route path="/reset-password" element={<ResetPassword/>}/>
          <Route path="/jobs/post" element={<JobPost/>}/>
          <Route path="/navbar" element={<Navbar/>}/>
+         <Route path="/jobs" element={<Jobs/>}/>
        </Routes>   
     );
 }
