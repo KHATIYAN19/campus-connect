@@ -3,13 +3,15 @@ import React from 'react'
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage } from '../ui/avatar';
 import { Link } from 'react-router-dom';
+import login from '../LoginSignUp/Login';
+import signup from '../LoginSignUp/Signup';
 
 const Navbar = () => {
   const user = false;
   return (
     <div className='bg-white;'>
       <div className='flex items-center justify-between mx-auto max-w-7xl h-16'>
-        <div className="flex items-center gap-3">
+        <div className='flex items-centre gap-2'>
           <Avatar className='w-10 h-10'>
               <AvatarImage src="https://cdn-icons-png.flaticon.com/128/12372/12372496.png" alt="@shadcn" />
           </Avatar>
@@ -22,8 +24,8 @@ const Navbar = () => {
           </ul>
           {!user ? (
             <div className='flex items-center gap-2'>
-              <Link to="/login"><Button variant="outline">Login</Button></Link>
-              <Link to="/signup"><Button className="bg-[#c78c06] hover:bg-[#705820]">Signup</Button></Link>
+              <Link to="/login"><Button variant="outline" className='rounded'>Login</Button></Link>
+              <Link to="/signup"><Button className="bg-[#c78c06] hover:bg-[#705820] rounded">Signup</Button></Link>
             </div>
           ) : (
             <Popover>

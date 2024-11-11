@@ -4,13 +4,14 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 exports.signup = async (req, res) => {
     try {
-        const { name, phone, email, year, role, password,key } = req.body;
+        let { name, phone, email, year, role, password,key } = req.body;
         if (!name || !phone || !email || !year || !role || !password||!key) {
             return res.status(400).json({
                 message: "All Feild required !",
                 success: false
             })
         }
+        email=email.toLowerCase();
         const user = await User.findOne({ email });
         if (user) {
             return res.status(200).json({
@@ -52,13 +53,15 @@ exports.signup = async (req, res) => {
 }
 exports.login=async (req,res)=>{
     try{
-        const {email,password}=req.body;
+        let {email,password}=req.body;
         if(!email||!password){
              return res.status(400).json({
                 success:false,
                 message:"All feild required"
              })
         }
+        email=email.toLowerCase();
+        console.log(email);
         const user=await User.findOne({email});
         if(!user){
             return res.status(400).json({
@@ -128,13 +131,14 @@ exports.user_applications = async (req, res) => {
 
 exports.reset = async (req, res) => {
     try{
-         const {email,password,key}=req.body;
+         let {email,password,key}=req.body;
          if(!email||!password||!key){
             return res.status(400).json({
                 success:false,
                 message:"All feild required"
              })
          }
+         email=emai.toLowerCase();
          const user=await User.findOne({email});
         if(!user){
             return res.status(400).json({
@@ -146,6 +150,12 @@ exports.reset = async (req, res) => {
             return res.status(400).json({
                 success:false,
                 message:"Invalid Secret Key",
+             })
+        }
+        if(await bcrypt.compare(password,user.password)){
+            return res.status(400).json({
+                success:false,
+                message:"Cannot change to last password",
              })
         }
         let hashedpass;

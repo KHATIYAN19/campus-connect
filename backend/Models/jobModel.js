@@ -29,6 +29,9 @@ const jobSchema=mongoose.Schema({
         position:{
             type:String,
             required:true,
+        },
+        testdatae:{
+            type:Date,
         }
 },{timestamps:true});
 module.exports=mongoose.model("Job",jobSchema);

@@ -17,7 +17,9 @@ const Login = ({}) => {
         });
         const login=response.data.success;
         if(login){
+            localStorage.setItem("isLogin",true);
             localStorage.setItem("user",JSON.stringify(response.data.user));
+            localStorage.setItem("token",response.data.token);
              toast.success("WELCOME BACK " + (response.data.user.name).toUpperCase());
              console.log(JSON.parse(localStorage.getItem("user")));
              setLogin(true);
@@ -58,7 +60,7 @@ const Login = ({}) => {
   
   </form>
   
-  { <div className="forget-password">Forgot Password?<span> <NavLink to="/reset-password"> Click Here!</NavLink></span> </div>}
+  { <div className="forget-password">Forgot Password?<span> <NavLink to="/reset-password"> Click Here!</NavLink></span></div>}
     
 </div>
   )
