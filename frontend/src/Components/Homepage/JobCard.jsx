@@ -7,10 +7,10 @@ const jobs = [1,2,3,4,5,6,7,8,9];
 const JobCard = () => {
     return (
         <div className='mx-w-7xl mx-auto px-20 my-28'>
-            <h1 className='text-4xl font-bold'>Job Opening</h1>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-5'>
+            <h1 className='text-3xl font-bold text-center'>Latest Jobs</h1>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-8'>
                 {
-                    jobs.slice(0,6).map((item, idx) => <LatestJobs/>)
+                    jobs.slice(0,6).map((item, idx) => <LatestJobs key={idx}/>)
                 }
             </div>
         </div>
