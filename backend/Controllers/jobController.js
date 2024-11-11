@@ -3,8 +3,8 @@ const User=require("../Models/userModel");
 exports.post_job=async(req,res)=>{
    try{
     let id=req.user.id;
-    const {company,description,salary,location,position}=req.body;
-    if(!company||!description||!salary||!location||!position){
+    const {company,description,salary,location,position,testdate}=req.body;
+    if(!company||!description||!salary||!location||!position||!testdate){
        return res.status(400).json({
             message:"All feild required",
             success:false
@@ -23,7 +23,7 @@ exports.post_job=async(req,res)=>{
          salary,
          location,
          position,
-         postby:id
+         postby:id,
     })
     return res.status(200).json({
        message:"Job created Successfully",

@@ -17,7 +17,9 @@ const Login = ({}) => {
         });
         const login=response.data.success;
         if(login){
+            localStorage.setItem("isLogin",true);
             localStorage.setItem("user",JSON.stringify(response.data.user));
+            localStorage.setItem("token",response.data.token);
              toast.success("WELCOME BACK " + (response.data.user.name).toUpperCase());
              console.log(JSON.parse(localStorage.getItem("user")));
              setLogin(true);
