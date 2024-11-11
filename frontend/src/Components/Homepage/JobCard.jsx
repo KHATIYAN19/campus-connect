@@ -1,5 +1,4 @@
 import React from 'react'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../ui/carousel'
 import { Button } from '../ui/button';
 import LatestJobs from './LatestJobs';
 
