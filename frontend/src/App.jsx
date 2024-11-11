@@ -9,6 +9,8 @@ import { Route,Routes } from 'react-router-dom';
 import ResetPassword from './Components/LoginSignUp/ResetPassword.jsx';
 import AppliedJobs from './Components/Homepage/AppliedJobTable.jsx';
 import Profile from './Components/Homepage/Profile.jsx';
+import JobDescription from './Components/Homepage/JobDescription.jsx';
+
 
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
 
          <Route path="/" element={<AppliedJobs/>}/>
          <Route path="/profile" element={<Profile/>}/>
+         <Route path="/description/:id" element={<JobDescription/>}/>
        </Routes>   
     );
 }

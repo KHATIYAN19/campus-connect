@@ -21,7 +21,7 @@ const AppliedJobTable = () => {
                             <TableCell>12-11-2024</TableCell>
                             <TableCell>Frontend Developer</TableCell>
                             <TableCell>Netflix</TableCell>
-                            <TableCell className='text-right'><Badge>Selected</Badge></TableCell>
+                            <TableCell className='text-right'><Badge className='bg-black text-white hover:text-black'>Selected</Badge></TableCell>
                         </TableRow>
                     ))
                 }

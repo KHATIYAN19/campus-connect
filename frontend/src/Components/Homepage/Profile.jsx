@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from '../shared/Navbar'
 import { Avatar, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
@@ -8,9 +8,11 @@ import { Label } from '../ui/label'
 import AppliedJobTable from './AppliedJobTable'
 
 const skills = ["Html", "Css", "Python", "reactjs"];
+const haveResume = true;
 
 const Profile = () => {
-    const haveResume = true;
+    const [open, setOpen] = useState(false);
+
     return (
         <div>
             <Navbar />
@@ -25,7 +27,6 @@ const Profile = () => {
                             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta quos fugit corporis libero nisi delectus facilis aut reiciendis amet in.</p>
                         </div>
                     </div>
-                    <Button className='text-right' variant='outline'><Pen /></Button>
                 </div>
                 <div className='my-5'>
                     <div className='flex items-center gap-3 my-2'>
@@ -41,7 +42,7 @@ const Profile = () => {
                     <h1>Skills</h1>
                     <div className='flex items-center gap-1'>
                         {
-                            skills.length !== 0 ? skills.map((item, idx) => <Badge key={idx}>{item}</Badge>) : <span>NA</span>
+                            skills.length !== 0 ? skills.map((item, idx) => <Badge className='bg-black text-white hover:text-black' key={idx}>{item}</Badge>) : <span>NA</span>
                         }
                     </div>
                 </div>
