@@ -47,7 +47,7 @@ function App() {
                 <RouterProvider router= {appRouter}/>
             </div>
         </>
-    )
+    );
 }
 
 export default App;

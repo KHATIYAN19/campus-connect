@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../shared/Navbar';
+import Filtercard from './Filtercard';
 import JobDetails from './JobDetails';
 
 const jobArray = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -8,8 +9,11 @@ const Jobs = () => {
     return (
         <div>
             <Navbar />
-            <div className='max-w-7xl mx-auto mt-8'>
+            <div className='max-w-7xl mx-auto mt-5'>
                 <div className='flex gap-5'>
+                    <div className='w-20%'>
+                        <Filtercard />
+                    </div>
                     {
                         jobArray.length <= 0 ? <span>Job not available</span> : (
                             <div className='flex-1 h-[88vh] overflow-y-auto pb-5'>

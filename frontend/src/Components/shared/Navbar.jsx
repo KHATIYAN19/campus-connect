@@ -3,8 +3,6 @@ import React from 'react'
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage } from '../ui/avatar';
 import { Link } from 'react-router-dom';
-import login from '../LoginSignUp/Login';
-import signup from '../LoginSignUp/Signup';
 
 const Navbar = () => {
   const user = false;
@@ -13,13 +11,11 @@ const Navbar = () => {
       <div className='flex items-center justify-between mx-auto max-w-7xl h-16'>
         <div>
           <h1 className='text-2xl font-bold text-black'>Campus<span className='text-[#c78c06]'>Connect</span></h1>
-          <h1 className='text-2xl font-bold text-white'>Campus<span className='text-[#c78c06]'>Connect</span></h1>
         </div>
         <div className='flex items-center gap-12'>
           <ul className='flex font-medium items-center gap-5'>
             <li>Home</li>
             <Link to='/Jobs'>Jobs</Link>
-            <li><Link to='/Jobs'>Jobs</Link></li>
           </ul>
           {!user ? (
             <div className='flex items-center gap-2'>
