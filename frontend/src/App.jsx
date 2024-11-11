@@ -43,9 +43,7 @@ function App() {
         //     )}
         // </div>
         <>
-            <div>
                 <RouterProvider router= {appRouter}/>
-            </div>
         </>
     );
 }
