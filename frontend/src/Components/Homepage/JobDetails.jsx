@@ -12,13 +12,13 @@ const JobDetails = () => {
                 <Button variant='outline' className='rounded-full size=icon'><Bookmark /></Button>
             </div>
             <div className='flex items-center gap-2 my-2'>
-                <Button>
+                <Button className='p-6' variant='outline' size='icon'>
                     <Avatar>
-                        <AvatarImage src="https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"/>
+                        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                     </Avatar>
                 </Button>
                 <div>
-                    <h1 className='font-medium text-lg'>Company Name</h1>
+                    <h1 className='text-lg font-medium'>Company Name</h1>
                     <p className='text-sm text-gray-500'>India</p>
                 </div>
             </div>
@@ -26,14 +26,14 @@ const JobDetails = () => {
                 <h1 className='font-bold text-lg my-2'>Title</h1>
                 <p className='text-sm text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
             </div>
-            <div>
-                <Badge className="text-yellow-600 font-bold" variant='ghost'>Intership</Badge>
+            <div className='flex items-center gap-2 mt-4'>
                 <Badge className="text-yellow-600 font-bold" variant='ghost'>12 Positions</Badge>
+                <Badge className="text-yellow-600 font-bold" variant='ghost'>Intership</Badge>
                 <Badge className="text-yellow-600 font-bold" variant='ghost'>24Lpa</Badge>
             </div>
-            <div className='flex items-center gap-4 mt-4'> 
-                <Button variant='outline'>Details</Button>
-                <Button className='bg-yellow-800'>Save for later</Button>
+            <div className='flex items-center gap-4 mt-4'>
+                <Button variant="outline">Details</Button>
+                <Button className='bg-yellow-700'>Save for later</Button>
             </div>
         </div>
     )

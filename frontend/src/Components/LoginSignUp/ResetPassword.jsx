@@ -34,7 +34,7 @@ const ResetPassword = () => {
   return (
     <div className='container'>
     <div className="header">
-        <div className="text">Reset Password</div>
+        <div className="text">RESET PASSWORD</div>
         <div className="underline"></div>
     </div>
     <form className="inputs" onSubmit={ResetHandler}  >
@@ -67,3 +67,4 @@ const ResetPassword = () => {
   )
 };
 export default ResetPassword;
+

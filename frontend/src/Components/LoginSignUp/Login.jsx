@@ -5,7 +5,7 @@ import password_icon from '../Assets/password.png'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'react-toastify';
-const Login = ({setLogin}) => {
+const Login = ({}) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const handleLogin = async (e) => {
@@ -17,7 +17,9 @@ const Login = ({setLogin}) => {
         });
         const login=response.data.success;
         if(login){
+            localStorage.setItem("isLogin",true);
             localStorage.setItem("user",JSON.stringify(response.data.user));
+            localStorage.setItem("token",response.data.token);
              toast.success("WELCOME BACK " + (response.data.user.name).toUpperCase());
              console.log(JSON.parse(localStorage.getItem("user")));
              setLogin(true);
@@ -31,7 +33,7 @@ const Login = ({setLogin}) => {
   return (
     <div className='container'>
     <div className="header">
-        <div className="text">Login</div>
+        <div className="text  ">LOGIN</div>
         <div className="underline"></div>
     </div>
     <form className="inputs" onSubmit={handleLogin}  >
