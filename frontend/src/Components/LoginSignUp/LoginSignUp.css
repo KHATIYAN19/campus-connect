@@ -138,6 +138,7 @@
     border: none;
 }
 
+  
 /* Tablet and up */
 @media (min-width: 600px) {
     .container {

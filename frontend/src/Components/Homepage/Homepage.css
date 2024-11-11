@@ -1,0 +1,141 @@
+/* General styling for the homepage */
+.homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    position: relative;
+  }
+  
+  /* Top Right Buttons Styles */
+  .auth-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 15px;
+  }
+  
+  .auth-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #c78c06;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .auth-button:hover {
+    background-color: #ff8c00;
+  }
+  
+  /* Image Section Styles */
+  .image-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
+  
+  .image-container {
+    position: relative;
+  }
+  
+  .main-image {
+    width: 800px;
+    height: 400px;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: all 0.3s ease;
+  }
+  
+  /* Image Description Styles */
+  .image-description {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    border-radius: 10px;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Hover Effect on Image */
+  .image-container:hover .main-image {
+    opacity: 0.5;
+  }
+  
+  .image-container:hover .image-description {
+    display: flex;
+  }
+  
+  /* Buttons Section Styling */
+  .buttons-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  /* Individual Button Styling */
+  .button-container {
+    position: relative;
+  }
+  
+  .action-button {
+    padding: 15px 30px;
+    font-size: 16px;
+    background-color: #c78c06;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #ff8c00;
+    transform: translateY(-5px);
+  }
+  
+  /* Button Description */
+  .button-description {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+    z-index: 10;
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  /* Display description on hover */
+  .button-container:hover .button-description {
+    display: block;
+  }
+  
+  /* Form Containers */
+  .form-container {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    width: 60%;
+    text-align: center;
+  }
+  
