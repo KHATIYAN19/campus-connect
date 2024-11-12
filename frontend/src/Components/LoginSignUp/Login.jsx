@@ -20,6 +20,7 @@ const Login = ({}) => {
             localStorage.setItem("isLogin",true);
             localStorage.setItem("user",JSON.stringify(response.data.user));
             localStorage.setItem("token",response.data.token);
+            localStorage.setItem("role",response.data.user.role);
              toast.success("WELCOME BACK " + (response.data.user.name).toUpperCase());
              console.log(JSON.parse(localStorage.getItem("user")));
              setLogin(true);

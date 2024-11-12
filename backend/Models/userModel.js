@@ -45,7 +45,17 @@ const userSchema=mongoose.Schema({
       Applied:[ { 
         type:mongoose.Schema.Types.ObjectId,
          ref: 'Job' }
-      ]
+      ],
+      messages:[{
+        type:mongoose.Schema.Types.ObjectId,
+         ref: 'Message'
+      }],
+      post:[{
+        messages:[{
+          type:mongoose.Schema.Types.ObjectId,
+           ref: 'Post'
+        }]
+      }]
 },{timestamps:true});
 
 module.exports=mongoose.model("User",userSchema);

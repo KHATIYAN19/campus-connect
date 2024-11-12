@@ -38,14 +38,7 @@ exports.post_job=async(req,res)=>{
       })
    }
 }
-exports.getall=async(req,res)=>{
-    const job=await Job.find({}).sort({createdAt:-1}).populate('postby').exec();
-    res.status(200).json({
-        message:"all data fetched",
-        success:true,
-         job
-    })
-}
+
 exports.apply=async(req,res)=>{
       try{
          var job_id = req.params.id;
@@ -106,4 +99,19 @@ exports.all_applications=async(req,res)=>{
         })
      }
 
+}
+exports.getall=async(req,res)=>{
+   try {
+      const Jobs = await Job.find({}).sort({ createdAt: -1 }).populate('postby').exec();
+      res.status(200).json({
+          message: "all Job fetched",
+          success: true,
+          Jobs
+      })
+  } catch (e) {
+      return res.status(400).json({
+          message: "Something went wrong",
+          success: false
+      })
+  }
 }

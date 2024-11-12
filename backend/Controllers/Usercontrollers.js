@@ -138,7 +138,7 @@ exports.reset = async (req, res) => {
                 message:"All feild required"
              })
          }
-         email=emai.toLowerCase();
+         email=email.toLowerCase();
          const user=await User.findOne({email});
         if(!user){
             return res.status(400).json({
@@ -179,6 +179,19 @@ exports.reset = async (req, res) => {
         return res.status(400).json({
             success:false,
             message:"Something went wrong !"
+        })
+    }
+}
+exports.logout=async(req,res)=>{
+    try{
+        return res.status(200).cookie("token","",{maxage:0}).json({
+            message:"Logout successfully ",
+            success:true
+        })
+    }catch(e){
+        return res.status(400).json({
+            message:"unable to logout",
+            success:false
         })
     }
 }

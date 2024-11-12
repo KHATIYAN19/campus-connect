@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 const Dbconnect=require("./Utils/DbConnections");
 const userRoute=require("./Routes/userRoute");
 const jobRoute=require("./Routes/jobRoute");
+const messageRoute=require("./Routes/messageRoute");
+
 const auth=require("./Middlewares/userMiddleware");
 require('dotenv').config();
 
@@ -14,6 +16,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/",userRoute);
 app.use("/",jobRoute);
+app.use("/",messageRoute);
+
 app.use(express.urlencoded({extended:true}));
 
 
