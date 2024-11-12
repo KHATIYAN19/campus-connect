@@ -61,7 +61,7 @@ const Login = ({}) => {
   
   </form>
   
-  { <div className="forget-password">Forgot Password?<span> <NavLink to="/reset-password"> Click Here!</NavLink></span> </div>}
+  { <div className="forget-password">Forgot Password?<span> <NavLink to="/reset-password"> Click Here!</NavLink></span></div>}
     
 </div>
   )
