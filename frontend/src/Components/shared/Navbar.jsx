@@ -11,11 +11,11 @@ const Navbar = () => {
   return (
     <div className='bg-white;'>
       <div className='flex items-center justify-between mx-auto max-w-7xl h-16'>
-        <div className='flex items-centre gap-2'>
+      <div className='flex items-centre gap-2'>
           <Avatar className='w-10 h-10'>
               <AvatarImage src="https://cdn-icons-png.flaticon.com/128/12372/12372496.png" alt="@shadcn" />
           </Avatar>
-          <h1 className='text-4xl font-bold text-black font-serif'>Campus<span className='text-[#c78c06]'>Connect</span></h1>
+          <h1 className='text-4xl font-bold text-black font-serif'>Placement<span className='text-[#c78c06]'>Connect</span></h1>
         </div>
         <div className='flex items-center gap-12'>
           <ul className='flex font-medium items-center gap-5'>
