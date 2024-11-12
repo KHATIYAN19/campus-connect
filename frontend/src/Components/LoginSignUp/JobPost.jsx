@@ -16,6 +16,7 @@ const JobPost = ({}) => {
     const [company, setCompany] = useState('');
     const [location, setLocation] = useState('');
     const [testdate, setTestdate] = useState('');
+    const [numbers, setNumbers] = useState('');
     const JobPostHandler = async (e) => {
         e.preventDefault();
         try {
@@ -26,7 +27,8 @@ const JobPost = ({}) => {
                 position,
                 location,
                 company,
-                testdate
+                testdate,
+                numbers
             });
             const posted=response.data.success;
             if(posted){
@@ -73,7 +75,10 @@ const JobPost = ({}) => {
                     <img src={year_icon} alt="year_icon" width="32" height="23" />
                     <input type="date" placeholder='Date' value={testdate} onChange={(e) => {setTestdate(e.target.value); }} />
                 </div>
-                
+                <div className="input">
+                    <img src={year_icon} alt="year_icon" width="32" height="23" />
+                    <input type="Number" placeholder='Enter position' value={numbers} onChange={(e) => {setNumbers(e.target.value); }} />
+                </div>
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">
                         Submit

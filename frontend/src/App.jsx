@@ -10,25 +10,32 @@ import ResetPassword from './Components/LoginSignUp/ResetPassword.jsx';
 import AppliedJobs from './Components/Homepage/AppliedJobTable.jsx';
 import Profile from './Components/Homepage/Profile.jsx';
 import JobDescription from './Components/Homepage/JobDescription.jsx';
-
-
+import Protected from './protectedRoutes/Protected.jsx';
+import loginProtected from './protectedRoutes/loginsProtected.jsx';
+import { Home } from 'lucide-react';
 
 function App() {
     return (
+         <div>
+           <Navbar></Navbar>
+           
         <Routes>
-         <Route path="/" element={<Homepage/>}/>
-        
-         <Route path="/signup" element={<Signup/>}/>
-         <Route path="/login" element={<Login/>}/>
-         <Route path="/reset-password" element={<ResetPassword/>}/>
-         <Route path="/jobs/post" element={<JobPost/>}/>
-         <Route path="/navbar" element={<Navbar/>}/>
-         <Route path="/jobs" element={<Jobs/>}/>
-
-         <Route path="/" element={<AppliedJobs/>}/>
-         <Route path="/profile" element={<Profile/>}/>
-         <Route path="/description/:id" element={<JobDescription/>}/>
-       </Routes>   
+        <Route path="/" element={<Protected></Protected>}>
+          <Route path="/" element={<Homepage/> }/>
+          <Route path="/jobs/post" element={<JobPost/>}/>
+          <Route path="/navbar" element={<Navbar/>}/>
+          <Route path="/jobs" element={<Jobs/>}/>
+          <Route path="/" element={<AppliedJobs/>}/>
+          <Route path="/profile" element={<Profile/>}/>
+          <Route path="/description/:id" element={<JobDescription/>}/>
+        </Route>
+        {/* <Route path="" element={ <loginProtected></loginProtected> }> */}
+          <Route path="/signup" element={<Signup/>}/>
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/reset-password" element={<ResetPassword/>}/>
+        {/* </Route> */}
+       </Routes>    
+       </div>
     );
 }
 

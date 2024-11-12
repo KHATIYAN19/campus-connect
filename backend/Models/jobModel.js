@@ -32,6 +32,11 @@ const jobSchema=mongoose.Schema({
         },
         testdatae:{
             type:Date,
+        },
+        numbers:{
+            type:Number,
+            required:true,
+            default:3
         }
 },{timestamps:true});
 module.exports=mongoose.model("Job",jobSchema);

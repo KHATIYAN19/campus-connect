@@ -1,13 +1,20 @@
 import React from 'react'
-import Navbar from '../shared/Navbar';
 import JobDetails from './JobDetails';
-
+import { useState ,useEffect} from 'react';
+import axios from "../LoginSignUp/axios.js"
+  
 const jobArray = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const Jobs = () => {
+
+    const[jobArray,setJobArray]=useState([]);
+    useEffect(()=>{
+     axios.get("http://localhost:8080/jobs/getall").then((res)=>{
+        setJobArray(res.data.Jobs);
+     })
+    },[]);
     return (
         <div>
-            <Navbar />
             <div className='max-w-7xl mx-auto mt-5'>
                 <div className='flex gap-5'>
                     {
@@ -16,7 +23,7 @@ const Jobs = () => {
                                 <div className='grid grid-cols-3 gap-4'>
                                     {jobArray.map((item, idx) => (
                                         <div>
-                                            <JobDetails />
+                                            <JobDetails data={item} />
                                         </div>
                                     ))}
                                 </div>

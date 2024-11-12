@@ -1,21 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Navbar from '../shared/Navbar'
 import { Avatar, AvatarImage } from '../ui/avatar'
-import { Button } from '../ui/button'
 import { Contact, Mail, Pen } from 'lucide-react'
 import { Badge } from '../ui/badge'
 import { Label } from '../ui/label'
 import AppliedJobTable from './AppliedJobTable'
-
+import { useState,useEffect } from 'react'
 const skills = ["Html", "Css", "Python", "reactjs"];
 const haveResume = true;
-
+import axios from '../LoginSignUp/axios.js'
+import App from '@/App'
 const Profile = () => {
+    const role=localStorage.getItem('role');
+    const[profile,SetProfile]=useState([]);
+    const [data,setData]=useState([]);
+     useEffect(()=>{
+       axios.get("http://localhost:8080/profile").then((res)=>{
+       SetProfile(res.data.user);
+       {console.log("res",res.data.data);}
+       setData(res.data.data);
+     })
+    },[]);
     const [open, setOpen] = useState(false);
-
     return (
         <div>
-            <Navbar />
             <div className='max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8'>
                 <div className='flex justify-between'>
                     <div className='flex items-center gap-4'>
@@ -23,28 +31,31 @@ const Profile = () => {
                             <AvatarImage src='https://cdn-icons-png.flaticon.com/128/3974/3974952.png' />
                         </Avatar>
                         <div>
-                            <h1 className='font-medium text-xl'>Full Name</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta quos fugit corporis libero nisi delectus facilis aut reiciendis amet in.</p>
+                            <h1 className='font-medium text-xl'>{profile.name}</h1>
+                            <p>GL BAJAJ INSTITUTE OF TECHNOLOGY AND MANAGEMENT</p>
+                            {role==='student'?(<p>Student</p>):(<p>Admin</p>)}
                         </div>
                     </div>
                 </div>
                 <div className='my-5'>
                     <div className='flex items-center gap-3 my-2'>
                         <Mail />
-                        <span>xyz@gmail.com</span>
+                        <span>{profile.email}</span>
                     </div>
                     <div className='flex items-center gap-3 my-2'>
                         <Contact />
-                        <span>1234567890</span>
+                        <span>{profile.phone}</span>
                     </div>
                 </div>
                 <div className='my-5'>
-                    <h1>Skills</h1>
-                    <div className='flex items-center gap-1'>
-                        {
-                            skills.length !== 0 ? skills.map((item, idx) => <Badge className='bg-black text-white hover:text-black' key={idx}>{item}</Badge>) : <span>NA</span>
-                        }
-                    </div>
+                   {
+                    role==='student'?( <div><h1>Skills</h1>
+                        <div className='flex items-center gap-1'>
+                            {
+                                skills.length !== 0 ? skills.map((item, idx) => <Badge className='bg-black text-white hover:text-black' key={idx}>{item}</Badge>) : <span>NA</span>
+                            }
+                        </div></div>):(<div></div>)
+                   }
                 </div>
                 <div className='grid w-full max-w-sm items-center gap-1.5'>
                     <Label className='text-md font-bold'>Resume</Label>
@@ -54,11 +65,10 @@ const Profile = () => {
                 </div>
             </div>
             <div className='max-w-4xl mx-auto bg-white rounded-2x'>
-                <h1 className='font-bold text-lg my-5'>Applied Jobs</h1>
-                <AppliedJobTable />
+                {role==='student'?(<h1 className='font-bold text-lg my-5'>Applied Jobs</h1>):(<h1 className='font-bold text-lg my-5'>Posted Jobs</h1>)}
+                {role=='student'?(<AppliedJobTable data={data}/>):(<></>)}
             </div>
         </div>
     )
 }
-
 export default Profile

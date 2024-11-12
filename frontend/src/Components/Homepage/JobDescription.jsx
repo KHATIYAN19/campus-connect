@@ -1,9 +1,18 @@
 import React from 'react'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
-
+import { useState,useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import axios from '../LoginSignUp/axios.js'
 const JobDescription = () => {
+    const { id } = useParams();
     const isApplied = true;
+    const[job,setJob]=useState([]);
+    useEffect(()=>{
+     axios.get(`http://localhost:8080/jobs/:${id}`).then((res)=>{
+        console.log("res",res.data);
+     })
+    },[]);
     return (
         <div className='max-w-7xl mx-auto my-10'>
             <div className='flex items-center justify-between'>

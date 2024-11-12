@@ -1,10 +1,11 @@
 const Job=require("../Models/jobModel");
 const User=require("../Models/userModel");
+const mongoose=require("mongoose");
 exports.post_job=async(req,res)=>{
    try{
     let id=req.user.id;
-    const {company,description,salary,location,position,testdate}=req.body;
-    if(!company||!description||!salary||!location||!position||!testdate){
+    const {company,description,salary,location,position,testdate,numbers}=req.body;
+    if(!company||!description||!salary||!location||!position||!testdate||!numbers){
        return res.status(400).json({
             message:"All feild required",
             success:false
@@ -24,6 +25,7 @@ exports.post_job=async(req,res)=>{
          location,
          position,
          postby:id,
+         numbers
     })
     return res.status(200).json({
        message:"Job created Successfully",
@@ -98,7 +100,6 @@ exports.all_applications=async(req,res)=>{
           success:false
         })
      }
-
 }
 exports.getall=async(req,res)=>{
    try {
@@ -114,4 +115,36 @@ exports.getall=async(req,res)=>{
           success: false
       })
   }
+}
+exports.jobbyid=async(req,res)=>{
+   try{
+       const job_id=req.params.id;
+       console.log("jobdy", job_id);
+       console.log(2);
+       //const objectId = new mongoose.Types.ObjectId(job_id);
+       //console.log(objectId);
+       const job=await Job.findOne({_id:job_id}).populate('postby');
+        console.log(4)
+      //   if(!job){
+      //    return res.status(400).json({
+      //       message:"No job found",
+      //       success:false
+      //     })
+      //   }
+        console.log(2);
+        return res.status(200).json({
+         message:"JOB FETCHED",
+         success:true,
+         
+         //postby:job.postby
+       })
+     
+     }catch(e){
+      console.log(e);
+        return res.status(400).json({
+          message:"Something went wrong",
+          success:false,
+          error:e
+        })
+     }
 }

@@ -3,13 +3,41 @@ import React from 'react'
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage } from '../ui/avatar';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import login from '../LoginSignUp/Login';
 import signup from '../LoginSignUp/Signup';
 
 const Navbar = () => {
-  const user = false;
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isLogin=localStorage.getItem('isLogin');
+  const navigate=useNavigate();
+  const logoutHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get('http://localhost:8080/logout');
+      const logout=response;
+      console.log(response);
+      if(logout){
+          localStorage.removeItem("isLogin");
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+           toast.success("Logout Successfully");
+           navigate("/login");
+      }else{
+       toast.error(response.data.message);
+      }
+  } catch (error) {
+      toast.error(error.response.data.message);
+      console.log(error);
+  }
+  }
   return (
+    
     <div className='bg-white;'>
+      
       <div className='flex items-center justify-between mx-auto max-w-7xl h-16'>
       <div className='flex items-centre gap-2'>
           <Avatar className='w-10 h-10'>
@@ -19,7 +47,7 @@ const Navbar = () => {
         </div>
         <div className='flex items-center gap-12'>
           <ul className='flex font-medium items-center gap-5'>
-            <li>Home</li>
+            <Link to='/'>Home</Link>
             <Link to='/Jobs'>Jobs</Link>
           </ul>
           {!user ? (
@@ -41,7 +69,9 @@ const Navbar = () => {
                   </Avatar>
                   <div>
                     <h4 className='font-medium'>Welcome to Campus Connect</h4>
-                    <p className='text-sm text-muted-foreground'>Lorem ipsum dolor sit amet.</p>
+                    <p className='text-sm text-muted-foreground'>HEY  {user.name}</p>
+                    <Link className='' to="/profile">Profile</Link>
+                    <button className='border rounded-lg bg-slate-300 px-2 py-1' onClick={logoutHandler}>Logout</button>
                   </div>
                 </div>
               </PopoverContent>

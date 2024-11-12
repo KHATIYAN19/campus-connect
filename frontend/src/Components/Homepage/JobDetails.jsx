@@ -2,9 +2,29 @@ import React from 'react'
 import { Button } from '../ui/button'
 import { Avatar, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const JobDetails = () => {
+import axios from "../LoginSignUp/axios.js"
+import { toast } from 'react-toastify'
+const JobDetails = ({data}) => {
+    const role=localStorage.getItem('role');
+    const id=data._id;
+    const applyHandler = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(`/jobs/apply/${id}`);
+            const posted=response.data.success;
+            if(posted){
+                 toast.success("Applied Successfully");
+                 navigate("/");
+            }else{
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+            console.log(error);
+        }
+    }
     const navigate = useNavigate();
     const jobId = "abcdefgh";
     return (
@@ -19,22 +39,25 @@ const JobDetails = () => {
                     </Avatar>
                 </Button>
                 <div>
-                    <h1 className='text-lg font-medium'>Company Name</h1>
+                    <h1 className='text-lg font-medium'>{data.company}</h1>
                     <p className='text-sm text-gray-500'>India</p>
                 </div>
             </div>
             <div className=''>
-                <h1 className='font-bold text-lg my-2'>Title</h1>
-                <p className='text-sm text-gray-600'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                <h1 className='font-bold text-lg my-2'>{data.position}</h1>
+                <p className='text-sm text-gray-600'>{data.description.length>80?data.description.substring(0,50):data.description}</p>
             </div>
-            <div className='flex items-center gap-2 mt-4'>
-                <Badge className="text-yellow-600 font-bold" variant='ghost'>12 Positions</Badge>
+            <div className='flex items-center gap-2 mt-4 '>
+                <Badge className="text-yellow-600 font-bold" variant='ghost'>{data.numbers}Positions</Badge>
                 <Badge className="text-yellow-600 font-bold" variant='ghost'>Intership</Badge>
-                <Badge className="text-yellow-600 font-bold" variant='ghost'>24Lpa</Badge>
+                <Badge className="text-yellow-600 font-bold" variant='ghost'>{data.salary}</Badge>
             </div>
             <div className='flex items-center gap-4 mt-4'>
                 <Button onClick={() => navigate('/description/${jobId}')} variant="outline" className='rounded-full'>Details</Button>
-                <Button className='bg-yellow-600 rounded-3xl'>Apply</Button>
+                {
+                  role==='student'? (<Button className='bg-yellow-600 rounded-3xl ' onClick={applyHandler} >Apply</Button>):(<div/>)
+                }
+            
             </div>
         </div>
     )

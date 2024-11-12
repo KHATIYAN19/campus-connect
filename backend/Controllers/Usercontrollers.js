@@ -118,6 +118,7 @@ exports.user_applications = async (req, res) => {
         return res.status(200).json({
             message: "All Applications Fetched",
             "data": data,
+            user,
             success: true
         })
     } catch (e) {

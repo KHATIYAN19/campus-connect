@@ -5,7 +5,10 @@ import password_icon from '../Assets/password.png'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+
 const Login = ({}) => {
+    const navigate=useNavigate();
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const handleLogin = async (e) => {
@@ -23,7 +26,7 @@ const Login = ({}) => {
             localStorage.setItem("role",response.data.user.role);
              toast.success("WELCOME BACK " + (response.data.user.name).toUpperCase());
              console.log(JSON.parse(localStorage.getItem("user")));
-             setLogin(true);
+             navigate("/");
         }else{
          toast.error(response.data.message);
         }
