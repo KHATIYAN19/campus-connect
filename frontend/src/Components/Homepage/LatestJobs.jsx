@@ -2,9 +2,10 @@ import React from 'react'
 import { Badge } from '../ui/badge'
 import { NavLink } from 'react-router-dom';
 const LatestJobs = ({data}) => {
-  console.log("data",data);
+ 
+  const user=JSON.parse(localStorage.getItem('user'));
   return (
-
+     
     <div className='p-5 rounded-md shadow-xl bg-white border border-gray-100 cursor-pointer'>
         <NavLink to={`/description/${data._id}`}>
           <div>

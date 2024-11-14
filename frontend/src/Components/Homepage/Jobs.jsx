@@ -2,16 +2,14 @@ import React from 'react'
 import JobDetails from './JobDetails';
 import { useState ,useEffect} from 'react';
 import axios from "../LoginSignUp/axios.js"
-  
-const jobArray = [1, 2, 3, 4, 5, 6, 7, 8];
-
 const Jobs = () => {
-
     const[jobArray,setJobArray]=useState([]);
     useEffect(()=>{
      axios.get("http://localhost:8080/jobs/getall").then((res)=>{
         setJobArray(res.data.Jobs);
+        console.log(res.data.Jobs);
      })
+     
     },[]);
     return (
         <div>

@@ -53,10 +53,10 @@ const JobPost = ({}) => {
                     <img src={user_icon} alt="user_icon" />
                     <input type="text" placeholder='Company Name' value={company} onChange={(e) => {setCompany(e.target.value); }} />
                 </div>
-                <div className="input">
-                    <img src={email_icon} alt="email_icon" />
+                <div className="input m-t-2 bg-[#eaeaea]">
+                    {/* <img src={email_icon} alt="email_icon" /> */}
                     {/* <input type="text" placeholder='Description' value={email} onChange={(e) => setEmail(e.target.value)} /> */}
-                     <textarea placeholder='Description' value={description} onChange={(e) => {setDescription(e.target.value); }} name="" id=""></textarea>
+                     <textarea className='w-full row-5 col-30 p-2 bg-[#eaeaea] m-y-2 rounded-lg pl-12 border' placeholder='Description' value={description} onChange={(e) => {setDescription(e.target.value); }} name="" id=""></textarea>
 
                 </div>
                 <div className="input">
@@ -71,13 +71,13 @@ const JobPost = ({}) => {
                     <img src={year_icon} alt="year_icon" width="32" height="23" />
                     <input type="text" placeholder='Salary' value={salary} onChange={(e) => setSalary(e.target.value)} />
                 </div>
-                <div className="input">
+                {/* <div className="input">
                     <img src={year_icon} alt="year_icon" width="32" height="23" />
                     <input type="date" placeholder='Date' value={testdate} onChange={(e) => {setTestdate(e.target.value); }} />
-                </div>
+                </div> */}
                 <div className="input">
                     <img src={year_icon} alt="year_icon" width="32" height="23" />
-                    <input type="Number" placeholder='Enter position' value={numbers} onChange={(e) => {setNumbers(e.target.value); }} />
+                    <input type="Number" placeholder='Enter Number of position' value={numbers} onChange={(e) => {setNumbers(e.target.value); }} />
                 </div>
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">

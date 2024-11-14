@@ -3,51 +3,56 @@ const User = require("../Models/userModel");
 exports.post_msg = async (req, res) => {
     try {
         let id = req.user.id;
-        const { msg } = req.body;
+        const { msg ,year} = req.body;
         console.log(msg);
-        if (!msg) {
+        if (!msg||!year) {
             return res.status(400).json({
-                message: "Message should not empty",
+                message: "All feild Required",
                 success: false
             })
         }
-        const user = await User.find({ _id: id });
+        const user = await User.findById(id);
         if (!user) {
-            return res.send({
-                message: "User does not exist",
-                success: false,
-            })
-        }
-        console.log(1);
-        const message = await Message.create({
-            msg,
-            postby:id
-        })
-        
-        
-        const idd=message._id;
-        console.log(idd);
-        
-        return res.status(200).json({
-            message: "Message post Successfully",
-            success: true,
-        })
-    } catch (e) {
-        return res.status(400).json({
-            message: "Unable to post a message",
-            error: e,
-            success: false
-        })
-    }
+              return res.status(404).json({
+                 message: 'User not found',
+                 success:false 
+              });
+            }
+            const message = new Message({
+              msg,
+              year,
+              postby: user._id
+            });
+            await message.save();
+            user.messages.push(message._id);
+            await user.save();
+            res.status(201).json({
+                success:"true",
+                message:"Message Posted"
+            });
+          } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Error posting message' });
+          }    
 }
 exports.getallmsg = async (req, res) => {
     try {
+        console.log(req.user);
         const messages = await Message.find({}).sort({ createdAt: -1 }).populate('postby').exec();
+        if(req.user.role==='admin'){
         res.status(200).json({
             message: "all message fetched",
             success: true,
             messages
-        })
+        })}else{
+            const year=req.user.year;
+            const filtermsg=messages.filter(message=>message.year==year);
+            res.status(200).json({
+                message: "all message fetched",
+                success: true,
+                filtermsg
+            });
+        }
     } catch (e) {
         return res.status(400).json({
             message: "Something went wrong",
@@ -58,18 +63,17 @@ exports.getallmsg = async (req, res) => {
 exports.getmymsg = async (req, res) => {
     try {
         let id = req.user.id;
-        const user_data = await User.findOne({ _id: id });
-        const data = user_data.message
+        const user_data = await User.findOne({ _id: id }).populate('messages').exec();
+        const data = user_data.messages;
         return res.status(200).json({
             message: "All message fetched",
             data,
             success: true
         })
-
     } catch (e) {
         return res.status(400).json({
             message: "Something went wrong",
-            success: false
+            success: false,
         })
     }
 }

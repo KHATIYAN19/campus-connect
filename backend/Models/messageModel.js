@@ -8,7 +8,10 @@ const messageSchema=mongoose.Schema({
         required:true,
         type:mongoose.Schema.Types.ObjectId,
          ref: 'User' 
+      },
+      year:{
+        required:true,
+        type:String
       }
 },{timestamps:true});
-
 module.exports=mongoose.model("Message",messageSchema);

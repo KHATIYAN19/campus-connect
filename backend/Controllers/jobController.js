@@ -1,11 +1,13 @@
 const Job=require("../Models/jobModel");
 const User=require("../Models/userModel");
 const mongoose=require("mongoose");
+const { ObjectId } = require('mongodb');
+
 exports.post_job=async(req,res)=>{
    try{
     let id=req.user.id;
-    const {company,description,salary,location,position,testdate,numbers}=req.body;
-    if(!company||!description||!salary||!location||!position||!testdate||!numbers){
+    const {company,description,salary,location,position,numbers}=req.body;
+    if(!company||!description||!salary||!location||!position||!numbers){
        return res.status(400).json({
             message:"All feild required",
             success:false
@@ -56,6 +58,12 @@ exports.apply=async(req,res)=>{
          if(!user_data){
             return res.status(400).json({
                message:"No User found",
+               success:false
+            })
+         }
+         if(user_data.Applied.includes(job_id)){
+            return res.status(400).json({
+               message:"Already Applied",
                success:false
             })
          }
@@ -118,12 +126,19 @@ exports.getall=async(req,res)=>{
 }
 exports.jobbyid=async(req,res)=>{
    try{
-       const job_id=req.params.id;
+       let job_id=req.params.id;
        console.log("jobdy", job_id);
        console.log(2);
+      //  if (!mongoose.Types.ObjectId.isValid(job_id)) {
+      //    return res.status(400).json({ message: 'Invalid job ID format' });
+      //  }
+      // const objectId = new ObjectId(job_id.id);
+      //console.log("objecid",objectId);
+      const objectId = new mongoose.ObjectId(job_id);
+        console.log(objectId);
        //const objectId = new mongoose.Types.ObjectId(job_id);
        //console.log(objectId);
-       const job=await Job.findOne({_id:job_id}).populate('postby');
+       const job=await Job.findOne({_id:job_id});
         console.log(4)
       //   if(!job){
       //    return res.status(400).json({
@@ -140,7 +155,7 @@ exports.jobbyid=async(req,res)=>{
        })
      
      }catch(e){
-      console.log(e);
+      console.log(e.message);
         return res.status(400).json({
           message:"Something went wrong",
           success:false,

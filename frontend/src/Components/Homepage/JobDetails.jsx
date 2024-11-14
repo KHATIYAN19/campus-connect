@@ -5,10 +5,14 @@ import { Badge } from '../ui/badge'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from "../LoginSignUp/axios.js"
+import {mongoose} from "mongoose"
 import { toast } from 'react-toastify'
 const JobDetails = ({data}) => {
+    const applied=JSON.parse(localStorage.getItem('user')).Applied;
+    const[isApplied,setIsApplied]=useState(applied.includes(data._id));
     const role=localStorage.getItem('role');
     const id=data._id;
+    
     const applyHandler = async (e) => {
         e.preventDefault();
         try {
@@ -16,7 +20,8 @@ const JobDetails = ({data}) => {
             const posted=response.data.success;
             if(posted){
                  toast.success("Applied Successfully");
-                 navigate("/");
+                 setIsApplied(true);
+                 navigate("/Jobs");
             }else{
                 toast.error(response.data.message);
             }
@@ -53,10 +58,16 @@ const JobDetails = ({data}) => {
                 <Badge className="text-yellow-600 font-bold" variant='ghost'>{data.salary}</Badge>
             </div>
             <div className='flex items-center gap-4 mt-4'>
-                <Button onClick={() => navigate('/description/${jobId}')} variant="outline" className='rounded-full'>Details</Button>
-                {
+                <Button onClick={() => navigate(`/description/${data._id}`)} variant="outline" className='rounded-full'>Details</Button>
+                {/* {
                   role==='student'? (<Button className='bg-yellow-600 rounded-3xl ' onClick={applyHandler} >Apply</Button>):(<div/>)
-                }
+                } */}
+                {
+                 role==='student'? (<Button disabled={isApplied} onClick={applyHandler} className={`rounded-lg ${isApplied ? 'bg-gray-600 cursor-not-allowed rounded-xl' : 'bg-yellow-700 rounded-xl hover:bg-yellow-800'}`}>{isApplied ? 'Applied' : 'Apply'}</Button>):(<></>)
+                }   
+                {/* {
+                    isApplied?(<>true</>):(<>false</>)
+                } */}
             
             </div>
         </div>

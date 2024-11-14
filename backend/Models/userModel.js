@@ -21,7 +21,7 @@ const userSchema=mongoose.Schema({
       role:{
         type:String,
         required:true,
-        enum:["student","admin","owner"]
+        enum:["student","admin"]
       },
       year:{
         type:Number,
@@ -34,8 +34,20 @@ const userSchema=mongoose.Schema({
          address:{
             type:String,
          },
-         dob:{
-            type:Date
+         graduatedeg:{
+           type:String
+         },
+         graduatemarks:{
+            type:Number,
+         },
+         tenth:{
+            type:Number,
+         },
+         tweleth:{
+           type:Number
+         },
+         resume:{
+           type:Number
          }
       },
       key:{
@@ -49,13 +61,6 @@ const userSchema=mongoose.Schema({
       messages:[{
         type:mongoose.Schema.Types.ObjectId,
          ref: 'Message'
-      }],
-      post:[{
-        messages:[{
-          type:mongoose.Schema.Types.ObjectId,
-           ref: 'Post'
-        }]
       }]
 },{timestamps:true});
-
 module.exports=mongoose.model("User",userSchema);

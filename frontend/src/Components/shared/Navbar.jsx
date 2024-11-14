@@ -12,6 +12,7 @@ import signup from '../LoginSignUp/Signup';
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   const isLogin=localStorage.getItem('isLogin');
+  const role=localStorage.getItem('role');
   const navigate=useNavigate();
   const logoutHandler = async (e) => {
     e.preventDefault();
@@ -49,6 +50,8 @@ const Navbar = () => {
           <ul className='flex font-medium items-center gap-5'>
             <Link to='/'>Home</Link>
             <Link to='/Jobs'>Jobs</Link>
+            {role==='admin'?(<Link to='/jobs/post'>Post-a-drive</Link>):(<></>)}
+            
           </ul>
           {!user ? (
             <div className='flex items-center gap-2'>

@@ -72,7 +72,8 @@ exports.login=async (req,res)=>{
         const payload={
             email:user.email,
             id:user._id,
-            role:user.role
+            role:user.role,
+            year:user.year
         }
         if(await bcrypt.compare(password,user.password)){
              let token=jwt.sign(payload,"asdfdsdfd",{
@@ -83,7 +84,6 @@ exports.login=async (req,res)=>{
                 httpOnly:true,
              }
              user.password=undefined;
-             user.Applied=undefined;
              req.token=token;
             return res.cookie("token",token,options).status(200).json({
                 success:true,
