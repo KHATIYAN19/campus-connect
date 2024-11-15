@@ -11,6 +11,7 @@ import AppliedJobs from './Components/Homepage/AppliedJobTable.jsx';
 import Profile from './Components/Homepage/Profile.jsx';
 import JobDescription from './Components/Homepage/JobDescription.jsx';
 import Protected from './protectedRoutes/Protected.jsx';
+import EmailVerification from './Components/LoginSignUp/EmailVerification.jsx';
 import loginProtected from './protectedRoutes/loginsProtected.jsx';
 import { Home } from 'lucide-react';
 
@@ -32,6 +33,7 @@ function App() {
         {/* <Route path="" element={ <loginProtected></loginProtected> }> */}
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/verify-email" element={<EmailVerification/>} />
           <Route path="/reset-password" element={<ResetPassword/>}/>
         {/* </Route> */}
        </Routes>    

@@ -34,7 +34,7 @@ const Signup = ({}) => {
             });
             const signup=response.data.success;
             if(signup){
-                 toast.success(response.data.Data.name.toUpperCase() + " Signup Successfully");
+                 toast.warning(response.data.Data.name.toUpperCase() + " Verify your Account");
                  navigate("/login");
             }else{
                 toast.error(response.data.message);
