@@ -12,10 +12,13 @@ const Update = ({ open, setOpen }) => {
     const [loading, setLoading] = useState(false);
     const { user } = useSelector(store => store.LoginSignUp);
     const [input, setInput] = useState({
-        fullname: user?.fullname,
+        Name: user?.Name,
         email: user?.email,
         phone: user?.phone,
         bio: user?.profile?.bio,
+        score10: user?.profile?.score10,
+        score12: user?.profile?.score12,
+        graduation : user?.profile?.graduation,
         skills: user?.profile?.skills?.map(skill => skill),
         file: user?.profile?.resume || null
     });
@@ -76,7 +79,7 @@ const Update = ({ open, setOpen }) => {
                                     id='name'
                                     name='name'
                                     type='text'
-                                    value={input.fullname}
+                                    value={input.Name}
                                     onChange = {changeEventHandler}
                                     className='col-span-3'
                                 />
@@ -93,7 +96,7 @@ const Update = ({ open, setOpen }) => {
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='number' className='text-right'>Number</Label>
+                                <Label htmlFor='number' className='text-right'>PhoneNo</Label>
                                 <Input
                                     id='number'
                                     name='number'
@@ -108,6 +111,45 @@ const Update = ({ open, setOpen }) => {
                                     id='bio'
                                     name='bio'
                                     value={input.bio}
+                                    onChange = {changeEventHandler}
+                                    className='col-span-3'
+                                />
+                            </div>
+                            <div className='grid grid-cols-4 items-center gap-4'>
+                                <Label htmlFor='10th percentage' className='text-right'>10th percentage</Label>
+                                <Input
+                                    id='10th percentage'
+                                    name='10th percentage'
+                                    type='number'
+                                    min='50'
+                                    max='100'
+                                    value={input.score10}
+                                    onChange = {changeEventHandler}
+                                    className='col-span-3'
+                                />
+                            </div>
+                            <div className='grid grid-cols-4 items-center gap-4'>
+                                <Label htmlFor='12-score' className='text-right'>12th percentage</Label>
+                                <Input
+                                    id='12-score'
+                                    name='12-score'
+                                    type='number'
+                                    min='50'
+                                    max='100'
+                                    value={input.score12}
+                                    onChange = {changeEventHandler}
+                                    className='col-span-3'
+                                />
+                            </div>
+                            <div className='grid grid-cols-4 items-center gap-4'>
+                                <Label htmlFor='graduation-score' className='text-right'>Graduation Score</Label>
+                                <Input
+                                    id='graduation-score'
+                                    name='graduation-score'
+                                    type='number'
+                                    min='50'
+                                    max='100'
+                                    value={input.graduation}
                                     onChange = {changeEventHandler}
                                     className='col-span-3'
                                 />
@@ -136,7 +178,7 @@ const Update = ({ open, setOpen }) => {
                         </div>
                         <DialogFooter>
                             {
-                                loading ? <Button className='w-full my-4'><Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type='submit' className='w-full my-4'>Update</Button>
+                                loading ? <Button className='w-full my-4'><Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type='submit' className='bg-gray-400 w-full my-4'>Update</Button>
                             }
 
                         </DialogFooter>
