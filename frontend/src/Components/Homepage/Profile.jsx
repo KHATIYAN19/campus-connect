@@ -10,6 +10,8 @@ const skills = ["Html", "Css", "Python", "reactjs"];
 const haveResume = true;
 import axios from '../LoginSignUp/axios.js'
 import App from '@/App'
+import { Button } from '../ui/button'
+import Update from './Update'
 const Profile = () => {
     const role=localStorage.getItem('role');
     const[profile,SetProfile]=useState([]);
@@ -36,6 +38,7 @@ const Profile = () => {
                             {role==='student'?(<p>Student</p>):(<p>Admin</p>)}
                         </div>
                     </div>
+                    <Button onClick={()=>setOpen(true)} className='text-right' variant='outline'><Pen/> </Button>
                 </div>
                 <div className='my-5'>
                     <div className='flex items-center gap-3 my-2'>
@@ -68,6 +71,7 @@ const Profile = () => {
                 {role==='student'?(<h1 className='font-bold text-lg my-5'>Applied Jobs</h1>):(<h1 className='font-bold text-lg my-5'>Posted Jobs</h1>)}
                 {role=='student'?(<AppliedJobTable data={data}/>):(<></>)}
             </div>
+            <Update open={open} setOpen={setOpen} />
         </div>
     )
 }
