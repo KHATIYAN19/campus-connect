@@ -4,7 +4,7 @@ import { Button } from '../ui/button'
 import { useState,useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from '../LoginSignUp/axios.js'
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 
 const JobDescription = () => {
     let  id= useParams().id; 
