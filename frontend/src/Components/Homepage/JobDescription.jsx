@@ -35,9 +35,13 @@ const JobDescription = () => {
                 <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>Bangalore</span></h1>
                 <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod, nobis!</span></h1>
                 <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>0-2 years</span></h1>
+                <h1 className='font-bold my-1'>Batch: <span className='pl-4 font-normal text-gray-800'>2025</span></h1>
                 <h1 className='font-bold my-1'>Salary: <span className='pl-4 font-normal text-gray-800'>24LPA</span></h1>
                 <h1 className='font-bold my-1'>Total Applicants: <span className='pl-4 font-normal text-gray-800'>6</span></h1>
                 <h1 className='font-bold my-1'>Posted Date: <span className='pl-4 font-normal text-gray-800'>12-11-2024</span></h1>
+                <h1 className='font-bold my-1'>10th Percentage: <span className='pl-4 font-normal text-gray-800'>94</span></h1>
+                <h1 className='font-bold my-1'>12th Percentage: <span className='pl-4 font-normal text-gray-800'>95</span></h1>
+                <h1 className='font-bold my-1'>Graduation Percentage: <span className='pl-4 font-normal text-gray-800'>78</span></h1>
             </div>
         </div>
     )

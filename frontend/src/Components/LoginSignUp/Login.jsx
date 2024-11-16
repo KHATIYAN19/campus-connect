@@ -69,10 +69,10 @@ const Login = ({ }) => {
                                 type="radio"
                                 name="role"
                                 value="recruiter"
-                                checked={role === 'recruiter'}
+                                checked={role === 'admin'}
                                 onChange={(e) => setRole(e.target.value)}
                             />
-                            Recruiter
+                            Admin
                         </label>
                     </div>
                 </div>
