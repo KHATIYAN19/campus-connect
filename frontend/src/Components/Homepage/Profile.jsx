@@ -51,16 +51,6 @@ const Profile = () => {
                         <span>{profile.phone}</span>
                     </div>
                 </div>
-                <div className='my-5'>
-                   {
-                    role==='student'?( <div><h1 className='font-bold mb-3'>Skills</h1>
-                        <div className='flex items-center gap-1'>
-                            {
-                                skills.length !== 0 ? skills.map((item, idx) => <Badge className='bg-black text-white hover:text-black' key={idx}>{item}</Badge>) : <span>NA</span>
-                            }
-                        </div></div>):(<div></div>)
-                   }
-                </div>
                 { role === 'student' ? (<div className='flex w-full max-w-sm items-center gap-1.5'>
                     <Label className='text-md font-bold'>Resume:-</Label>
                     {

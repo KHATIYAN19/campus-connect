@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import login from '../LoginSignUp/Login';
 import signup from '../LoginSignUp/Signup';
-import { LogOut, User2 } from 'lucide-react';
+import { LogOut, Trash2, User2 } from 'lucide-react';
 
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -84,6 +84,10 @@ const Navbar = () => {
                   <div className='flex w-fit items-center gap-2 cursor-pointer'>
                     <LogOut/>
                   <Button variant='link' onClick={logoutHandler}>Logout</Button>
+                  </div>
+                  <div className='flex w-fit items-center gap-2 cursor-pointer'>
+                    <Trash2/>
+                  <Button variant='link'>Delete</Button>
                   </div>
                 </div>
               </PopoverContent>
