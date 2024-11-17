@@ -52,32 +52,7 @@ const Login = ({ }) => {
                     <img src={password_icon} alt="password_icon" />
                     <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <div className="input">
-                    <div className='flex items-center justify-between gap-6 my-2 pl-4'>
-                        <label className="flex items-center spaxe-x-2">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="student"
-                                checked={role === 'student'}
-                                onChange={(e) => setRole(e.target.value)}
-                                className='cursor-pointer'
-                            />
-                            Student
-                        </label>
-                        <label className="flex items-center spaxe-x-2">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="recruiter"
-                                checked={role === 'admin'}
-                                onChange={(e) => setRole(e.target.value)}
-                                className='cursor-pointer'
-                            />
-                            Admin
-                        </label>
-                    </div>
-                </div>
+                {<div className="text-left px-10 my-5 text-sm font-medium text-yellow-800"><NavLink to="/reset-password">Forgot Password?</NavLink></div>}
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">
                         Submit
@@ -88,8 +63,6 @@ const Login = ({ }) => {
                 </div>
 
             </form>
-
-            {<div className="forget-password">Forgot Password?<span> <NavLink to="/reset-password"> Click Here!</NavLink></span></div>}
 
         </div>
     )

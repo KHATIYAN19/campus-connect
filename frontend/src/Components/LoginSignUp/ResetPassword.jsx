@@ -3,6 +3,7 @@ import './LoginSignUp.css'
 import { useNavigate } from 'react-router-dom'
 import email_icon from '../Assets/email.png'
 import password_icon from '../Assets/password.png'
+import secret_icon from '../Assets/secret.png'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { NavLink } from 'react-router-dom';
@@ -49,7 +50,7 @@ const ResetPassword = () => {
             <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <div className="input">
-            <img src={password_icon} alt="password_icon" />
+            <img src={secret_icon} alt="secret_icon" width={28} height={30}/>
             <input type="text" placeholder='Secret Key' value={key} onChange={(e) => setKey(e.target.value)} />
         </div>
         <div className="submit-container">
