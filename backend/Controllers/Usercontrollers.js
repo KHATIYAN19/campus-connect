@@ -1,11 +1,12 @@
 const User = require("../Models/userModel");
 const Job = require("../Models/jobModel");
+const { ObjectId } = require('mongodb');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const axios=require("axios");
+const axios = require("axios");
 const sendMail = require("../Utils/MailSender");
 require('dotenv').config();
-const generateGravatarUrl=require("../Utils/avator");
+const generateGravatarUrl = require("../Utils/avator");
 exports.signup = async (req, res) => {
     try {
         let { name, phone, email, year, role, password, key } = req.body;
@@ -32,7 +33,7 @@ exports.signup = async (req, res) => {
                 message: "Error in Hashing"
             })
         }
-        const url=generateGravatarUrl(email);
+        const url = generateGravatarUrl(email);
         const newUser = await User.create({
             name,
             role,
@@ -41,7 +42,7 @@ exports.signup = async (req, res) => {
             email,
             key,
             password: hashedpass,
-            image:url
+            image: url
         })
         newUser.password = undefined;
         const token = jwt.sign(
@@ -49,7 +50,7 @@ exports.signup = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-        console.log("token",token);
+        console.log("token", token);
         const emailContent = `
             <!DOCTYPE html>
       <html lang="en">
@@ -195,7 +196,7 @@ exports.login = async (req, res) => {
                 return now.toLocaleDateString('en-US', options);
             }
             const currentTime = getCurrentTime()
-            const emailContent=`<!DOCTYPE html>
+            const emailContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -300,8 +301,8 @@ exports.login = async (req, res) => {
 
 </body>
 </html>
-`        
-         await sendMail(email, 'Login Successful', "", emailContent);
+`
+            await sendMail(email, 'Login Successful', "", emailContent);
             return res.cookie("token", token, options).status(200).json({
                 success: true,
                 message: "User login",
@@ -345,8 +346,6 @@ exports.user_applications = async (req, res) => {
         })
     }
 }
-
-
 exports.reset = async (req, res) => {
     try {
         let { email, password, key } = req.body;
@@ -426,19 +425,18 @@ exports.verifytoken = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
         user.isVerified = true;
-        const name=user.name;
-        const email=user.email;
+        const name = user.name;
+        const email = user.email;
         await user.save();
         const emailContent = `
       <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Verified - Placement Connect</title>
-    <style>
-        /* Basic Reset */
-        * {
+         <html lang="en">
+            <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Account Verified - Placement Connect</title>
+            <style>
+             * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -471,6 +469,7 @@ exports.verifytoken = async (req, res) => {
             font-size: 24px;
             margin: 0;
         }
+       
 
         .content {
             padding: 30px;
@@ -513,9 +512,9 @@ exports.verifytoken = async (req, res) => {
             text-decoration: none;
         }
 
-    </style>
-</head>
-<body>
+       </style>
+      </head>
+     <body>
 
     <div class="container">
         <div class="header">
@@ -534,14 +533,48 @@ exports.verifytoken = async (req, res) => {
         </div>
     </div>
 
-</body>
-</html>
-
-     `  
-        await sendMail(email,'Welcome to Placement Connect',"",emailContent);
+     </body>
+    </html>`
+        await sendMail(email, 'Welcome to Placement Connect', "", emailContent);
         res.status(200).json({ success: true, message: 'Email verified successfully!' });
     } catch (error) {
         console.error('Error verifying email:', error);
         res.status(500).json({ message: 'Invalid or expired token' });
+    }
+}
+
+exports.edit=async(req,res)=>{
+     let id=req.user.id;
+     const user=await User.findOne({id});
+     if(!user){
+        return res.status(200).json({
+            success:"false",
+            message:"No user Found"
+        })
+     }
+     const {}=req.body;
+     
+}
+exports.deleteAcc=async(req,res)=>{
+    try{       
+        let id=req.user.id;
+        const user=await User.findById({_id:id});
+        if(!user){
+            return res.status(200).json({
+                success:"false",
+                message:"No account Find"
+             })
+        }
+        await User.findByIdAndDelete({_id:id});
+        return res.status(200).cookie("token", "", { maxage: 0 }).json({
+          success:"true",
+          message:"Account deleted"
+       })
+    }catch(e){
+        console.log(e);
+        return res.status(207).json({
+            success:false,
+            message:"Something went wrong"
+        })
     }
 }
