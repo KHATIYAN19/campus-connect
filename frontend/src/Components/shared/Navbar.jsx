@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import login from '../LoginSignUp/Login';
 import signup from '../LoginSignUp/Signup';
+import { LogOut, User2 } from 'lucide-react';
 
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -71,10 +72,18 @@ const Navbar = () => {
                     <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                   </Avatar>
                   <div>
-                    <h4 className='font-medium'>Welcome to Campus Connect</h4>
-                    <p className='text-sm text-muted-foreground'>HEY  {user.name}</p>
-                    <Link className='' to="/profile">Profile</Link>
-                    <button className='border rounded-lg bg-slate-300 px-2 py-1' onClick={logoutHandler}>Logout</button>
+                    <h4 className='text-sm font-bold'>Welcome to Placement Connect</h4>
+                    <p className='text-sm text-muted-foreground font-normal'>Hey  {user.name}</p>
+                  </div>
+                </div>
+                <div className='flex flex-col my-2 text-gray-600'>
+                  <div className='flex w-fit items-center gap-2 cursor-pointer'>
+                    <User2/>
+                  <Button variant='link'><Link to='/profile'>View Profile</Link></Button>
+                  </div>
+                  <div className='flex w-fit items-center gap-2 cursor-pointer'>
+                    <LogOut/>
+                  <Button variant='link' onClick={logoutHandler}>Logout</Button>
                   </div>
                 </div>
               </PopoverContent>

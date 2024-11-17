@@ -61,6 +61,7 @@ const Login = ({ }) => {
                                 value="student"
                                 checked={role === 'student'}
                                 onChange={(e) => setRole(e.target.value)}
+                                className='cursor-pointer'
                             />
                             Student
                         </label>
@@ -71,6 +72,7 @@ const Login = ({ }) => {
                                 value="recruiter"
                                 checked={role === 'admin'}
                                 onChange={(e) => setRole(e.target.value)}
+                                className='cursor-pointer'
                             />
                             Admin
                         </label>
