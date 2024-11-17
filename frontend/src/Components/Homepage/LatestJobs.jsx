@@ -11,6 +11,7 @@ const LatestJobs = ({data}) => {
           <div>
         <h1 className='font-medium text-lg'>{data.company}</h1>
         <p className='text-sm text-gray-500'>India</p>
+        <img src={data.logo} alt="" />
         </div>
         <div>
             <h1 className='font-bold text-lg my-2'>{data.position}</h1>

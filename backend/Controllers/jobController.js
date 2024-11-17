@@ -2,6 +2,7 @@ const Job=require("../Models/jobModel");
 const User=require("../Models/userModel");
 const mongoose=require("mongoose");
 const { ObjectId } = require('mongodb');
+const axios=require("axios");
 const  sendEmail=require("../Utils/MailSender");
 //const sendEmail = require("../Utils/MailSenderArray");
 exports.post_job=async(req,res)=>{
@@ -28,7 +29,8 @@ exports.post_job=async(req,res)=>{
          location,
          position,
          postby:id,
-         numbers
+         numbers,
+         logo:`https://img.logo.dev/${company}.com?token=pk_LhuGWkxESfCNeTIfkWoI8w`
     })
     const emailcontent=`<!DOCTYPE html>
 <html lang="en">

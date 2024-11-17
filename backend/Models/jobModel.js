@@ -10,7 +10,11 @@ const jobSchema=mongoose.Schema({
         },
         salary:{
             type:String,
-            requires:true,
+            require:true,
+        },
+        logo:{
+            type:String,
+            require:true
         },
         location:{
             type:String,

@@ -17,7 +17,6 @@ const Profile = () => {
      useEffect(()=>{
        axios.get("http://localhost:8080/profile").then((res)=>{
        SetProfile(res.data.user);
-       {console.log("res",res.data.data);}
        setData(res.data.data);
      })
     },[]);
@@ -28,7 +27,7 @@ const Profile = () => {
                 <div className='flex justify-between'>
                     <div className='flex items-center gap-4'>
                         <Avatar className='h-24 w-24'>
-                            <AvatarImage src='https://cdn-icons-png.flaticon.com/128/3974/3974952.png' />
+                            <AvatarImage src={profile.image} />
                         </Avatar>
                         <div>
                             <h1 className='font-medium text-xl'>{profile.name}</h1>

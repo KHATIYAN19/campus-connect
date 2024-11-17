@@ -31,6 +31,10 @@ const userSchema=mongoose.Schema({
         type:Boolean,
         default:false
       },
+      image:{
+        type:String,
+        required:true,
+      },
       profile:{
          bio:{
             type:String,

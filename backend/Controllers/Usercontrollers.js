@@ -2,8 +2,10 @@ const User = require("../Models/userModel");
 const Job = require("../Models/jobModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const axios=require("axios");
 const sendMail = require("../Utils/MailSender");
 require('dotenv').config();
+const generateGravatarUrl=require("../Utils/avator");
 exports.signup = async (req, res) => {
     try {
         let { name, phone, email, year, role, password, key } = req.body;
@@ -30,6 +32,7 @@ exports.signup = async (req, res) => {
                 message: "Error in Hashing"
             })
         }
+        const url=generateGravatarUrl(email);
         const newUser = await User.create({
             name,
             role,
@@ -38,6 +41,7 @@ exports.signup = async (req, res) => {
             email,
             key,
             password: hashedpass,
+            image:url
         })
         newUser.password = undefined;
         const token = jwt.sign(
@@ -89,6 +93,7 @@ exports.signup = async (req, res) => {
             Data: newUser
         })
     } catch (e) {
+        console.log(e.message);
         return res.status(400).json({
             message: "Something went wrong please try again",
             success: false,
@@ -297,7 +302,6 @@ exports.login = async (req, res) => {
 </html>
 `        
          await sendMail(email, 'Login Successful', "", emailContent);
-
             return res.cookie("token", token, options).status(200).json({
                 success: true,
                 message: "User login",
