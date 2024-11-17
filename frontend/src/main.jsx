@@ -5,24 +5,29 @@ import { BrowserRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css'
 import App from './App.jsx'
+import { Provider } from 'react-redux';
+import store  from './redux/store';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-    <App />
-    <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="colored"
-      transition:Flip
-    />
+      <Provider store={store}>
+        <App />
+      </Provider>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition:Flip
+      />
     </BrowserRouter>
   </StrictMode>,
 )

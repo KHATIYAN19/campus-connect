@@ -76,12 +76,28 @@ const Signup = ({}) => {
                     <input type="text" placeholder='Secret Key for Reset Password' value={key} onChange={(e) => setKey(e.target.value)} />
                 </div>
                 <div className="input">
-                    <img src={user_icon} alt="password_icon" />
-                    <select className='dropdown' placeholder='Role' value={role} onChange={(e) => setRole(e.target.value)}>
-                        <option value="" disabled>Select Role</option>
-                        <option value="admin">Admin</option>
-                        <option value="student">Student</option>
-                    </select>
+                <div className='flex items-center justify-between gap-6 my-2 pl-4'>
+                        <label className="flex items-center spaxe-x-2">
+                            <input
+                                type="radio"
+                                name="role"
+                                value="student"
+                                checked={role === 'student'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Student
+                        </label>
+                        <label className="flex items-center spaxe-x-2">
+                            <input
+                                type="radio"
+                                name="role"
+                                value="recruiter"
+                                checked={role === 'recruiter'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Admin
+                        </label>
+                    </div>
                 </div>
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">

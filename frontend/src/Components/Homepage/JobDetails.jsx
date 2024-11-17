@@ -5,7 +5,7 @@ import { Badge } from '../ui/badge'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from "../LoginSignUp/axios.js"
-import {mongoose} from "mongoose"
+// import {mongoose} from "mongoose"
 import { toast } from 'react-toastify'
 const JobDetails = ({data}) => {
     const applied=JSON.parse(localStorage.getItem('user')).Applied;
