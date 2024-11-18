@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Login from './Components/LoginSignUp/Login.jsx';
-import Signup from './Components/LoginSignUp/Signup.jsx';
+import SignupStudent from './Components/LoginSignUp/SignupStudent.jsx';
+import SignupAdmin from './Components/LoginSignUp/SignupAdmin.jsx';
 import Homepage from './Components/Homepage/Homepage.jsx';
 import JobPost from './Components/LoginSignUp/JobPost.jsx';
 import Navbar from './Components/shared/Navbar.jsx';
@@ -31,7 +32,8 @@ function App() {
           <Route path="/description/:id" element={<JobDescription/>}/>
         </Route>
         {/* <Route path="" element={ <loginProtected></loginProtected> }> */}
-          <Route path="/signup" element={<Signup/>}/>
+          <Route path="/signupStudent" element={<SignupStudent/>}/>
+          <Route path="/signupAdmin" element={<SignupAdmin/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/verify-email" element={<EmailVerification/>} />
           <Route path="/reset-password" element={<ResetPassword/>}/>

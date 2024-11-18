@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import login from '../LoginSignUp/Login';
-import signup from '../LoginSignUp/Signup';
+import signup from '../LoginSignUp/SignupStudent';
 import { LogOut, Trash2, User2 } from 'lucide-react';
 
 const Navbar = () => {
