@@ -25,10 +25,10 @@ const Signup = ({ }) => {
     const [password, setPassword] = useState('');
     const [adminkey, setAdminKey] = useState('');
     const [position, setPosition] = useState('');
-    const [score10, setScore10] = useState('');
-    const [score12, setScore12] = useState('');
-    const [degree, setDegree] = useState('');
-    const [score, setScore] = useState('');
+    const [tenth, setTenth] = useState('');
+    const [twelfth, setTwelfth] = useState('');
+    const [graduationdegree, setGraduationDegree] = useState('');
+    const [graduationMarks, setGraduationMarks] = useState('');
     const [year, setYear] = useState('');
     const [key, setKey] = useState('');
     const [image, setImage] = useState('');
@@ -122,6 +122,7 @@ const Signup = ({ }) => {
                     <Input
                         accept='image/*'
                         type='file'
+                        value={image}
                         className='cursor-pointer'
                     />
                 </div>
@@ -129,6 +130,7 @@ const Signup = ({ }) => {
                     <img src={cv_icon} alt='image-icon' width='28' height="30" />
                     <Input
                         type='url'
+                        value={resume}
                         className='cursor-pointer'
                     />
                 </div>
