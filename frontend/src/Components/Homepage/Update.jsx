@@ -14,21 +14,22 @@ const Update = ({ open, setOpen }) => {
     const [input, setInput] = useState({
         phone: user?.phone,
         bio: user?.profile?.bio,
-        score10: user?.profile?.score10,
-        score12: user?.profile?.score12,
-        graduation : user?.profile?.graduation,
-        file: user?.profile?.resume || null
+        tenth: user?.profile?.tenth,
+        twelfth: user?.profile?.twelfth,
+        graduationMarks: user?.profile?.graduationMarks,
+        image: user?.profile?.image || null,
+        file: user?.profile?.resume
     });
 
     const dispatch = useDispatch();
 
     const changeEventHandler = (e) => {
-        setInput({...input,[e.target.name]:e.target.value})
-    }
-
-    const fileChangeHandler = (e) => {
-        const file = e.target.files?.[0];
-        setInput({...input, file})
+        const {name, type, value, files} = e.target;
+        if(type === 'file'){
+            setInput({...input, [name]:files[0]});
+        }else{
+            setInput({...input, [name]:value});
+        }
     }
 
     const submitHandler = async (e) => {
@@ -51,7 +52,7 @@ const Update = ({ open, setOpen }) => {
                 toast.success(res.data.message);
             }
         }catch(error) {
-            console.log(error);
+            console.error('Error submitting form:',error);
             toast.error(error.response.data.message);
         }
         setOpen(false);
@@ -60,10 +61,10 @@ const Update = ({ open, setOpen }) => {
 
     return (
         <div>
-            <Dialog open={open}>
-                <DialogContent className='sm:max-w-[425px] bg-white' onInteractOutside={() => setOpen(false)}>
+            <Dialog open={open} >
+                <DialogContent className='sm:max-w-[420px] bg-white rounded-2xl' onInteractOutside={() => setOpen(false)}>
                     <DialogHeader>
-                        <DialogTitle>Update Profile</DialogTitle>
+                        <DialogTitle className='text-center'>Update Profile</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={submitHandler} action="">
                         <div className='grid gap-4 py-4'>
@@ -88,41 +89,52 @@ const Update = ({ open, setOpen }) => {
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='10th percentage' className='text-right'>10th percentage</Label>
+                                <Label htmlFor='10th percentage' className='text-right'>Tenth</Label>
                                 <Input
                                     id='10th percentage'
                                     name='10th percentage'
                                     type='number'
                                     min='50'
                                     max='100'
-                                    value={input.score10}
+                                    value={input.tenth}
                                     onChange = {changeEventHandler}
                                     className='col-span-3'
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='12-score' className='text-right'>12th percentage</Label>
+                                <Label htmlFor='12-score' className='text-right'>Twelfth</Label>
                                 <Input
                                     id='12-score'
                                     name='12-score'
                                     type='number'
                                     min='50'
                                     max='100'
-                                    value={input.score12}
+                                    value={input.twelfth}
                                     onChange = {changeEventHandler}
                                     className='col-span-3'
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='graduation-score' className='text-right'>Graduation Score</Label>
+                                <Label htmlFor='graduation-score' className='text-right'>Graduation Marks</Label>
                                 <Input
                                     id='graduation-score'
                                     name='graduation-score'
                                     type='number'
                                     min='50'
                                     max='100'
-                                    value={input.graduation}
+                                    value={input.graduationMarks}
                                     onChange = {changeEventHandler}
+                                    className='col-span-3'
+                                />
+                            </div>
+                            <div className='grid grid-cols-4 items-center gap-4'>
+                                <Label htmlFor='image' className='text-right'>Profile</Label>
+                                <Input
+                                    id='image'
+                                    name='image'
+                                    accept='image/*'
+                                    type='file'
+                                    onChange={changeEventHandler}
                                     className='col-span-3'
                                 />
                             </div>
@@ -131,9 +143,8 @@ const Update = ({ open, setOpen }) => {
                                 <Input
                                     id='file'
                                     name='file'
-                                    type='file'
-                                    accept='application/pdf'
-                                    onChange={fileChangeHandler}
+                                    type='url'
+                                    onChange={changeEventHandler}
                                     className='col-span-3'
                                 />
                             </div>

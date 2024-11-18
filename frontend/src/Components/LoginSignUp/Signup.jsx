@@ -45,10 +45,10 @@ const Signup = ({ }) => {
                 password,
                 adminKey,
                 position,
-                score10,
-                score12,
-                degree,
-                score,
+                tenth,
+                twelfth,
+                graduationdegree,
+                graduationMarks,
                 year,
                 key
             });
@@ -76,7 +76,7 @@ const Signup = ({ }) => {
                 </div>
                 <div className="input">
                     <img src={email_icon} alt="email_icon" />
-                    <input type="email" placeholder='Email Id' value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input type="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="input">
                     <img src={phone_icon} alt="phone_icon" width="22" height="20" />
@@ -88,11 +88,11 @@ const Signup = ({ }) => {
                 </div>
                 <div className='input'>
                     <img src={key_icon} alt="key_icon" width={28} height={30}/>
-                    <input type="text" placeholder='Admin key'/>
+                    <input type="text" placeholder='Admin key' value={adminkey}/>
                 </div>
                 <div className='input'>
                 <img src={position_icon} alt="position_icon" width={28} height={30}/>
-                    <input type="text" placeholder='Position'/>
+                    <input type="text" placeholder='Position' value={position}/>
                 </div>
                 <div className="input">
                     <img src={year_icon} alt="year_icon" width="22" height="20" />
@@ -100,18 +100,18 @@ const Signup = ({ }) => {
                 </div>
                 <div className='input' style={{ padding: '10px' }}>
                     <div style={{ flex: '1', padding: '10px' }}>
-                        <input type='number' step={0.01} min={50} max={100} placeholder='10th percentage' style={{ width: "100%" }} />
+                        <input type='number' step={0.01} min={50} max={100} placeholder='Tenth' style={{ width: "100%" }} value={tenth}/>
                     </div>
                     <div style={{ flex: '1' }}>
-                        <input type='number' step={0.01} min={50} max={100} placeholder='12th percentage' style={{ width: '100%' }} />
+                        <input type='number' step={0.01} min={50} max={100} placeholder='Twelfth' style={{ width: '100%'}} value={twelfth} />
                     </div>
                 </div>
                 <div className='input'>
                     <img src={degree_icon} alt="degree_icon" width={28} height={30} />
-                    <input type="text" placeholder='Graduation Degree' />
+                    <input type="text" placeholder='Graduation Degree' value={graduationdegree} />
                 </div>
                 <div className='input' style={{ padding: '20px' }}>
-                    <input type="number" min={50} max={100} placeholder='Degree Percentage' />
+                    <input type="number" min={50} max={100} placeholder='Graduation Marks' value={graduationMarks}/>
                 </div>
                 <div className="input">
                     <img src={secret_key_icon} alt="secret_key_icon" width={28} height={30} />
@@ -128,8 +128,7 @@ const Signup = ({ }) => {
                 <div className='input'>
                     <img src={cv_icon} alt='image-icon' width='28' height="30" />
                     <Input
-                        accept='application/pdf'
-                        type='file'
+                        type='url'
                         className='cursor-pointer'
                     />
                 </div>
