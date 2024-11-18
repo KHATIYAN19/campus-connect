@@ -79,19 +79,6 @@
     outline: none;
 }
 
-.forget-password {
-    padding-left: 20px;
-    margin-top: 15px;
-    color: #797979;
-    font-size: 16px;
-    text-align: center; 
-}
-
-.forget-password span {
-    color: #c78c06;
-    cursor: pointer;
-}
-
 .submit-container {
     display: flex;
     flex-direction: column;

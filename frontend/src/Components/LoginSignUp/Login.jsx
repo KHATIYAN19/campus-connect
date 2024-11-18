@@ -6,9 +6,11 @@ import { NavLink } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
+import { Button } from '../ui/button'
 
 const Login = ({ }) => {
     const [role, setRole] = useState('student');
+    const [showSignupPopup, setShowSignupPopup] = useState(false);
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
@@ -35,6 +37,12 @@ const Login = ({ }) => {
             toast.error(error.response.data.message);
         }
     };
+
+    const handleSignupOption = (role) => {
+        setShowSignupPopup(false);
+        navigate('/signup');
+    };
+
     return (
         <div className='container'>
             <div className="header">
@@ -52,45 +60,43 @@ const Login = ({ }) => {
                     <img src={password_icon} alt="password_icon" />
                     <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <div className="input">
-                    <div className='flex items-center justify-between gap-6 my-2 pl-4'>
-                        <label className="flex items-center spaxe-x-2">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="student"
-                                checked={role === 'student'}
-                                onChange={(e) => setRole(e.target.value)}
-                                className='cursor-pointer'
-                            />
-                            Student
-                        </label>
-                        <label className="flex items-center spaxe-x-2">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="recruiter"
-                                checked={role === 'admin'}
-                                onChange={(e) => setRole(e.target.value)}
-                                className='cursor-pointer'
-                            />
-                            Admin
-                        </label>
-                    </div>
-                </div>
-                <div className="submit-container">
-                    <button type="submit" className="submitBtn">
-                        Submit
-                    </button>
-                    <div className={"submit gray"}>
-                        <NavLink to="/signup">Signup</NavLink>
-                    </div>
+                {<div className="text-left px-10 mt-5 font-medium text-yellow-800"><NavLink to="/reset-password">Forgot Password?</NavLink></div>}
+                <div className="flex justify-center items-center mt-5 mb-8">
+                    <Button className="bg-yellow-600 text-lg rounded-xl w-80 py-6 text-white font-bold">Submit</Button>
                 </div>
 
             </form>
+            <div className='text-center'>Don't have an account?<span className='text-yellow-800 pl-4 cursor-pointer font-semibold hover:text-yellow-600' onClick={() => setShowSignupPopup(true)}>SignUp</span></div>
 
-            {<div className="forget-password">Forgot Password?<span> <NavLink to="/reset-password"> Click Here!</NavLink></span></div>}
-
+            {showSignupPopup && (
+                <div className='fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-80'>
+                    <div className='bg-yellow-50 rounded-xl shadow-lg p-6 w-96 relative'>
+                        <button
+                            className='absolute top-2 right-4 text-gray-500 hover:text-gray-700'
+                            onClick={() => setShowSignupPopup(false)}
+                        >
+                            ✖
+                        </button>
+                        <h2 className='text-center font-semibold text-gray-700 mb-10'>
+                            Signup As:
+                        </h2>
+                        <div className='flex justify-around mb-6'>
+                            <button
+                                className='px-4 py-2 bg-yellow-900 text-white rounded-xl hover:bg-orange-700 transition duration-200'
+                                onClick={() => handleSignupOption('student')}
+                            >
+                                Student
+                            </button>
+                            <button
+                                className='px-4 py-2 bg-yellow-900 text-white rounded-xl hover:bg-orange-700 transition duration-200'
+                                onClick={() => handleSignupOption('admin')}
+                            >
+                                Admin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 };

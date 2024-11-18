@@ -1,49 +1,64 @@
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage } from '../ui/avatar';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import login from '../LoginSignUp/Login';
 import signup from '../LoginSignUp/Signup';
-import { LogOut, User2 } from 'lucide-react';
+import { LogOut, Trash2, User2 } from 'lucide-react';
 
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const isLogin=localStorage.getItem('isLogin');
-  const role=localStorage.getItem('role');
-  const navigate=useNavigate();
+  const isLogin = localStorage.getItem('isLogin');
+  const role = localStorage.getItem('role');
+  const navigate = useNavigate();
   const logoutHandler = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.get('http://localhost:8080/logout');
-      const logout=response;
+      const logout = response;
       console.log(response);
-      if(logout){
-          localStorage.removeItem("isLogin");
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
-           toast.success("Logout Successfully");
-           navigate("/login");
-      }else{
-       toast.error(response.data.message);
+      if (logout) {
+        localStorage.removeItem("isLogin");
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        toast.success("Logout Successfully");
+        navigate("/login");
+      } else {
+        toast.error(response.data.message);
       }
-  } catch (error) {
+    } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
+    }
   }
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowPopup(true);
+  }
+
+  const handleCancel = () => {
+    setShowPopup(false);
+  }
+
+  const handleConfirmDelete = () => {
+    setShowPopup(false);
+    toast.success('Your account has been successfully deleted');
   }
   return (
-    
+
     <div className='bg-white;'>
-      
+
       <div className='flex items-center justify-between mx-auto max-w-7xl h-16'>
-      <div className='flex items-centre gap-2'>
+        <div className='flex items-centre gap-2'>
           <Avatar className='w-10 h-10'>
-              <AvatarImage src="https://cdn-icons-png.flaticon.com/128/12372/12372496.png" alt="@shadcn" />
+            <AvatarImage src="https://cdn-icons-png.flaticon.com/128/12372/12372496.png" alt="@shadcn" />
           </Avatar>
           <h1 className='text-4xl font-bold text-black font-serif'>Placement<span className='text-[#c78c06]'>Connect</span></h1>
         </div>
@@ -51,8 +66,8 @@ const Navbar = () => {
           <ul className='flex font-medium items-center gap-5'>
             <Link to='/'>Home</Link>
             <Link to='/Jobs'>Jobs</Link>
-            {role==='admin'?(<Link to='/jobs/post'>Post-a-drive</Link>):(<></>)}
-            
+            {role === 'admin' ? (<Link to='/jobs/post'>Post-a-drive</Link>) : (<></>)}
+
           </ul>
           {!user ? (
             <div className='flex items-center gap-2'>
@@ -66,7 +81,7 @@ const Navbar = () => {
                   <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                 </Avatar>
               </PopoverTrigger>
-              <PopoverContent className='w-80'>
+              <PopoverContent className='w-80 rounded-xl'>
                 <div className='flex gap-4 space-y-2'>
                   <Avatar className='cursor-pointer'>
                     <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -78,13 +93,42 @@ const Navbar = () => {
                 </div>
                 <div className='flex flex-col my-2 text-gray-600'>
                   <div className='flex w-fit items-center gap-2 cursor-pointer'>
-                    <User2/>
-                  <Button variant='link'><Link to='/profile'>View Profile</Link></Button>
+                    <User2 />
+                    <Button variant='link'><Link to='/profile'>View Profile</Link></Button>
                   </div>
-                  <div className='flex w-fit items-center gap-2 cursor-pointer'>
-                    <LogOut/>
-                  <Button variant='link' onClick={logoutHandler}>Logout</Button>
+                  <div className='flex items-center gap-10 cursor-pointer'>
+                    <div className='flex items-center gap-2'>
+                      <LogOut />
+                      <Button variant='link' onClick={logoutHandler}>Logout</Button>
+                    </div>
+                    <div className='flex items-center'>
+                      <Trash2 />
+                      <Button variant='link' onClick={handleDeleteClick}>Delete</Button>
+                    </div>
                   </div>
+                  {showPopup && (
+                    <div className='fixed inset-0 flex items-center justify-center'>
+                      <div className='bg-white rounded-xl p-6 w-80 text-center'>
+                        <p className='text-lg font-semibold mb-6 text-gray-700'>
+                          Are you sure you want to delete?
+                        </p>
+                        <div className='flex justify-between mt-4'>
+                          <button
+                            className='px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition duration-200'
+                            onClick={handleCancel}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200'
+                            onClick={handleConfirmDelete}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </PopoverContent>
             </Popover>
