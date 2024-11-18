@@ -62,7 +62,7 @@ const Login = ({ }) => {
                 </div>
                 {<div className="text-left px-10 mt-5 font-medium text-yellow-800"><NavLink to="/reset-password">Forgot Password?</NavLink></div>}
                 <div className="flex justify-center items-center mt-5 mb-8">
-                    <Button className="bg-yellow-600 text-lg rounded-xl w-80 py-6 text-white font-bold">Submit</Button>
+                    <Button className="bg-yellow-600 text-lg rounded-xl w-80 py-6 text-white font-bold hover:text-yellow-950">Submit</Button>
                 </div>
 
             </form>
