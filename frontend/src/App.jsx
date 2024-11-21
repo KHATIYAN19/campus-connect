@@ -15,6 +15,7 @@ import Protected from './protectedRoutes/Protected.jsx';
 import EmailVerification from './Components/LoginSignUp/EmailVerification.jsx';
 import loginProtected from './protectedRoutes/loginsProtected.jsx';
 import { Home } from 'lucide-react';
+import Blocked from './Components/pages/blocked.jsx';
 
 function App() {
   const[admin,setAdmin]=useState(false);
@@ -37,6 +38,8 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/verify-email" element={<EmailVerification/>} />
           <Route path="/reset-password" element={<ResetPassword/>}/>
+          <Route path="/blocks" element={<Blocked/>}/>
+
         {/* </Route> */}
        </Routes>    
        </div>
