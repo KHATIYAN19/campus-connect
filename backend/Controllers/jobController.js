@@ -18,7 +18,7 @@ exports.post_job=async(req,res)=>{
     const user=await User.find({_id:id});
     if(!user){
         return res.send({
-           message:"User didnot exist",
+           message:"User does not exist",
            success:false,
         })
     }
@@ -219,7 +219,7 @@ exports.getall=async(req,res)=>{
    try {
       const Jobs = await Job.find({}).sort({ createdAt: -1 }).populate('postby').exec();
       res.status(200).json({
-          message: "all Job fetched",
+          message: "All Job fetched",
           success: true,
           Jobs
       })
