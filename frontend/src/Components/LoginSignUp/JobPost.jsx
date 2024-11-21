@@ -20,6 +20,13 @@ const JobPost = ({}) => {
     const [location, setLocation] = useState('');
     const [testdate, setTestdate] = useState('');
     const [numbers, setNumbers] = useState('');
+    const [tenth, setTenth] = useState('');
+    const [tweleth, setTweleth] = useState('');
+    const [jd, setJd] = useState('');
+    const handleJDChange = (e) => {
+        setJd( e.target.files[0] );
+        console.log(jd);
+    };
     const JobPostHandler = async (e) => {
         e.preventDefault();
         try {
@@ -31,7 +38,10 @@ const JobPost = ({}) => {
                 location,
                 company,
                 testdate,
-                numbers
+                numbers,
+                tenth,
+                twelfth,
+                jd
             });
             const posted=response.data.success;
             if(posted){
@@ -76,10 +86,10 @@ const JobPost = ({}) => {
                 </div>
                 <div className='input' style={{ padding: '10px' }}>
                     <div style={{ flex: '1', padding: '10px' }}>
-                        <input type='text' placeholder='Tenth' style={{ width: "100%" }} />
+                        <input type='text' placeholder='10th' style={{ width: "100%" }} value={tenth} onChange={(e) => setTenth(e.target.value)}/>
                     </div>
-                    <div style={{ flex: '1' }}>
-                        <input type='text' placeholder='Twelfth' style={{ width: '100%'}} />
+                    <div style={{ flex: '1' }} >
+                        <input type='text' placeholder='12th' style={{ width: '100%'}} value={tweleth} onChange={(e) => setTweleth(e.target.value)}/>
                     </div>
                 </div>
                 {/* <div className="input">
@@ -96,7 +106,7 @@ const JobPost = ({}) => {
                         accept='application/pdf'
                         type='file'
                         className='cursor-pointer'
-                        
+                        onChange={handleJDChange}
                     />
                 </div>
                 <div className="submit-container">

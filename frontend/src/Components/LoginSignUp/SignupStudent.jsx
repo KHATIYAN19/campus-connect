@@ -88,10 +88,10 @@ const SignupStudent = ({ setAdmin}) => {
                 </div>
                 <div className='input' style={{ padding: '10px' }}>
                     <div style={{ flex: '1', padding: '10px' }}>
-                        <input type='number' step={0.01} min={50} max={100} placeholder='Tenth' style={{ width: "100%" }} value={tenth} onChange={(e) => setTenth(e.target.value)}/>
+                        <input type='number' step={0.01} min={50} max={100} placeholder='10th' style={{ width: "100%" }} value={tenth} onChange={(e) => setTenth(e.target.value)}/>
                     </div>
                     <div style={{ flex: '1' }}>
-                        <input type='number' step={0.01} min={50} max={100} placeholder='Twelfth' style={{ width: '100%'}} value={tweleth} onChange={(e) => setTweleth(e.target.value)} />
+                        <input type='number' step={0.01} min={50} max={100} placeholder='12th' style={{ width: '100%'}} value={tweleth} onChange={(e) => setTweleth(e.target.value)} />
                     </div>
                 </div>
                 <div className='input'>
