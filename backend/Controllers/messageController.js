@@ -7,7 +7,7 @@ exports.post_msg = async (req, res) => {
         console.log(msg);
         if (!msg||!year) {
             return res.status(400).json({
-                message: "All feild Required",
+                message: "All field Required",
                 success: false
             })
         }
@@ -41,14 +41,14 @@ exports.getallmsg = async (req, res) => {
         const messages = await Message.find({}).sort({ createdAt: -1 }).populate('postby').exec();
         if(req.user.role==='admin'){
         res.status(200).json({
-            message: "all message fetched",
+            message: "All message fetched",
             success: true,
             messages
         })}else{
             const year=req.user.year;
             const filtermsg=messages.filter(message=>message.year==year);
             res.status(200).json({
-                message: "all message fetched",
+                message: "All message fetched",
                 success: true,
                 filtermsg
             });

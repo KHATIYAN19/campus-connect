@@ -7,7 +7,7 @@ exports.Adduser=async(req,res)=>{
         if(!email){
              return res.status(400).json({
                 success:false,
-                message:"All feild required"
+                message:"All field required"
              })
         }
         email=email.toLowerCase();
@@ -32,7 +32,7 @@ exports.Adduser=async(req,res)=>{
         if(user.role==="admin"){
             return res.status(401).json({
                 success:false,
-                message:"Cannot Blocked Admin"
+                message:"Cannot Block Admin"
              })
         }
         const blockeduser=await Blocked.create({email});

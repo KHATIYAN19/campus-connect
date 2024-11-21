@@ -119,7 +119,7 @@ exports.Adminsignup = async (req, res) => {
         let { name, phone, email, password, adminkey } = req.body;
         if (!name || !phone || !email ||  !password || !adminkey) {
             return res.status(400).json({
-                message: "All Feild required !",
+                message: "All Field required !",
                 success: false
             })
         }
@@ -222,7 +222,7 @@ exports.login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "All feild required"
+                message: "All field required"
             })
         }
         email = email.toLowerCase();
@@ -292,7 +292,7 @@ exports.login = async (req, res) => {
               </html>
                 `;
 
-                await sendMail(email, 'Please verify your email addres', "", emailContent);
+                await sendMail(email, 'Please verify your email address', "", emailContent);
                 return res.status(400).json({
                     success: true,
                     message: "Please verify your account",
@@ -440,7 +440,7 @@ exports.user_applications = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: "User not exists !"
+                message: "User does not exist !"
             })
         }
         const data = user.Applied;
@@ -452,7 +452,7 @@ exports.user_applications = async (req, res) => {
         })
     } catch (e) {
         return res.status(400).json({
-            message: "Something went wrong !please try again",
+            message: "Something went wrong! Please try again",
             success: false
         })
     }
@@ -463,7 +463,7 @@ exports.reset = async (req, res) => {
         if (!email || !password || !key) {
             return res.status(400).json({
                 success: false,
-                message: "All feild required"
+                message: "All field required"
             })
         }
         email = email.toLowerCase();
