@@ -5,25 +5,39 @@ import { Textarea } from '../ui/textarea';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { ScrollArea } from '../ui/scroll-area';
 import { Badge } from '../ui/badge';
+import { Trash2 } from 'lucide-react';
 
-const MessageBox = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [importantMessages, setImportantMessages] = useState([]);
+const MessageBox = ({ userRole }) => {
+  const [messages, setMessages] = useState([]); 
+  const [input, setInput] = useState('');         
+  const [importantMessages, setImportantMessages] = useState([]); 
 
   // Function to send a message
   const handleSend = () => {
-    if (input.trim() === '') return;
+    if (input.trim() === '') return;  
 
-    const newMessage = { text: input, isImportant: input.toLowerCase().includes('important') }; // Mark message as important if it contains 'important'
+    
+    const newMessage = {
+      text: input,
+      isImportant: input.toLowerCase().includes('important') || userRole === 'admin',
+    };
+
     setMessages([...messages, newMessage]);
 
-    // If the message is important, add it to importantMessages
     if (newMessage.isImportant) {
       setImportantMessages([...importantMessages, newMessage]);
     }
 
-    setInput(''); // Reset input field
+    setInput(''); 
+  };
+
+
+  const handleDelete = (msgToDelete) => {
+    setMessages(messages.filter((msg) => msg !== msgToDelete));
+
+    if (msgToDelete.isImportant) {
+      setImportantMessages(importantMessages.filter((msg) => msg !== msgToDelete));
+    }
   };
 
   return (
@@ -41,9 +55,19 @@ const MessageBox = () => {
                 {messages.map((msg, index) => (
                   <li
                     key={index}
-                    className={`p-3 rounded-2xl ${msg.isImportant ? 'bg-gradient-to-r from-yellow-300 to-yellow-400 text-black' : 'bg-gradient-to-r from-purple-300 to-purple-400 text-white'}`}
+                    className={`p-3 rounded-2xl ${
+                      msg.isImportant
+                        ? 'bg-gradient-to-r from-yellow-300 to-yellow-400 text-black' 
+                        : 'bg-gradient-to-r from-purple-300 to-purple-400 text-white'
+                    } flex justify-between items-center`}
                   >
                     {msg.text}
+                    <button
+                      className="ml-3 text-red-500 hover:text-red-700"
+                      onClick={() => handleDelete(msg)}
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -61,13 +85,15 @@ const MessageBox = () => {
             onChange={(e) => setInput(e.target.value)}
             className="resize-none rounded-2xl"
           />
-          <Button onClick={handleSend} className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-2xl">
+          <Button
+            onClick={handleSend}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-2xl"
+          >
             Send Message
           </Button>
         </CardFooter>
       </Card>
 
-      {/* Important Messages Section */}
       <div className="mt-8 w-full max-w-lg mx-auto">
         <Card className="shadow-lg rounded-2xl">
           <CardHeader>
@@ -79,8 +105,17 @@ const MessageBox = () => {
             ) : (
               <ul className="space-y-4">
                 {importantMessages.map((msg, index) => (
-                  <li key={index} className="p-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-black">
+                  <li
+                    key={index}
+                    className="p-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-black flex justify-between items-center"
+                  >
                     {msg.text}
+                    <button
+                      className="ml-3 text-red-500 hover:text-red-700"
+                      onClick={() => handleDelete(msg)}
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
                   </li>
                 ))}
               </ul>
