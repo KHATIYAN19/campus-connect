@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import './LoginSignUp.css'
 import user_icon from '../Assets/person.png'
-import email_icon from '../Assets/email.png'
-import password_icon from '../Assets/password.png'
-import phone_icon from '../Assets/phone.png'
-import year_icon from '../Assets/year.png'
+import positions_icon from '../Assets/positions.png'
+import location_icon from '../Assets/location.png'
+import role_icon from '../Assets/role.png'
+import salary_icon from '../Assets/salary.png'
+import description_icon from '../Assets/info.png'
 import axios from "./axios.js"
 import { toast } from 'react-toastify'
 const JobPost = ({}) => {
@@ -54,21 +55,21 @@ const JobPost = ({}) => {
                     <input type="text" placeholder='Company Name' value={company} onChange={(e) => {setCompany(e.target.value); }} />
                 </div>
                 <div className="input m-t-2 bg-[#eaeaea]">
-                    {/* <img src={email_icon} alt="email_icon" /> */}
+                    {/* <img src={description_icon} alt="description_icon" width={20} height={25}/> */}
                     {/* <input type="text" placeholder='Description' value={email} onChange={(e) => setEmail(e.target.value)} /> */}
                      <textarea className='w-full row-5 col-30 p-2 bg-[#eaeaea] m-y-2 rounded-lg pl-12 border' placeholder='Description' value={description} onChange={(e) => {setDescription(e.target.value); }} name="" id=""></textarea>
 
                 </div>
                 <div className="input">
-                    <img src={phone_icon} alt="phone_icon" width="28" height="20" />
+                <img src={role_icon} alt="role_icon" width="25" height="18" />
                     <input type="text" placeholder='Enter Role' value={position} onChange={(e) => setPosition(e.target.value)} />
                 </div>
                 <div className="input">
-                    <img src={password_icon} alt="password_icon" />
+                <img src={location_icon} alt="location_icon" width={25} height={18}/>
                     <input type="text" placeholder='Location' value={location} onChange={(e) => setLocation(e.target.value)} />
                 </div>
                 <div className="input">
-                    <img src={year_icon} alt="year_icon" width="32" height="23" />
+                <img src={salary_icon} alt="salary_icon" width="25" height="18" />
                     <input type="text" placeholder='Salary' value={salary} onChange={(e) => setSalary(e.target.value)} />
                 </div>
                 {/* <div className="input">
@@ -76,7 +77,7 @@ const JobPost = ({}) => {
                     <input type="date" placeholder='Date' value={testdate} onChange={(e) => {setTestdate(e.target.value); }} />
                 </div> */}
                 <div className="input">
-                    <img src={year_icon} alt="year_icon" width="32" height="23" />
+                <img src={positions_icon} alt="positions_icon" width="25" height="18" />
                     <input type="Number" placeholder='Enter Number of position' value={numbers} onChange={(e) => {setNumbers(e.target.value); }} />
                 </div>
                 <div className="submit-container">
