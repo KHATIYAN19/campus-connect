@@ -6,7 +6,6 @@ import { Badge } from '../ui/badge'
 import { Label } from '../ui/label'
 import AppliedJobTable from './AppliedJobTable'
 import { useState,useEffect } from 'react'
-const skills = ["Html", "Css", "Python", "reactjs"];
 const haveResume = true;
 import axios from '../LoginSignUp/axios.js'
 import App from '@/App'
@@ -16,6 +15,7 @@ import UpdateAdmin from './UpdateAdmin'
 
 const Profile = () => {
     const role=localStorage.getItem('role');
+    
     const[profile,SetProfile]=useState([]);
     const [data,setData]=useState([]);
      useEffect(()=>{
@@ -40,7 +40,7 @@ const Profile = () => {
                             {role==='student'?(<p>Student</p>):(<p>Admin</p>)}
                         </div>
                     </div>
-                    {role==='student' ? (<Button onClick={()=>setOpen(true)} className='text-right' variant='outline'><Pen/> </Button>) : (<div></div>)}
+                    <Button onClick={()=>setOpen(true)} className='text-right' variant='outline'><Pen/> </Button>
                 </div>
                 <div className='my-5'>
                     <div className='flex items-center gap-3 my-2'>
@@ -63,11 +63,8 @@ const Profile = () => {
                 {role==='student'?(<h1 className='font-bold text-lg my-5'>Applied Jobs</h1>):(<h1 className='font-bold text-lg my-5'>Posted Jobs</h1>)}
                 {role=='student'?(<AppliedJobTable data={data}/>):(<></>)}
             </div>
-            {role === 'student' ? (
-                <UpdateStudent open={open} setOpen={setOpen} />
-            ) : (
-                <UpdateAdmin open={open} setOpen={setOpen} />
-            )}
+            <UpdateStudent open={role === 'student' && open} setOpen={setOpen} />
+            <UpdateAdmin open={role === 'admin' && open} setOpen={setOpen} />
         </div>
     )
 }

@@ -76,7 +76,7 @@ const UpdateAdmin = ({ open, setOpen }) => {
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='bio' className='text-right'>Bio</Label>
+                                <Label htmlFor='bio' className='text-right'>Description</Label>
                                 <Input
                                     id='bio'
                                     name='bio'
@@ -97,7 +97,7 @@ const UpdateAdmin = ({ open, setOpen }) => {
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='file' className='text-right'>Resume</Label>
+                                <Label htmlFor='file' className='text-right'>JD</Label>
                                 <Input
                                     id='file'
                                     name='file'
