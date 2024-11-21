@@ -11,7 +11,8 @@ const haveResume = true;
 import axios from '../LoginSignUp/axios.js'
 import App from '@/App'
 import { Button } from '../ui/button'
-import Update from './Update'
+import UpdateStudent from './UpdateStudent'
+import UpdateAdmin from './UpdateAdmin'
 
 const Profile = () => {
     const role=localStorage.getItem('role');
@@ -62,7 +63,11 @@ const Profile = () => {
                 {role==='student'?(<h1 className='font-bold text-lg my-5'>Applied Jobs</h1>):(<h1 className='font-bold text-lg my-5'>Posted Jobs</h1>)}
                 {role=='student'?(<AppliedJobTable data={data}/>):(<></>)}
             </div>
-            <Update open={open} setOpen={setOpen} />
+            {role === 'student' ? (
+                <UpdateStudent open={open} setOpen={setOpen} />
+            ) : (
+                <UpdateAdmin open={open} setOpen={setOpen} />
+            )}
         </div>
     )
 }
