@@ -119,9 +119,13 @@ const SignupStudent = ({ setAdmin}) => {
                         onChange={handleImageChange} 
                     />
                 </div>
-                <div className='text-lg flex gap-3'>
-                    <p>Click here for signup</p>
-                    <div  className='text-red-500 cursor-pointer' onClick={()=>setAdmin(true)}>Admin</div>
+                <div className='text-lg flex items-center gap-3 my-4 ml-9'>
+                    <p className="text-gray-700">Click here for signup</p>
+                    <div
+                        className='text-red-500 cursor-pointer font-semibold'
+                        onClick={() => setAdmin(true)}>
+                        Admin
+                    </div>
                 </div>
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">
