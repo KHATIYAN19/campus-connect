@@ -12,7 +12,6 @@ const MessageBox = ({ userRole }) => {
   const [input, setInput] = useState('');         
   const [importantMessages, setImportantMessages] = useState([]); 
 
-  // Function to send a message
   const handleSend = () => {
     if (input.trim() === '') return;  
 
