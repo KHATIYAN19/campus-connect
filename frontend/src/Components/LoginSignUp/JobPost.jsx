@@ -7,8 +7,10 @@ import location_icon from '../Assets/location.png'
 import role_icon from '../Assets/role.png'
 import salary_icon from '../Assets/salary.png'
 import description_icon from '../Assets/info.png'
+import jd_icon from '../Assets/JD.png'
 import axios from "./axios.js"
 import { toast } from 'react-toastify'
+import { Input } from '../ui/input';
 const JobPost = ({}) => {
     const navigate=useNavigate();
     const [description, setDescription] = useState('');
@@ -72,6 +74,14 @@ const JobPost = ({}) => {
                 <img src={salary_icon} alt="salary_icon" width="25" height="18" />
                     <input type="text" placeholder='Salary' value={salary} onChange={(e) => setSalary(e.target.value)} />
                 </div>
+                <div className='input' style={{ padding: '10px' }}>
+                    <div style={{ flex: '1', padding: '10px' }}>
+                        <input type='text' placeholder='Tenth' style={{ width: "100%" }} />
+                    </div>
+                    <div style={{ flex: '1' }}>
+                        <input type='text' placeholder='Twelfth' style={{ width: '100%'}} />
+                    </div>
+                </div>
                 {/* <div className="input">
                     <img src={year_icon} alt="year_icon" width="32" height="23" />
                     <input type="date" placeholder='Date' value={testdate} onChange={(e) => {setTestdate(e.target.value); }} />
@@ -79,6 +89,15 @@ const JobPost = ({}) => {
                 <div className="input">
                 <img src={positions_icon} alt="positions_icon" width="25" height="18" />
                     <input type="Number" placeholder='Enter Number of position' value={numbers} onChange={(e) => {setNumbers(e.target.value); }} />
+                </div>
+                <div className='input'>
+                    <img src={jd_icon} alt='jd_icon' width='25' height="18" />
+                    <Input
+                        accept='application/pdf'
+                        type='file'
+                        className='cursor-pointer'
+                        
+                    />
                 </div>
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">
