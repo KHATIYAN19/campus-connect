@@ -2,10 +2,9 @@ import React, { useState } from 'react'
 import './LoginSignUp.css'
 import email_icon from '../Assets/email.png'
 import password_icon from '../Assets/password.png'
-import { NavLink } from 'react-router-dom'
+import { NavLink,useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from "react-router-dom";
 import { Button } from '../ui/button'
 
 const Login = ({ }) => {
@@ -35,11 +34,6 @@ const Login = ({ }) => {
             toast.error(error.response.data.message);
         }
     };
-
-    const handleNavigation= (path) => {
-        navigate(path);
-    }
-
     return (
         <div className='container'>
             <div className="header">
@@ -47,7 +41,6 @@ const Login = ({ }) => {
                 <div className="underline"></div>
             </div>
             <form className="inputs" onSubmit={handleLogin}  >
-
                 <div className="input">
                     <img src={email_icon} alt="email_icon" />
                     <input type="email" placeholder='Email Id' value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -61,13 +54,10 @@ const Login = ({ }) => {
                 <div className="flex justify-center items-center mt-5 mb-8">
                     <Button className="bg-yellow-600 text-lg rounded-xl w-80 py-6 text-white font-bold hover:text-yellow-950">Submit</Button>
                 </div>
-
             </form>
             <div className='text-center'>Don't have an account?
-                <span className='text-yellow-800 pl-4 cursor-pointer font-semibold hover:text-yellow-600' onClick={handleNavigation('/signupAdmin')}>Signup Admin</span> 
-                <span className='text-yellow-800 pl-4 cursor-pointer font-semibold hover:text-yellow-600' onClick={handleNavigation('/signupStudent')}>Signup Student</span>
+                 <span className='text-yellow-800 pl-4 cursor-pointer font-semibold hover:text-yellow-600' onClick={()=>navigate("/signup")}>Signup </span> 
             </div>
-
         </div>
     )
 };

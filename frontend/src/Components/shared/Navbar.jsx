@@ -5,11 +5,10 @@ import { Avatar, AvatarImage } from '../ui/avatar';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from '../LoginSignUp/axios.js';
 import login from '../LoginSignUp/Login';
 import signup from '../LoginSignUp/SignupStudent';
 import { LogOut, Trash2, User2 } from 'lucide-react';
-
 const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   const isLogin = localStorage.getItem('isLogin');
@@ -47,9 +46,29 @@ const Navbar = () => {
     setShowPopup(false);
   }
 
-  const handleConfirmDelete = () => {
-    setShowPopup(false);
-    toast.success('Your account has been successfully deleted');
+  const handleConfirmDelete =async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.delete('http://localhost:8080/deleteAccount');
+      const deleted = response;
+      console.log(response);
+      if (deleted) {
+        localStorage.removeItem("isLogin");
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        toast.success("Account Deleted!");
+        navigate("/login");
+        setShowPopup(false);
+      } else {
+        toast.error(response.data.message);
+        setShowPopup(false);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+      console.log(error);
+      setShowPopup(false);
+    }
   }
   return (
 
@@ -78,13 +97,13 @@ const Navbar = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Avatar className='cursor-pointer'>
-                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <AvatarImage src={user.image} alt="@shadcn" />
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className='w-80 rounded-xl'>
                 <div className='flex gap-4 space-y-2'>
-                  <Avatar className='cursor-pointer'>
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <Avatar className='cursor-pointer border-black'>
+                    <AvatarImage src={user.image} alt="@shadcn" />
                   </Avatar>
                   <div>
                     <h4 className='text-sm font-bold'>Welcome to Placement Connect</h4>

@@ -24,8 +24,7 @@ const userSchema=mongoose.Schema({
         enum:["student","admin"]
       },
       year:{
-        type:Number,
-        required:true,
+        type:Number
       },
       isVerified:{
         type:Boolean,
@@ -42,10 +41,10 @@ const userSchema=mongoose.Schema({
          address:{
             type:String,
          },
-         graduatedeg:{
+         graduationdegree:{
            type:String
          },
-         graduatemarks:{
+         graduationMarks:{
             type:Number,
          },
          tenth:{
@@ -55,12 +54,8 @@ const userSchema=mongoose.Schema({
            type:Number
          },
          resume:{
-           type:Number
+           type:String
          }
-      },
-      key:{
-        type:String,
-        required:true
       },
       Applied:[ { 
         type:mongoose.Schema.Types.ObjectId,

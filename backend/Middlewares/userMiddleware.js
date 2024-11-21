@@ -3,7 +3,6 @@ const jwt=require("jsonwebtoken");
 exports.auth=(req,res,next)=>{
      try{
          const token=req.header("Authorization")?.split(" ")[1]||req.cookies.token;
-         console.log(token);
          if(!token){
               return res.status(400).json({
                       success:false,
@@ -20,7 +19,6 @@ exports.auth=(req,res,next)=>{
                 message:"token invalid"
             })
          }
-          console.log("Req",req.user.id);
          next();
      }catch(e){
         return res.status(401).json({

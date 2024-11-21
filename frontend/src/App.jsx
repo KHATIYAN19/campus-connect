@@ -17,6 +17,7 @@ import loginProtected from './protectedRoutes/loginsProtected.jsx';
 import { Home } from 'lucide-react';
 
 function App() {
+  const[admin,setAdmin]=useState(false);
     return (
          <div>
            <Navbar></Navbar>
@@ -32,8 +33,7 @@ function App() {
           <Route path="/description/:id" element={<JobDescription/>}/>
         </Route>
         {/* <Route path="" element={ <loginProtected></loginProtected> }> */}
-          <Route path="/signupStudent" element={<SignupStudent/>}/>
-          <Route path="/signupAdmin" element={<SignupAdmin/>}/>
+        <Route path='/signup' element={admin?(<SignupAdmin setAdmin={setAdmin}/>):(<SignupStudent setAdmin={setAdmin}/>)}></Route>
           <Route path="/login" element={<Login/>}/>
           <Route path="/verify-email" element={<EmailVerification/>} />
           <Route path="/reset-password" element={<ResetPassword/>}/>

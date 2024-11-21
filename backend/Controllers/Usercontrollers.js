@@ -6,13 +6,129 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const sendMail = require("../Utils/MailSender");
 require('dotenv').config();
-const generateGravatarUrl = require("../Utils/avator");
+const upload =require("../Utils/cloudinary.js")
 exports.signup = async (req, res) => {
     try {
-        let { name, phone, email, year, role, password, key } = req.body;
-        if (!name || !phone || !email || !year || !role || !password || !key) {
+        console.log(req.body);
+        console.log(req.file," fole");
+        let { name, phone, email, year,password,tenth,tweleth,graduationdegree,graduationMarks,resume } = req.body;
+        if (!name || !phone || !email || !year || !password||!tenth||!tweleth||!graduationMarks||!graduationdegree||!resume) {
             return res.status(400).json({
                 message: "All Feild required !",
+                success: false
+            })
+        }
+        if (!req.file) {
+            return res.status(400).send({ message: 'Profile image is required' });
+        }
+        email = email.toLowerCase();
+        const user = await User.findOne({ email });
+        if (user) {
+            return res.status(200).json({
+                success: false,
+                message: "Already Signup please Login !"
+            })
+        }
+        let hashedpass;
+        try {
+            hashedpass = await bcrypt.hash(password, 10);
+        } catch (e) {
+            return res.status(400).json({
+                success: false,
+                message: "Error in Hashing"
+            })
+        }
+        const result = await upload.uploadFile(req.file.path);
+        image=result.secure_url
+        const newUser = await User.create({
+            name,
+            role:"student",
+            year,
+            phone,
+            email,
+            password: hashedpass,
+            image,
+            profile:{
+                tenth,
+                tweleth,
+                resume,
+                graduationMarks,
+                graduationdegree,
+            }
+        })
+        newUser.password = undefined;
+        const token = jwt.sign(
+            { userId: newUser._id, email: newUser.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        const emailContent = `
+            <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to Campus Connect</title>
+        <style>
+          /* Include the previous CSS code here */
+        </style>
+      </head>
+      <body>
+        <table>
+          <tr>
+            <td class="email-container">
+              <img src="https://via.placeholder.com/150x50?text=Campus+Connect" alt="Campus Connect Logo" style="max-width: 150px; height: auto; margin-bottom: 20px;">
+              <h1>Welcome to Campus Connect, ${name}!</h1>
+              <p class="welcome-message">
+                Hi ${name},<br><br>
+                Thank you for signing up for Campus Connect! We're excited to have you join our community.<br><br>
+                To get started, click the button below to verify your email and complete your registration.
+              </p>
+              
+              <a href="http://localhost:5173/verify-email?token=${token}" class="cta-button">Verify Your Email</a>
+              <p class="footer">
+                If you didn’t sign up for this account, please ignore this email or <a href="mailto:placementconnect9@gmail.com">contact support</a>.
+              </p>
+              <p class="footer">
+                © 2024 Campus Connect | <a href="https://placementconnect.com">Visit our Website</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+        `;
+        await sendMail(email, 'Please verify your email addres', "", emailContent);
+        return res.status(200).json({
+            success: true,
+            message: "Please Verify your Account",
+            Data: newUser
+        })
+    } catch (e) {
+        console.log(e.message);
+        return res.status(400).json({
+            message: "Something went wrong please try again",
+            success: false,
+            error_msg: e.message
+        })
+    }
+}
+exports.Adminsignup = async (req, res) => {
+    try {
+        let { name, phone, email, password, adminkey } = req.body;
+        if (!name || !phone || !email ||  !password || !adminkey) {
+            return res.status(400).json({
+                message: "All Feild required !",
+                success: false
+            })
+        }
+        if (!req.file) {
+            return res.status(400).send({ message: 'Profile image is required' });
+        }
+        if(adminkey!='Admin'){
+            return res.status(400).json({
+                message: "Invalid Admin key!",
                 success: false
             })
         }
@@ -33,16 +149,15 @@ exports.signup = async (req, res) => {
                 message: "Error in Hashing"
             })
         }
-        const url = generateGravatarUrl(email);
+        const result = await upload.uploadFile(req.file.path);
+        image=result.secure_url
         const newUser = await User.create({
             name,
-            role,
-            year,
             phone,
             email,
-            key,
             password: hashedpass,
-            image: url
+            image,
+            role:"admin"
         })
         newUser.password = undefined;
         const token = jwt.sign(
@@ -50,7 +165,6 @@ exports.signup = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-        console.log("token", token);
         const emailContent = `
             <!DOCTYPE html>
       <html lang="en">
@@ -120,7 +234,6 @@ exports.login = async (req, res) => {
                 message: "No user available",
             })
         }
-
         const payload = {
             email: user.email,
             id: user._id,
@@ -143,7 +256,6 @@ exports.login = async (req, res) => {
                     process.env.JWT_SECRET,
                     { expiresIn: '1h' }
                 );
-                console.log("token", token);
                 const emailContent = `
                     <!DOCTYPE html>
               <html lang="en">
@@ -186,7 +298,6 @@ exports.login = async (req, res) => {
                     message: "Please verify your account",
                 })
             }
-
             function getCurrentTime() {
                 const now = new Date();
                 const options = {

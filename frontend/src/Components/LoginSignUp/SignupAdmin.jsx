@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
 import './LoginSignUp.css'
 import user_icon from '../Assets/person.png'
 import email_icon from '../Assets/email.png'
@@ -8,36 +9,33 @@ import password_icon from '../Assets/password.png'
 import phone_icon from '../Assets/phone.png'
 import image_icon from '../Assets/photo.png'
 import key_icon from '../Assets/key.webp'
-import position_icon from '../Assets/position.png'
-import secret_key_icon from '../Assets/secret.png'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Input } from '../ui/input';
-
-const SignupAdmin = () => {
-  const [isAdmin, setIsAdmin] = useState('false');
+const SignupAdmin = ({setAdmin}) => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [adminkey, setAdminKey] = useState('');
-    const [position, setPosition] = useState('');
-    const [key, setKey] = useState('');
     const [image, setImage] = useState('');
+    const handleImageChange = (e) => {
+        setImage( e.target.files[0] );
+    };
     const handleSignUp = async (e) => {
 
         e.preventDefault();
-
+        const data = new FormData();
+        data.append('name', name);
+        data.append('email', email);
+        data.append('password', password);
+        data.append('image', image);
+        data.append('phone', phone);
+        data.append('adminkey', adminkey);
         try {
-            const response = await axios.post('http://localhost:8080/signup', {
-                name,
-                email,
-                phone,
-                password,
-                adminKey,
-                position,
-                key
+            const response = await axios.post('http://localhost:8080/signup/admin', data, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
             const signup = response.data.success;
             if (signup) {
@@ -48,12 +46,13 @@ const SignupAdmin = () => {
             }
         } catch (error) {
             toast.error(error.response.data.message);
+           console.log(error);
         }
     };
   return (
     <div className='container'>
             <div className="header">
-                <div className="text">SIGNUP</div>
+                <div className="text">SIGNUP <span className='text-lg'>(Admin)</span></div>
                 <div className="underline"></div>
             </div>
             <form className="inputs" onSubmit={handleSignUp} >
@@ -75,24 +74,20 @@ const SignupAdmin = () => {
                 </div>
                 <div className='input'>
                     <img src={key_icon} alt="key_icon" width={28} height={30}/>
-                    <input type="text" placeholder='Admin key' value={adminkey}/>
-                </div>
-                <div className='input'>
-                <img src={position_icon} alt="position_icon" width={28} height={30}/>
-                    <input type="text" placeholder='Position' value={position}/>
-                </div>
-                <div className="input">
-                    <img src={secret_key_icon} alt="secret_key_icon" width={28} height={30} />
-                    <input type="text" placeholder='Secret Key for Reset Password' value={key} onChange={(e) => setKey(e.target.value)} />
+                    <input type="text" placeholder='Admin key' value={adminkey} onChange={(e)=>setAdminKey(e.target.value)}/>
                 </div>
                 <div className='input'>
                     <img src={image_icon} alt='image-icon' width='23' height="21" />
                     <Input
                         accept='image/*'
                         type='file'
-                        value={image}
                         className='cursor-pointer'
+                        onChange={handleImageChange} 
                     />
+                </div>
+                <div className='text-lg flex gap-3'>
+                    <p>Click here for signup</p>
+                    <div  className='text-red-500 cursor-pointer' onClick={()=>setAdmin(false)}>Student</div>
                 </div>
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">
@@ -106,5 +101,4 @@ const SignupAdmin = () => {
         </div>
   );
 }
-
 export default SignupAdmin;

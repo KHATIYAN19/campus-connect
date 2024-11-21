@@ -1,8 +1,11 @@
 const express=require("express");
 const route=express.Router();
-const {auth,isStudent}=require("../Middlewares/userMiddleware");
-const {signup,user_applications,login,reset,logout,verifytoken,deleteAcc}=require("../Controllers/Usercontrollers");
-route.post("/signup",signup);
+const {auth}=require("../Middlewares/userMiddleware");
+const multer = require('multer');
+const upload = multer({ storage:multer.diskStorage({}),limits:{fileSize:500000 } }); 
+const {signup,user_applications,login,reset,logout,verifytoken,deleteAcc,Adminsignup}=require("../Controllers/Usercontrollers");
+route.post("/signup/student",upload.single('image'),signup);
+route.post("/signup/admin",upload.single('image'),Adminsignup);
 route.get("/profile" ,auth,user_applications);
 route.post("/login",login);
 route.post("/reset",reset);
