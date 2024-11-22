@@ -55,7 +55,7 @@ const Profile = () => {
                 { role === 'student' ? (<div className='flex w-full max-w-sm items-center gap-1.5'>
                     <Label className='text-md font-bold'>Resume:-</Label>
                     {
-                        haveResume ? <a href="https:www.google.com" target='_blank' className='text-blue-500 text-md font-bold w-full hover:underline cursor-pointer'>xyz</a> : <span>NA</span>
+                        true ? <a href={profile.resume} target='_blank' className='text-blue-500 text-md font-bold w-full hover:underline cursor-pointer'>xyz</a> : <span>NA</span>
                     }
                 </div>) : (<div></div>)}
             </div>

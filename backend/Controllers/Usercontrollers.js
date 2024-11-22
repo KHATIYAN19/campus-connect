@@ -1,5 +1,6 @@
 const User = require("../Models/userModel");
 const Job = require("../Models/jobModel");
+const Block=require("../Models/blockedUser.js");
 const { ObjectId } = require('mongodb');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -21,6 +22,7 @@ exports.signup = async (req, res) => {
         if (!req.file) {
             return res.status(400).send({ message: 'Profile image is required' });
         }
+       
         email = email.toLowerCase();
         const user = await User.findOne({ email });
         if (user) {
@@ -230,8 +232,15 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({
-                success: true,
+                success: false,
                 message: "No user available",
+            })
+        }
+        const block=await Block.findOne({email});
+        if(block){
+            return res.status(400).json({
+                success: false,
+                message: "User Block,contact to Admin",
             })
         }
         const payload = {

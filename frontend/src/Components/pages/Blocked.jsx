@@ -1,10 +1,11 @@
 import React from "react"
 import { useState, useEffect } from "react";
-import { GrCaretNext } from "react-icons/gr";
+import { GrLinkNext } from "react-icons/gr";
 import axios from "../LoginSignUp/axios.js";
 import { toast } from "react-toastify";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card.jsx";
 import { Input } from "../ui/input.jsx";
 import { Button } from "../ui/button.jsx";
@@ -70,13 +71,13 @@ const Blocked = (props) => {
               placeholder="Enter Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full max-w-md"
+              className="w-full max-w-md rounded-lg"
             />
             <Button
               type="submit"
               className="rounded-full w-9 h-9 flex items-center justify-center p-0 bg-yellow-600"
             >
-              <GrCaretNext size={20} />
+            <GrLinkNext size={20} />
             </Button>
           </form>
         </CardContent>
