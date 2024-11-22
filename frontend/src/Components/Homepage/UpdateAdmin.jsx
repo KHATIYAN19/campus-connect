@@ -8,15 +8,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import axios from 'axios';
 
-const Update = ({ open, setOpen }) => {
+const UpdateAdmin = ({ open, setOpen }) => {
     const [loading, setLoading] = useState(false);
     const { user } = useSelector(store => store.LoginSignUp);
     const [input, setInput] = useState({
         phone: user?.phone,
         bio: user?.profile?.bio,
-        tenth: user?.profile?.tenth,
-        twelfth: user?.profile?.twelfth,
-        graduationMarks: user?.profile?.graduationMarks,
         image: user?.profile?.image || null,
         file: user?.profile?.resume
     });
@@ -79,50 +76,11 @@ const Update = ({ open, setOpen }) => {
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='bio' className='text-right'>Bio</Label>
+                                <Label htmlFor='bio' className='text-right'>Description</Label>
                                 <Input
                                     id='bio'
                                     name='bio'
                                     value={input.bio}
-                                    onChange = {changeEventHandler}
-                                    className='col-span-3'
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='10th percentage' className='text-right'>Tenth</Label>
-                                <Input
-                                    id='10th percentage'
-                                    name='10th percentage'
-                                    type='number'
-                                    min='50'
-                                    max='100'
-                                    value={input.tenth}
-                                    onChange = {changeEventHandler}
-                                    className='col-span-3'
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='12-score' className='text-right'>Twelfth</Label>
-                                <Input
-                                    id='12-score'
-                                    name='12-score'
-                                    type='number'
-                                    min='50'
-                                    max='100'
-                                    value={input.twelfth}
-                                    onChange = {changeEventHandler}
-                                    className='col-span-3'
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='graduation-score' className='text-right'>Graduation Marks</Label>
-                                <Input
-                                    id='graduation-score'
-                                    name='graduation-score'
-                                    type='number'
-                                    min='50'
-                                    max='100'
-                                    value={input.graduationMarks}
                                     onChange = {changeEventHandler}
                                     className='col-span-3'
                                 />
@@ -139,7 +97,7 @@ const Update = ({ open, setOpen }) => {
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='file' className='text-right'>Resume</Label>
+                                <Label htmlFor='file' className='text-right'>JD</Label>
                                 <Input
                                     id='file'
                                     name='file'
@@ -162,4 +120,4 @@ const Update = ({ open, setOpen }) => {
     )
 }
 
-export default Update
+export default UpdateAdmin;

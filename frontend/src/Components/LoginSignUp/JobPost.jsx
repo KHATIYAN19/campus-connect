@@ -22,6 +22,7 @@ const JobPost = ({}) => {
     const [numbers, setNumbers] = useState('');
     const [tenth, setTenth] = useState('');
     const [tweleth, setTweleth] = useState('');
+    const [graduationMarks, setGraduationMarks] = useState('');
     const [jd, setJd] = useState('');
     const handleJDChange = (e) => {
         setJd( e.target.files[0] );
@@ -41,6 +42,7 @@ const JobPost = ({}) => {
                 numbers,
                 tenth,
                 twelfth,
+                graduationMarks,
                 jd
             });
             const posted=response.data.success;
@@ -91,6 +93,9 @@ const JobPost = ({}) => {
                     <div style={{ flex: '1' }} >
                         <input type='text' placeholder='12th' style={{ width: '100%'}} value={tweleth} onChange={(e) => setTweleth(e.target.value)}/>
                     </div>
+                </div>
+                <div className='input' style={{ padding: '20px' }}>
+                    <input type="number" min={50} max={100} placeholder='Graduation Marks' value={graduationMarks} onChange={(e) => setGraduationMarks(e.target.value)}/>
                 </div>
                 {/* <div className="input">
                     <img src={year_icon} alt="year_icon" width="32" height="23" />
