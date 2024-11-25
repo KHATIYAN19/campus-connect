@@ -6,54 +6,43 @@ import { Button } from '../ui/button'
 import { Loader2 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import axios from 'axios';
+import axios from '../LoginSignUp/axios';
 
 const UpdateAdmin = ({ open, setOpen }) => {
     const [loading, setLoading] = useState(false);
-    const { user } = useSelector(store => store.LoginSignUp);
-    const [input, setInput] = useState({
-        phone: user?.phone,
-        bio: user?.profile?.bio,
-        image: user?.profile?.image || null,
-        file: user?.profile?.resume
-    });
-
+    //const { user } = useSelector(store => store.LoginSignUp);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const [bio, setBio] = useState(user.profile.bio);
+    const[phone,setPhone]=useState(user.phone);
+    const [image, setImage] = useState('');
     const dispatch = useDispatch();
-
-    const changeEventHandler = (e) => {
-        const {name, type, value, files} = e.target;
-        if(type === 'file'){
-            setInput({...input, [name]:files[0]});
-        }else{
-            setInput({...input, [name]:value});
-        }
-    }
+    const handleImageChange = (e) => {
+        setImage( e.target.files[0] );
+        console.log(image);
+    };
 
     const submitHandler = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append("phone", input.phone);
-        formData.append("bio", input.bio);
-        if(input.file){
-            formData.append('file', input.file);
-        }
+        formData.append("phone", phone);
+        formData.append("bio", bio);
+        formData.append("email",user.email);
+        formData.append('image', image);
         try {
-            const res = await axios.post('http://localhost:8080/profile/update', formData, {
-                headers:{
-                    'Content-type':'multipart/form-data'
-                },
-                withCredentials:true
-            });
-            if(res.data.success){
-                dispatch(setUser(res.data.user));
-                toast.success(res.data.message);
+            const response = await axios.post('http://localhost:8080/update/admin', formData);
+            console.log(response,"res");
+            if(response.data.success){
+                toast.success(response.data.message);
+                localStorage.setItem("user", JSON.stringify(response.data.user));
+                setOpen(false);
+                window.location.reload();
+                
             }
         }catch(error) {
             console.error('Error submitting form:',error);
             toast.error(error.response.data.message);
         }
         setOpen(false);
-        console.log(input);
     }
 
     return (
@@ -69,34 +58,34 @@ const UpdateAdmin = ({ open, setOpen }) => {
                                 <Label htmlFor='number' className='text-right'>PhoneNo</Label>
                                 <Input
                                     id='number'
-                                    name='number'
-                                    value={input.phone}
-                                    onChange = {changeEventHandler}
+                                    name='phone'
+                                    value={phone}
+                                    onChange = {(e) => { setPhone(e.target.value); }}
                                     className='col-span-3'
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='bio' className='text-right'>Description</Label>
+                                <Label htmlFor='bio' className='text-right'>Bio</Label>
                                 <Input
                                     id='bio'
                                     name='bio'
-                                    value={input.bio}
-                                    onChange = {changeEventHandler}
+                                    value={bio}
+                                    onChange = {(e) => { setBio(e.target.value); }}
                                     className='col-span-3'
                                 />
                             </div>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='image' className='text-right'>Profile</Label>
+                                <Label htmlFor='image' className='text-right'>Image</Label>
                                 <Input
                                     id='image'
                                     name='image'
                                     accept='image/*'
                                     type='file'
-                                    onChange={changeEventHandler}
+                                    onChange={handleImageChange}
                                     className='col-span-3'
                                 />
                             </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
+                            {/* <div className='grid grid-cols-4 items-center gap-4'>
                                 <Label htmlFor='file' className='text-right'>JD</Label>
                                 <Input
                                     id='file'
@@ -105,7 +94,7 @@ const UpdateAdmin = ({ open, setOpen }) => {
                                     onChange={changeEventHandler}
                                     className='col-span-3'
                                 />
-                            </div>
+                            </div> */}
                         </div>
                         <DialogFooter>
                             {

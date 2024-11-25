@@ -41,7 +41,6 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/blocks" element={<Blocked/>}/>
           <Route path="/messageBox" element={<MessageBox/>}/>
-
         {/* </Route> */}
        </Routes>    
        </div>

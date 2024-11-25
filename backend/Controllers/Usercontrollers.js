@@ -10,8 +10,8 @@ require('dotenv').config();
 const upload =require("../Utils/cloudinary.js")
 exports.signup = async (req, res) => {
     try {
-        console.log(req.body);
-        console.log(req.file," fole");
+    //     console.log("req",req.body.phone);
+    //    // console.log(req.file," fole");
         let { name, phone, email, year,password,tenth,tweleth,graduationdegree,graduationMarks,resume } = req.body;
         if (!name || !phone || !email || !year || !password||!tenth||!tweleth||!graduationMarks||!graduationdegree||!resume) {
             return res.status(400).json({
@@ -41,6 +41,7 @@ exports.signup = async (req, res) => {
             })
         }
         const result = await upload.uploadFile(req.file.path);
+        
         image=result.secure_url
         const newUser = await User.create({
             name,
@@ -694,6 +695,96 @@ exports.deleteAcc=async(req,res)=>{
         console.log(e);
         return res.status(207).json({
             success:false,
+            message:"Something went wrong"
+        })
+    }
+}
+
+exports.user_update=async(req,res)=>{
+    try{
+        let {  email,phone,bio, tenth,tweleth,graduationMarks,resume } = req.body;
+        if ( !phone || !email || !tenth||!tweleth||!graduationMarks||!resume||!bio) {
+            return res.status(400).json({
+                message: "All Feild required !",
+                success: false
+            })
+        }
+        email = email.toLowerCase();
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(200).json({
+                success: false,
+                message: "No user available"
+            })
+        }
+       console.log("email",user);
+        let image='';
+        if (req.file) {
+            image = await upload.uploadFile(req.file.path);
+        } 
+        user.phone=phone;
+        bio, tenth,tweleth,graduationMarks,resume
+        user.profile.bio=bio;
+        user.profile.tenth=tenth;
+        user.profile.tweleth=tweleth;
+        user.profile.graduationMarks=graduationMarks;
+        user.profile.resume=resume;
+        if(image!==''){
+            user.image=image.secure_url;
+        }
+        console.log("image",image.secure_url);
+        await user.save();
+        return res.status(200).json({
+            success:true,
+            user,
+            message:"User Profile Updated"
+        })
+    }catch(e){
+        return res.status(200).json({
+            success:false,
+            e,
+            message:"Something went wrong"
+        })
+    }
+}
+
+exports.admin_update=async(req,res)=>{
+    try{
+        let {  email,phone,bio} = req.body;
+        if ( !phone || !email || !bio) {
+            return res.status(400).json({
+                message: "All Feild required !",
+                success: false
+            })
+        }
+        email = email.toLowerCase();
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(200).json({
+                success: false,
+                message: "No user available"
+            })
+        }
+        let image='';
+        if (req.file) {
+            image = await upload.uploadFile(req.file.path);
+        } 
+        user.phone=phone;
+        user.profile.bio=bio;
+        if(image!==''){
+            user.image=image.secure_url;
+            console.log("image",image.secure_url);
+        }
+        await user.save();
+        return res.status(200).json({
+            success:true,
+            user,
+            message:"User Profile Updated"
+        })
+    }catch(e){
+        return res.status(200).json({
+            success:false,
+            e,
             message:"Something went wrong"
         })
     }

@@ -16,13 +16,14 @@ const SignupStudent = ({ setAdmin}) => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [graduationdegree, setGraduationDegree] = useState('');
+    const [year, setYear] = useState('');
+   
+    const [phone, setPhone] = useState('');
     const [tenth, setTenth] = useState('');
     const [tweleth, setTweleth] = useState('');
-    const [graduationdegree, setGraduationDegree] = useState('');
     const [graduationMarks, setGraduationMarks] = useState('');
-    const [year, setYear] = useState('');
     const [image, setImage] = useState('');
     const [resume, setResume] = useState('');
     const handleImageChange = (e) => {

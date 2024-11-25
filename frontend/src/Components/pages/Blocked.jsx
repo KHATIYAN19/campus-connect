@@ -21,9 +21,13 @@ const Blocked = (props) => {
   }, []);
   const addHandler = async (e) => {
     e.preventDefault();
+    const data=new FormData();
+    data.append('email',email);
+    
     try {
       const response = await axios.post('http://localhost:8080/blocked/addUser', email);
       const signup = response.data.success;
+      console.log(response);
       if (signup) {
         toast.warning(response.data.Data.name.toUpperCase() + " Verify your Account");
         navigate("/login");
@@ -70,7 +74,7 @@ const Blocked = (props) => {
               id="email"
               placeholder="Enter Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {setEmail(e.target.value)}}
               className="w-full max-w-md rounded-lg"
             />
             <Button
