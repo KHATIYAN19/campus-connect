@@ -16,7 +16,6 @@ import PostedJobTable from './PostedJobTable'
 
 const Profile = () => {
     const role=localStorage.getItem('role');
-    
     const[profile,SetProfile]=useState([]);
     const [data,setData]=useState([]);
      useEffect(()=>{
@@ -64,8 +63,9 @@ const Profile = () => {
                 {role==='student'?(<h1 className='font-bold text-lg my-5'>Applied Jobs</h1>):(<h1 className='font-bold text-lg my-5'>Posted Jobs</h1>)}
                 {role=='student'?(<AppliedJobTable data={data}/>):(<PostedJobTable data={data}/>)}
             </div>
-            <UpdateStudent open={role === 'student' && open} setOpen={setOpen} />
+           
             <UpdateAdmin open={role === 'admin' && open} setOpen={setOpen} />
+            {<UpdateStudent open={role === 'student' && open} setOpen={setOpen} />}
         </div>
     )
 }

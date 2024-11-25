@@ -8,7 +8,7 @@ import role_icon from '../Assets/role.png'
 import salary_icon from '../Assets/salary.png'
 import description_icon from '../Assets/info.png'
 import jd_icon from '../Assets/JD.png'
-import axios from "./axios.js"
+import axios from "../LoginSignUp/axios.js"
 import { toast } from 'react-toastify'
 import { Input } from '../ui/input';
 const JobPost = ({}) => {
@@ -18,43 +18,34 @@ const JobPost = ({}) => {
     const [position, setPosition] = useState('');
     const [company, setCompany] = useState('');
     const [location, setLocation] = useState('');
-    const [testdate, setTestdate] = useState('');
     const [numbers, setNumbers] = useState('');
     const [tenth, setTenth] = useState('');
     const [tweleth, setTweleth] = useState('');
     const [graduationMarks, setGraduationMarks] = useState('');
     const [jd, setJd] = useState('');
-    const handleJDChange = (e) => {
-        setJd( e.target.files[0] );
-        console.log(jd);
-    };
+    // const handleJDChange = (e) => {
+    //     setJd( e.target.files[0] );
+    //     console.log(jd);
+    // };
     const JobPostHandler = async (e) => {
         e.preventDefault();
+        console.log("dess",description,salary,position,location,company,numbers,tenth,tweleth,graduationMarks);
         try {
-            console.log(testdate);
-            const response = await axios.post('/jobs/post', {
-                description,
-                salary,
-                position,
-                location,
-                company,
-                testdate,
-                numbers,
-                tenth,
-                twelfth,
-                graduationMarks,
-                jd
-            });
+            console.log("response");
+
+            const response = await axios.post('http://localhost:8080/jobs/post');
+            console.log("response",response);
             const posted=response.data.success;
             if(posted){
                  toast.success("Job posted successfully");
                  navigate("/");
             }else{
-                toast.error(response.data.message);
+                //toast.error(response.data.message);
+                
             }
         } catch (error) {
-            toast.error(error.response.data.message);
-            console.log(error);
+            //toast.error(error.response.data.message);
+            console.log("erroe",error);
         }
     };
     return (
@@ -69,9 +60,9 @@ const JobPost = ({}) => {
                     <input type="text" placeholder='Company Name' value={company} onChange={(e) => {setCompany(e.target.value); }} />
                 </div>
                 <div className="input m-t-2 bg-[#eaeaea]">
-                    {/* <img src={description_icon} alt="description_icon" width={20} height={25}/> */}
-                    {/* <input type="text" placeholder='Description' value={email} onChange={(e) => setEmail(e.target.value)} /> */}
-                     <textarea className='w-full row-5 col-30 p-2 bg-[#eaeaea] m-y-2 rounded-lg pl-12 border' placeholder='Description' value={description} onChange={(e) => {setDescription(e.target.value); }} name="" id=""></textarea>
+                    <img src={description_icon} alt="description_icon" width={20} height={25}/> 
+                    <input type="text" placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
+                     {/* <textarea className='w-full my-4 row-5 col-30 p-2 bg-[#eaeaea] m-y-2 rounded-lg pl-12 border' placeholder='Description' value={description} onChange={(e) => {setDescription(e.target.value); }} name="" id=""></textarea> */}
 
                 </div>
                 <div className="input">
@@ -105,7 +96,7 @@ const JobPost = ({}) => {
                 <img src={positions_icon} alt="positions_icon" width="25" height="18" />
                     <input type="Number" placeholder='Enter Number of position' value={numbers} onChange={(e) => {setNumbers(e.target.value); }} />
                 </div>
-                <div className='input'>
+                {/* <div className='input'>
                     <img src={jd_icon} alt='jd_icon' width='25' height="18" />
                     <Input
                         accept='application/pdf'
@@ -113,7 +104,7 @@ const JobPost = ({}) => {
                         className='cursor-pointer'
                         onChange={handleJDChange}
                     />
-                </div>
+                </div> */}
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">
                         Submit

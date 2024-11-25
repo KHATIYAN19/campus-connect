@@ -44,6 +44,7 @@ function App() {
           <Route path="/messageBox" element={<MessageBox/>}/>
           <Route path="/applicantTable" element={<JobApplicantsTable/>}/>
 
+
         {/* </Route> */}
        </Routes>    
        </div>

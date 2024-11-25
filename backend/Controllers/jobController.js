@@ -6,9 +6,12 @@ const axios=require("axios");
 const  sendEmail=require("../Utils/MailSender");
 //const sendEmail = require("../Utils/MailSenderArray");
 exports.post_job=async(req,res)=>{
+
+  
    try{
     let id=req.user.id;
-    const {company,description,salary,location,position,numbers}=req.body;
+    console.log(req.body);
+    const {company,description,salary,location,position,numbers,}=req.body;
     if(!company||!description||!salary||!location||!position||!numbers){
        return res.status(400).json({
             message:"All feild required",
