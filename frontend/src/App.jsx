@@ -17,6 +17,7 @@ import loginProtected from './protectedRoutes/loginsProtected.jsx';
 import { Home } from 'lucide-react';
 import Blocked from './Components/pages/blocked.jsx';
 import MessageBox from './Components/pages/MessageBox.jsx';
+import JobApplicantsTable from './Components/Homepage/JobApplicantsTable.jsx';
 
 function App() {
   const[admin,setAdmin]=useState(false);
@@ -41,6 +42,9 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/blocks" element={<Blocked/>}/>
           <Route path="/messageBox" element={<MessageBox/>}/>
+          <Route path="/applicantTable" element={<JobApplicantsTable/>}/>
+
+
         {/* </Route> */}
        </Routes>    
        </div>

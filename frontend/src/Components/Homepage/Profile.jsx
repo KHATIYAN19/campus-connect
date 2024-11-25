@@ -12,6 +12,7 @@ import App from '@/App'
 import { Button } from '../ui/button'
 import UpdateStudent from './UpdateStudent'
 import UpdateAdmin from './UpdateAdmin'
+import PostedJobTable from './PostedJobTable'
 
 const Profile = () => {
     const role=localStorage.getItem('role');
@@ -60,7 +61,7 @@ const Profile = () => {
             </div>
             <div className='max-w-4xl mx-auto bg-white rounded-2x'>
                 {role==='student'?(<h1 className='font-bold text-lg my-5'>Applied Jobs</h1>):(<h1 className='font-bold text-lg my-5'>Posted Jobs</h1>)}
-                {role=='student'?(<AppliedJobTable data={data}/>):(<></>)}
+                {role=='student'?(<AppliedJobTable data={data}/>):(<PostedJobTable data={data}/>)}
             </div>
            
             <UpdateAdmin open={role === 'admin' && open} setOpen={setOpen} />
