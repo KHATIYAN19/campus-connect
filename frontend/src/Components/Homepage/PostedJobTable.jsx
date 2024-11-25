@@ -1,7 +1,8 @@
 import React from 'react'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Badge } from '../ui/badge'
-const AppliedJobTable = ({data}) => {
+
+const PostedJobTable = ({data}) => {
     console.log(data,"fg");
     //const date=new Date(data.updatedAt);
     function getDate(timestamp){
@@ -9,7 +10,7 @@ const AppliedJobTable = ({data}) => {
         const date = new Date(timestamp);
         console.log(date); 
         const firstMonth = new Date(date.getFullYear(), 0, 1);
-        const day = firstMonth.getDate().toString().padStart(2, '0'); // Add leading 0 if day is single-digit
+         const day = firstMonth.getDate().toString().padStart(2, '0'); // Add leading 0 if day is single-digit
         const month = (firstMonth.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so add 1
         const year = firstMonth.getFullYear();
         const formattedDate = `${day}-${month}-${year}`;
@@ -18,7 +19,7 @@ const AppliedJobTable = ({data}) => {
   return (
     <div>
         <Table>
-            <TableCaption>Recent applied jobs</TableCaption>
+            <TableCaption>Recent posted jobs</TableCaption>
             <TableHeader>
                 <TableRow>
                     <TableHead>Date</TableHead>
@@ -49,4 +50,4 @@ const AppliedJobTable = ({data}) => {
   )
 }
 
-export default AppliedJobTable
+export default PostedJobTable
