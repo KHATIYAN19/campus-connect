@@ -7,9 +7,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card
 import { ScrollArea } from '../ui/scroll-area';
 import { Trash2 } from 'lucide-react';
 
-const MessageBox = ({ userRole, batchName = 'Batch 2024', profileImage = '/path-to-image.jpg' }) => {
+const MessageBox = ({ userRole, adminProfileImage, userProfileImage, adminName = 'Admin', initialBatchName = 'Batch 2024' }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [batchName, setBatchName] = useState(initialBatchName); 
   const [importantMessages, setImportantMessages] = useState([]);
 
   const handleSend = () => {
@@ -18,7 +19,10 @@ const MessageBox = ({ userRole, batchName = 'Batch 2024', profileImage = '/path-
     const newMessage = {
       text: input,
       timestamp: new Date(),
-      isImportant: input.toLowerCase().includes('important') || userRole === 'admin',
+      isImportant: userRole === 'admin',
+      sender: userRole === 'admin' 
+        ? { name: adminName, image: adminProfileImage } 
+        : { name: 'User', image: userProfileImage },
     };
 
     setMessages([...messages, newMessage]);
@@ -43,7 +47,7 @@ const MessageBox = ({ userRole, batchName = 'Batch 2024', profileImage = '/path-
       <div className="w-full max-w-4xl flex items-center mb-6">
         <div className="flex items-center">
           <img
-            src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwO7ObL7LxewOC3tzo8iOSc6Kd_B21OtYyyg&s"}
+            src={userRole === 'admin' ? adminProfileImage : userProfileImage}
             alt="Profile"
             className="w-12 h-12 rounded-full object-cover shadow-md"
           />
@@ -73,7 +77,17 @@ const MessageBox = ({ userRole, batchName = 'Batch 2024', profileImage = '/path-
                           : 'bg-gradient-to-r from-purple-300 to-purple-400 text-white'
                       } flex justify-between items-start`}
                     >
-                      <div>
+                      <div className="flex-shrink-0">
+                        <img
+                          src={msg.sender.image}
+                          alt={msg.sender.name}
+                          className="w-8 h-8 rounded-full object-cover shadow-md"
+                        />
+                      </div>
+                      <div className="flex-1 ml-3">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold">{msg.sender.name}</p>
+                        </div>
                         <p>{msg.text}</p>
                         <span className="text-xs text-gray-700">
                           {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
@@ -92,6 +106,20 @@ const MessageBox = ({ userRole, batchName = 'Batch 2024', profileImage = '/path-
             </ScrollArea>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
+            {userRole === 'admin' && (
+              <div className="flex items-center gap-3">
+                <Label htmlFor="batch" className="text-sm font-semibold">
+                  Batch Name
+                </Label>
+                <Textarea
+                  id="batch"
+                  value={batchName}
+                  onChange={(e) => setBatchName(e.target.value)}
+                  className="w-full resize-none rounded-2xl"
+                  placeholder="Enter batch name"
+                />
+              </div>
+            )}
             <Label htmlFor="message" className="text-sm font-semibold">
               Your Message
             </Label>
@@ -126,7 +154,17 @@ const MessageBox = ({ userRole, batchName = 'Batch 2024', profileImage = '/path-
                       key={index}
                       className="p-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-black flex justify-between items-start"
                     >
-                      <div>
+                      <div className="flex-shrink-0">
+                        <img
+                          src={msg.sender.image}
+                          alt={msg.sender.name}
+                          className="w-8 h-8 rounded-full object-cover shadow-md"
+                        />
+                      </div>
+                      <div className="flex-1 ml-3">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold">{msg.sender.name}</p>
+                        </div>
                         <p>{msg.text}</p>
                         <span className="text-xs text-gray-700">
                           {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
