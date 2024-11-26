@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '../ui/button';
-import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { ScrollArea } from '../ui/scroll-area';
 import { Trash2 } from 'lucide-react';
 
-const MessageBox = ({ userRole, adminProfileImage, userProfileImage, adminName = 'Admin', initialBatchName = 'Batch 2024' }) => {
+const MessageBox = ({
+  userRole,
+  adminProfileImage,
+  userProfileImage,
+  initialBatchName = 'Batch 2024',
+  messageLinks = []
+}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [batchName, setBatchName] = useState(initialBatchName); 
-  const [importantMessages, setImportantMessages] = useState([]);
+  const [files, setFiles] = useState([]); // To store uploaded files (PDF, Excel)
+  const [links, setLinks] = useState(messageLinks); // Links sent by Admin
+  const [batchName, setBatchName] = useState(initialBatchName);
 
   const handleSend = () => {
     if (input.trim() === '') return;
@@ -19,45 +25,66 @@ const MessageBox = ({ userRole, adminProfileImage, userProfileImage, adminName =
     const newMessage = {
       text: input,
       timestamp: new Date(),
-      isImportant: userRole === 'admin',
       sender: userRole === 'admin' 
-        ? { name: adminName, image: adminProfileImage } 
+        ? { name: 'Admin', image: adminProfileImage } 
         : { name: 'User', image: userProfileImage },
     };
 
     setMessages([...messages, newMessage]);
-
-    if (newMessage.isImportant) {
-      setImportantMessages([...importantMessages, newMessage]);
-    }
-
     setInput('');
   };
 
   const handleDelete = (msgToDelete) => {
     setMessages(messages.filter((msg) => msg !== msgToDelete));
+  };
 
-    if (msgToDelete.isImportant) {
-      setImportantMessages(importantMessages.filter((msg) => msg !== msgToDelete));
+  const handleFileUpload = (event) => {
+    const uploadedFiles = Array.from(event.target.files);
+    const newFiles = uploadedFiles.map((file) => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+      type: file.type,
+    }));
+
+    setFiles([...files, ...newFiles]);
+  };
+
+  const handleLinkSubmit = (event) => {
+    event.preventDefault();
+    const link = event.target.elements.link.value.trim();
+    if (link) {
+      setLinks([...links, { name: link, url: link }]);
+      event.target.reset();
     }
   };
 
+  const renderFileIcon = (fileType) => {
+    if (fileType === 'application/pdf') {
+      return <span className="text-red-600">📄</span>; // PDF Icon
+    }
+    if (fileType === 'application/vnd.ms-excel') {
+      return <span className="text-green-600">📊</span>; // Excel Icon
+    }
+    return <span>📎</span>; // Default attachment icon
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e4c9a8] to-[#b99c5c] flex flex-col items-center p-6">
-      <div className="w-full max-w-4xl flex items-center mb-6">
-        <div className="flex items-center">
+    <div className="min-h-screen bg-gradient-to-br from-[#f0e4d7] to-[#b49b59] flex flex-col md:flex-row items-center justify-center p-6">
+      {/* Left Message Box Section */}
+      <div className="flex-1 max-w-3xl p-6 bg-gradient-to-br from-[#d5a7c6] to-[#7c6c5b] rounded-xl shadow-lg text-white">
+        {/* Profile Picture and Batch Name */}
+        <div className="flex items-center gap-3 mb-4">
           <img
             src={userRole === 'admin' ? adminProfileImage : userProfileImage}
             alt="Profile"
-            className="w-12 h-12 rounded-full object-cover shadow-md"
+            className="w-16 h-16 rounded-full object-cover shadow-md"
           />
-          <div className="ml-3">
-            <p className="text-md font-bold text-gray-800">{batchName}</p>
+          <div>
+            <p className="text-xl font-semibold">{batchName}</p>
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+        {/* Message Box */}
         <Card className="shadow-lg rounded-2xl flex flex-col">
           <CardHeader>
             <CardTitle className="text-center text-lg font-bold">Message Box</CardTitle>
@@ -65,16 +92,16 @@ const MessageBox = ({ userRole, adminProfileImage, userProfileImage, adminName =
           <CardContent className="h-64">
             <ScrollArea className="h-full px-4">
               {messages.length === 0 ? (
-                <p className="text-gray-500 text-center">No messages yet. Start typing below!</p>
+                <p className="text-gray-300 text-center">No messages yet. Start typing below!</p>
               ) : (
                 <ul className="space-y-4">
                   {messages.map((msg, index) => (
                     <li
                       key={index}
                       className={`p-3 rounded-2xl ${
-                        msg.isImportant
-                          ? 'bg-gradient-to-r from-yellow-300 to-yellow-400 text-black'
-                          : 'bg-gradient-to-r from-purple-300 to-purple-400 text-white'
+                        userRole === 'admin'
+                          ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black' // Admin message style
+                          : 'bg-gradient-to-r from-yellow-100 to-pink-200 text-black' // Student message style
                       } flex justify-between items-start`}
                     >
                       <div className="flex-shrink-0">
@@ -93,96 +120,119 @@ const MessageBox = ({ userRole, adminProfileImage, userProfileImage, adminName =
                           {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
                         </span>
                       </div>
-                      <button
-                        className="ml-3 text-red-500 hover:text-red-700"
-                        onClick={() => handleDelete(msg)}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
+                      {userRole === 'admin' && ( // Only show delete icon if the user is admin
+                        <button
+                          className="ml-3 text-red-500 hover:text-red-700"
+                          onClick={() => handleDelete(msg)}
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      )}
                     </li>
                   ))}
                 </ul>
               )}
             </ScrollArea>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            {userRole === 'admin' && (
-              <div className="flex items-center gap-3">
-                <Label htmlFor="batch" className="text-sm font-semibold">
-                  Batch Name
-                </Label>
-                <Textarea
-                  id="batch"
-                  value={batchName}
-                  onChange={(e) => setBatchName(e.target.value)}
-                  className="w-full resize-none rounded-2xl"
-                  placeholder="Enter batch name"
-                />
-              </div>
-            )}
-            <Label htmlFor="message" className="text-sm font-semibold">
-              Your Message
-            </Label>
+          <div className="px-4 py-4">
             <Textarea
-              id="message"
               placeholder="Type your message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="resize-none rounded-2xl"
+              className="resize-none rounded-2xl w-full mb-4 bg-white text-black"
             />
             <Button
               onClick={handleSend}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-2xl"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl"
             >
               Send Message
             </Button>
-          </CardFooter>
+          </div>
         </Card>
+      </div>
 
-        <Card className="shadow-lg rounded-2xl flex flex-col">
-          <CardHeader>
-            <CardTitle className="text-center text-lg font-bold">Important Messages</CardTitle>
-          </CardHeader>
-          <CardContent className="h-64">
-            <ScrollArea className="h-full px-4">
-              {importantMessages.length === 0 ? (
-                <p className="text-gray-500 text-center">No important messages yet.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {importantMessages.map((msg, index) => (
-                    <li
-                      key={index}
-                      className="p-3 rounded-2xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-black flex justify-between items-start"
-                    >
-                      <div className="flex-shrink-0">
-                        <img
-                          src={msg.sender.image}
-                          alt={msg.sender.name}
-                          className="w-8 h-8 rounded-full object-cover shadow-md"
-                        />
-                      </div>
-                      <div className="flex-1 ml-3">
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-semibold">{msg.sender.name}</p>
-                        </div>
-                        <p>{msg.text}</p>
-                        <span className="text-xs text-gray-700">
-                          {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
-                        </span>
-                      </div>
-                      <button
-                        className="ml-3 text-red-500 hover:text-red-700"
-                        onClick={() => handleDelete(msg)}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </ScrollArea>
-          </CardContent>
-        </Card>
+      {/* Right Side Panel for Links & Files */}
+      <div className="w-full md:w-1/4 bg-gradient-to-br from-[#e6e1d5] to-[#b6ab87] p-6 rounded-xl shadow-lg mt-8 md:mt-0 md:ml-8 text-black">
+        <h3 className="text-xl font-bold mb-4 text-center">Admin Links & Files</h3>
+
+        {/* Links Section */}
+        <div className="mb-6">
+          <h4 className="font-semibold text-lg">Links:</h4>
+          {links.length === 0 ? (
+            <p className="text-gray-500 text-center">No links available.</p>
+          ) : (
+            <ul className="space-y-4">
+              {links.map((link, index) => (
+                <li key={index} className="flex items-center gap-2">
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Files Section */}
+        <div className="mb-6">
+          <h4 className="font-semibold text-lg">Uploaded Files:</h4>
+          {files.length === 0 ? (
+            <p className="text-gray-500 text-center">No files uploaded yet.</p>
+          ) : (
+            <ul className="space-y-4">
+              {files.map((file, index) => (
+                <li key={index} className="flex items-center gap-2">
+                  {renderFileIcon(file.type)}
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    {file.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Admin File Upload and Link Input */}
+        {userRole === 'admin' && (
+          <div>
+            <form onSubmit={handleLinkSubmit}>
+              <label htmlFor="link" className="block text-sm font-semibold">Add a Link</label>
+              <input
+                type="url"
+                id="link"
+                name="link"
+                placeholder="Enter link URL"
+                className="w-full p-2 rounded-lg border mt-2"
+              />
+              <Button
+                type="submit"
+                className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl"
+              >
+                Add Link
+              </Button>
+            </form>
+
+            <div className="mt-4">
+              <label htmlFor="file" className="block text-sm font-semibold">Upload a File</label>
+              <input
+                type="file"
+                id="file"
+                onChange={handleFileUpload}
+                className="w-full mt-2"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
