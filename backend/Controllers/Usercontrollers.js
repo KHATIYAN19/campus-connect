@@ -222,6 +222,7 @@ exports.Adminsignup = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         let { email, password } = req.body;
+        console.log("req",req.body);
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
@@ -780,6 +781,30 @@ exports.admin_update=async(req,res)=>{
             success:true,
             user,
             message:"User Profile Updated"
+        })
+    }catch(e){
+        return res.status(200).json({
+            success:false,
+            e,
+            message:"Something went wrong"
+        })
+    }
+}
+exports.my_application=async(req,res)=>{
+    try{
+        var user_id =req.user.id;
+        console.log(user_id)
+        const  user_data=await User.findOne({_id:user_id});
+        if(!user_data){
+           return res.status(400).json({
+              message:"No User found",
+              success:false
+           })
+        }
+        return res.status(200).json({
+            message:"fetched",
+            applied:user_data.Applied,
+            success:true
         })
     }catch(e){
         return res.status(200).json({

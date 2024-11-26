@@ -39,17 +39,17 @@ const jobSchema=mongoose.Schema({
             required:true,
             default:3
         },
-        // tenth:{
-        //     type:Number,
-        //     required:true,
-        // },
-        // graduation:{
-        //     type:Number,
-        //     required:true,
-        // },
-        // tweleth:{
-        //     type:Number,
-        //     required:true,
-        // }
+        tenth:{
+            type:Number,
+            required:true,
+        },
+        graduationMarks:{
+            type:Number,
+            required:true,
+        },
+        tweleth:{
+            type:Number,
+            required:true,
+        }
 },{timestamps:true});
 module.exports=mongoose.model("Job",jobSchema);

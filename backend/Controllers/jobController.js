@@ -6,13 +6,11 @@ const axios=require("axios");
 const  sendEmail=require("../Utils/MailSender");
 //const sendEmail = require("../Utils/MailSenderArray");
 exports.post_job=async(req,res)=>{
-
-  
    try{
     let id=req.user.id;
     console.log(req.body);
-    const {company,description,salary,location,position,numbers,}=req.body;
-    if(!company||!description||!salary||!location||!position||!numbers){
+    const {company,description,salary,location,position,numbers,tenth,tweleth,graduationMarks}=req.body;
+    if(!company||!description||!salary||!location||!position||!numbers||!tenth||!tweleth||!graduationMarks){
        return res.status(400).json({
             message:"All feild required",
             success:false
@@ -33,6 +31,9 @@ exports.post_job=async(req,res)=>{
          position,
          postby:id,
          numbers,
+         tenth,
+         tweleth,
+         graduationMarks,
          logo:`https://img.logo.dev/${company}.com?token=pk_LhuGWkxESfCNeTIfkWoI8w`
     })
     const emailcontent=`<!DOCTYPE html>
@@ -131,10 +132,10 @@ exports.post_job=async(req,res)=>{
 </html>
 `
   const users = await User.find({}).select('email');
-  const emails = users.map(user => 
-    user.email
-  );
-  emails.map(email=>sendEmail(email,"New Job Posted","",emailcontent))
+  // const emails = users.map(user => 
+  //   user.email
+  // );
+  // emails.map(email=>sendEmail(email,"New Job Posted","",emailcontent))
      //sendEmail(emails,"New Job Posted","",emailcontent);
     return res.status(200).json({
        message:"Job created Successfully",
@@ -236,31 +237,18 @@ exports.getall=async(req,res)=>{
 exports.jobbyid=async(req,res)=>{
    try{
        let job_id=req.params.id;
-       console.log("jobdy", job_id);
-       console.log(2);
-      //  if (!mongoose.Types.ObjectId.isValid(job_id)) {
-      //    return res.status(400).json({ message: 'Invalid job ID format' });
-      //  }
-      // const objectId = new ObjectId(job_id.id);
-      //console.log("objecid",objectId);
-      const objectId = new mongoose.ObjectId(job_id);
-        console.log(objectId);
-       //const objectId = new mongoose.Types.ObjectId(job_id);
-       //console.log(objectId);
-       const job=await Job.findOne({_id:job_id});
-        console.log(4)
-      //   if(!job){
-      //    return res.status(400).json({
-      //       message:"No job found",
-      //       success:false
-      //     })
-      //   }
-        console.log(2);
+       const job=await Job.findOne({_id:job_id}).populate('postby');
+        if(!job){
+         return res.status(400).json({
+            message:"No job found",
+            success:false
+          })
+        }
         return res.status(200).json({
          message:"JOB FETCHED",
          success:true,
-         
-         //postby:job.postby
+         job,
+         postby:job.postby
        })
      
      }catch(e){

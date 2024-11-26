@@ -6,7 +6,6 @@ const LatestJobs = ({data}) => {
  
   const user=JSON.parse(localStorage.getItem('user'));
   return (
-     
     <div className='p-5 rounded-md shadow-xl bg-white border border-gray-100 cursor-pointer mt-5'>
         <NavLink to={`/description/${data._id}`}>
         <div className='flex justify-start gap-3 mb-3'>

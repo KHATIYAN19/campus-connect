@@ -1,119 +1,169 @@
-import React, { useState } from 'react'
-import { useNavigate } from "react-router-dom";
-import './LoginSignUp.css'
-import user_icon from '../Assets/person.png'
-import positions_icon from '../Assets/positions.png'
-import location_icon from '../Assets/location.png'
-import role_icon from '../Assets/role.png'
-import salary_icon from '../Assets/salary.png'
-import description_icon from '../Assets/info.png'
-import jd_icon from '../Assets/JD.png'
-import axios from "../LoginSignUp/axios.js"
-import { toast } from 'react-toastify'
-import { Input } from '../ui/input';
-const JobPost = ({}) => {
-    const navigate=useNavigate();
-    const [description, setDescription] = useState('');
-    const [salary, setSalary] = useState('');
-    const [position, setPosition] = useState('');
-    const [company, setCompany] = useState('');
-    const [location, setLocation] = useState('');
-    const [numbers, setNumbers] = useState('');
-    const [tenth, setTenth] = useState('');
-    const [tweleth, setTweleth] = useState('');
-    const [graduationMarks, setGraduationMarks] = useState('');
-    const [jd, setJd] = useState('');
-    // const handleJDChange = (e) => {
-    //     setJd( e.target.files[0] );
-    //     console.log(jd);
-    // };
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './LoginSignUp.css';
+import user_icon from '../Assets/person.png';
+import positions_icon from '../Assets/positions.png';
+import location_icon from '../Assets/location.png';
+import role_icon from '../Assets/role.png';
+import salary_icon from '../Assets/salary.png';
+import description_icon from '../Assets/info.png';
+import axios from '../LoginSignUp/axios';
+import { toast } from 'react-toastify';
+
+const JobPost = () => {
+    const navigate = useNavigate();
+
+    // Form state variables
+    const [formData, setFormData] = useState({
+        description: '',
+        salary: '',
+        position: '',
+        company: '',
+        location: '',
+        numbers: '',
+        tenth: '',
+        tweleth: '',
+        graduationMarks: '',
+    });
+
+    // Input change handler
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    // Form submission handler
     const JobPostHandler = async (e) => {
         e.preventDefault();
-        console.log("dess",description,salary,position,location,company,numbers,tenth,tweleth,graduationMarks);
-        try {
-            console.log("response");
 
-            const response = await axios.post('http://localhost:8080/jobs/post');
-            console.log("response",response);
-            const posted=response.data.success;
-            if(posted){
-                 toast.success("Job posted successfully");
-                 navigate("/");
-            }else{
-                //toast.error(response.data.message);
-                
+        try {
+            // Send POST request with formData as payload
+            const response = await axios.post('http://localhost:8080/jobs/post', formData, {
+                headers: {
+                    'Content-Type': 'application/json', // Ensure JSON data is sent
+                },
+            });
+
+            if (response.data.success) {
+                toast.success('Job posted successfully');
+                navigate('/'); // Redirect after success
+            } else {
+                toast.error(response.data.message || 'Failed to post the job.');
             }
         } catch (error) {
-            //toast.error(error.response.data.message);
-            console.log("erroe",error);
+            console.error('Error:', error);
+            toast.error(error.response?.data?.message || 'Something went wrong.');
         }
     };
+
     return (
-        <div className='container'>
+        <div className="container">
             <div className="header">
                 <div className="text">JOB POST</div>
                 <div className="underline"></div>
             </div>
-            <form className="inputs" onSubmit={JobPostHandler} >
+            <form className="inputs" onSubmit={JobPostHandler}>
                 <div className="input">
                     <img src={user_icon} alt="user_icon" />
-                    <input type="text" placeholder='Company Name' value={company} onChange={(e) => {setCompany(e.target.value); }} />
+                    <input
+                        type="text"
+                        placeholder="Company Name"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                    />
                 </div>
                 <div className="input m-t-2 bg-[#eaeaea]">
-                    <img src={description_icon} alt="description_icon" width={20} height={25}/> 
-                    <input type="text" placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
-                     {/* <textarea className='w-full my-4 row-5 col-30 p-2 bg-[#eaeaea] m-y-2 rounded-lg pl-12 border' placeholder='Description' value={description} onChange={(e) => {setDescription(e.target.value); }} name="" id=""></textarea> */}
-
-                </div>
-                <div className="input">
-                <img src={role_icon} alt="role_icon" width="25" height="18" />
-                    <input type="text" placeholder='Enter Role' value={position} onChange={(e) => setPosition(e.target.value)} />
-                </div>
-                <div className="input">
-                <img src={location_icon} alt="location_icon" width={25} height={18}/>
-                    <input type="text" placeholder='Location' value={location} onChange={(e) => setLocation(e.target.value)} />
-                </div>
-                <div className="input">
-                <img src={salary_icon} alt="salary_icon" width="25" height="18" />
-                    <input type="text" placeholder='Salary' value={salary} onChange={(e) => setSalary(e.target.value)} />
-                </div>
-                <div className='input' style={{ padding: '10px' }}>
-                    <div style={{ flex: '1', padding: '10px' }}>
-                        <input type='text' placeholder='10th' style={{ width: "100%" }} value={tenth} onChange={(e) => setTenth(e.target.value)}/>
-                    </div>
-                    <div style={{ flex: '1' }} >
-                        <input type='text' placeholder='12th' style={{ width: '100%'}} value={tweleth} onChange={(e) => setTweleth(e.target.value)}/>
-                    </div>
-                </div>
-                <div className='input' style={{ padding: '20px' }}>
-                    <input type="number" min={50} max={100} placeholder='Graduation Marks' value={graduationMarks} onChange={(e) => setGraduationMarks(e.target.value)}/>
-                </div>
-                {/* <div className="input">
-                    <img src={year_icon} alt="year_icon" width="32" height="23" />
-                    <input type="date" placeholder='Date' value={testdate} onChange={(e) => {setTestdate(e.target.value); }} />
-                </div> */}
-                <div className="input">
-                <img src={positions_icon} alt="positions_icon" width="25" height="18" />
-                    <input type="Number" placeholder='Enter Number of position' value={numbers} onChange={(e) => {setNumbers(e.target.value); }} />
-                </div>
-                {/* <div className='input'>
-                    <img src={jd_icon} alt='jd_icon' width='25' height="18" />
-                    <Input
-                        accept='application/pdf'
-                        type='file'
-                        className='cursor-pointer'
-                        onChange={handleJDChange}
+                    <img src={description_icon} alt="description_icon" width={20} height={25} />
+                    <input
+                        type="text"
+                        placeholder="Description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
                     />
-                </div> */}
+                </div>
+                <div className="input">
+                    <img src={role_icon} alt="role_icon" width="25" height="18" />
+                    <input
+                        type="text"
+                        placeholder="Enter Role"
+                        name="position"
+                        value={formData.position}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="input">
+                    <img src={location_icon} alt="location_icon" width={25} height={18} />
+                    <input
+                        type="text"
+                        placeholder="Location"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="input">
+                    <img src={salary_icon} alt="salary_icon" width="25" height="18" />
+                    <input
+                        type="text"
+                        placeholder="Salary"
+                        name="salary"
+                        value={formData.salary}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="input" style={{ padding: '10px' }}>
+                    <div style={{ flex: '1', padding: '10px' }}>
+                        <input
+                            type="text"
+                            placeholder="10th"
+                            name="tenth"
+                            style={{ width: '100%' }}
+                            value={formData.tenth}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div style={{ flex: '1' }}>
+                        <input
+                            type="text"
+                            placeholder="12th"
+                            name="tweleth"
+                            style={{ width: '100%' }}
+                            value={formData.tweleth}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+                <div className="input" style={{ padding: '20px' }}>
+                    <input
+                        type="number"
+                        min={50}
+                        max={100}
+                        placeholder="Graduation Marks"
+                        name="graduationMarks"
+                        value={formData.graduationMarks}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="input">
+                    <img src={positions_icon} alt="positions_icon" width="25" height="18" />
+                    <input
+                        type="number"
+                        placeholder="Enter Number of Positions"
+                        name="numbers"
+                        value={formData.numbers}
+                        onChange={handleChange}
+                    />
+                </div>
                 <div className="submit-container">
                     <button type="submit" className="submitBtn">
                         Submit
                     </button>
-                    
                 </div>
             </form>
         </div>
     );
-}
+};
 
 export default JobPost;
