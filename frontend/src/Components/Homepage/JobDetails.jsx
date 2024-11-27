@@ -12,10 +12,8 @@ const JobDetails = ({ data }) => {
     const [isApplied, setIsApplied] = useState(applied.includes(data._id));
     const role = localStorage.getItem('role');
     const id = data._id;
-
     const [showPopup, setShowPopup] = useState(false);
     const [studentData] = useState(JSON.parse(localStorage.getItem('user')));
-
     const applyHandler = async (e) => {
         e.preventDefault();
         try {
@@ -34,8 +32,7 @@ const JobDetails = ({ data }) => {
         }
     }
     const navigate = useNavigate();
-    const jobId = "abcdefgh";
-
+   
     const handleApplyClick = () => {
         setShowPopup(true);
     };
@@ -48,7 +45,7 @@ const JobDetails = ({ data }) => {
         applyHandler(new Event('apply'));
         setShowPopup(false);
     };
-
+     
     const handleEditProfileClick = () => {
         navigate('/profile');
     };
@@ -118,7 +115,7 @@ const JobDetails = ({ data }) => {
                                 </div>
                                 <div className="flex justify-between">
                                     <p className="font-medium text-gray-700">
-                                        <strong>Bio:</strong> {studentData?.bio || "N/A"}
+                                        <strong>Bio:</strong> {studentData?.profile.bio || "N/A"}
                                     </p>
                                 </div>
                             </div>
@@ -126,17 +123,17 @@ const JobDetails = ({ data }) => {
                             <div className="flex flex-col gap-4 mb-4">
                                 <div className="flex justify-between">
                                     <p className="font-medium text-gray-700">
-                                        <strong>10th Marks:</strong> {studentData?.marks?.tenth || "N/A"}
+                                        <strong>10th Marks:</strong> {studentData.profile.tenth +"%"|| "N/A"}
                                     </p>
                                 </div>
                                 <div className="flex justify-between">
                                     <p className="font-medium text-gray-700">
-                                        <strong>12th Marks:</strong> {studentData?.marks?.twelth || "N/A"}
+                                        <strong>12th Marks:</strong> {studentData?.profile?.tweleth+"%" || "N/A"}
                                     </p>
                                 </div>
                                 <div className="flex justify-between">
                                     <p className="font-medium text-gray-700">
-                                        <strong>Graduation Marks:</strong> {studentData?.marks?.graduation || "N/A"}
+                                        <strong>Graduation Marks:</strong> {studentData?.profile?.graduationMarks+"%" || "N/A"}
                                     </p>
                                 </div>
                             </div>
@@ -144,7 +141,7 @@ const JobDetails = ({ data }) => {
                             <p className="font-medium text-gray-700 mb-4">
                                 <strong>Resume:</strong>
                                 <a
-                                    href={studentData?.resume || "#"}
+                                    href={studentData?.profile.resume || "#"}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 ml-2"
