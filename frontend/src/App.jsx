@@ -16,6 +16,7 @@ import EmailVerification from './Components/LoginSignUp/EmailVerification.jsx';
 import loginProtected from './protectedRoutes/loginsProtected.jsx';
 import { Home } from 'lucide-react';
 import Blocked from './Components/pages/blocked.jsx';
+import Messages from './Components/pages/messages.jsx';
 import MessageBox from './Components/pages/MessageBox.jsx';
 import JobApplicantsTable from './Components/Homepage/JobApplicantsTable.jsx';
 
@@ -34,6 +35,7 @@ function App() {
           <Route path="/" element={<AppliedJobs/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/description/:id" element={<JobDescription/>}/>
+          <Route path="/message" element={<Messages></Messages>}/>
         </Route>
         {/* <Route path="" element={ <loginProtected></loginProtected> }> */}
         <Route path='/signup' element={admin?(<SignupAdmin setAdmin={setAdmin}/>):(<SignupStudent setAdmin={setAdmin}/>)}></Route>

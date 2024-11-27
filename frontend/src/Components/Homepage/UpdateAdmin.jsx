@@ -12,7 +12,7 @@ const UpdateAdmin = ({ open, setOpen }) => {
     const [loading, setLoading] = useState(false);
     //const { user } = useSelector(store => store.LoginSignUp);
     const user = JSON.parse(localStorage.getItem('user'));
-    const [bio, setBio] = useState(user.profile.bio);
+    const [bio, setBio] = useState(user?.profile?.bio);
     const[phone,setPhone]=useState(user.phone);
     const [image, setImage] = useState('');
     const dispatch = useDispatch();

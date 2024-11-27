@@ -15,7 +15,7 @@ const UpdateStudent = ({ open, setOpen }) => {
     const [tweleth, setTweleth] = useState(user?.profile?.tweleth);
     const [graduationMarks, setGraduationMarks] = useState(user?.profile?.graduationMarks);
     const [image, setImage] = useState('');
-    const [bio, setBio] = useState(user.profile.bio);
+    const [bio, setBio] = useState(user?.profile?.bio);
     const[phone,setPhone]=useState(user.phone);
     const[email,setEmail]=useState(user.email);
     const [resume, setResume] = useState(user?.profile?.resume);
