@@ -1,144 +1,189 @@
-import React, { useState } from 'react'
-import { NavLink,useNavigate } from "react-router-dom";
-import './LoginSignUp.css'
-import user_icon from '../Assets/person.png'
-import email_icon from '../Assets/email.png'
-import password_icon from '../Assets/password.png'
-import phone_icon from '../Assets/phone.png'
-import year_icon from '../Assets/year.png'
-import image_icon from '../Assets/photo.png'
-import degree_icon from '../Assets/degree.png'
-import cv_icon from '../Assets/cv.png'
-import axios from 'axios';
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from "react-router-dom";
+import user_icon from '../Assets/person.png';
+import email_icon from '../Assets/email.png';
+import password_icon from '../Assets/password.png';
+import phone_icon from '../Assets/phone.png';
+import year_icon from '../Assets/year.png';
+import image_icon from '../Assets/photo.png';
+import degree_icon from '../Assets/degree.png';
+import cv_icon from '../Assets/cv.png';
 import { toast } from 'react-toastify';
-import { Input } from '../ui/input';
-const SignupStudent = ({ setAdmin}) => {
+import { z } from 'zod';
+import axios from 'axios';
+
+// Zod validation schema
+const signupSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    graduationdegree: z.string().min(1, 'Graduation Degree is required'),
+    year: z.string().refine((val) => parseInt(val) > 0, 'Year must be a valid positive number'),
+    phone: z
+        .string()
+        .regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+    tenth: z
+        .string()
+        .regex(/^\d+$/, '10th marks must be a number')
+        .transform(Number)
+        .refine((val) => val >= 50 && val <= 100, '10th marks must be between 50 and 100'),
+    tweleth: z
+        .string()
+        .regex(/^\d+$/, '12th marks must be a number')
+        .transform(Number)
+        .refine((val) => val >= 50 && val <= 100, '12th marks must be between 50 and 100'),
+    graduationMarks: z
+        .string()
+        .regex(/^\d+$/, 'Graduation marks must be a number')
+        .transform(Number)
+        .refine((val) => val >= 50 && val <= 100, 'Graduation marks must be between 50 and 100'),
+    resume: z.string().url('Resume must be a valid URL'),
+    image: z.instanceof(File, 'Image is required'),
+});
+
+const SignupStudent = ({ setAdmin }) => {
     const navigate = useNavigate();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [graduationdegree, setGraduationDegree] = useState('');
-    const [year, setYear] = useState('');
-   
-    const [phone, setPhone] = useState('');
-    const [tenth, setTenth] = useState('');
-    const [tweleth, setTweleth] = useState('');
-    const [graduationMarks, setGraduationMarks] = useState('');
-    const [image, setImage] = useState('');
-    const [resume, setResume] = useState('');
-    const handleImageChange = (e) => {
-        setImage( e.target.files[0] );
-        console.log(image);
+
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        graduationdegree: '',
+        year: '',
+        phone: '',
+        tenth: '',
+        tweleth: '',
+        graduationMarks: '',
+        resume: '',
+        image: null,
+    });
+
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        setFormData({
+            ...formData,
+            [name]: files ? files[0] : value,
+        });
     };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
-        const data = new FormData();
-       data.append('name', name);
-        data.append('email', email);
-        data.append('password', password);
-        data.append('image', image);
-        data.append('phone', phone);
-        data.append('resume', resume);
-        data.append('tenth', tenth);
-        data.append('tweleth', tweleth);
-        data.append('graduationdegree', graduationdegree);
-        data.append('year', year);
-       data.append('graduationMarks', graduationMarks);
-      
+
         try {
+            // Validate form data
+            signupSchema.parse(formData);
+
+            const data = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                data.append(key, value);
+            });
+
             const response = await axios.post('http://localhost:8080/signup/student', data, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            const signup = response.data.success;
-            if (signup) {
-                toast.warning(response.data.Data.name.toUpperCase() + " Verify your Account");
+
+            if (response.data.success) {
+                toast.warning(`${response.data.Data.name.toUpperCase()} Verify your Account`);
                 navigate("/login");
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
-            toast.error(error.response.data.message);
+            if (error instanceof z.ZodError) {
+                const formattedErrors = error.errors.reduce((acc, curr) => {
+                    acc[curr.path[0]] = curr.message;
+                    return acc;
+                }, {});
+                setErrors(formattedErrors);
+            } else {
+                toast.error(error.response?.data?.message || 'Something went wrong.');
+            }
         }
     };
+
     return (
-        <div className='container'>
-            <div className="header">
-                <div className="text">SIGNUP <span className='text-lg'>(Student)</span> </div>
-                <div className="underline"></div>
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+            <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-8">
+                <h1 className="text-2xl font-semibold text-center text-gray-800 mb-4">
+                    Sign Up <span className="text-gray-500">(Student)</span>
+                </h1>
+                <form onSubmit={handleSignUp} className="space-y-4">
+                    {[
+                        { label: "Name", icon: user_icon, name: "name", type: "text" },
+                        { label: "Email", icon: email_icon, name: "email", type: "email" },
+                        { label: "Phone", icon: phone_icon, name: "phone", type: "tel" },
+                        { label: "Password", icon: password_icon, name: "password", type: "password" },
+                        { label: "Year", icon: year_icon, name: "year", type: "number" },
+                        { label: "Graduation Degree", icon: degree_icon, name: "graduationdegree", type: "text" },
+                        { label: "Graduation Marks", icon: degree_icon, name: "graduationMarks", type: "number" },
+                        { label: "Resume Link", icon: cv_icon, name: "resume", type: "url" },
+                        { label: "Upload Image", icon: image_icon, name: "image", type: "file", accept: "image/*" },
+                    ].map(({ label, icon, name, type, accept }) => (
+                        <div key={name} className="flex items-center gap-3">
+                            <img src={icon} alt={label} className="w-6 h-6" />
+                            <div className="w-full">
+                                <input
+                                    type={type}
+                                    name={name}
+                                    accept={accept}
+                                    placeholder={label}
+                                    onChange={handleChange}
+                                    className="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                {errors[name] && (
+                                    <p className="text-xs text-red-500 mt-1">{errors[name]}</p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                    <div className="grid grid-cols-2 gap-4">
+                        {[
+                            { label: "10th Marks", name: "tenth" },
+                            { label: "12th Marks", name: "tweleth" },
+                        ].map(({ label, name }) => (
+                            <div key={name}>
+                                <input
+                                    type="number"
+                                    name={name}
+                                    placeholder={label}
+                                    onChange={handleChange}
+                                    className="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                {errors[name] && (
+                                    <p className="text-xs text-red-500 mt-1">{errors[name]}</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-500">
+                            <span className="text-gray-700">Admin?</span>{' '}
+                            <span
+                                className="text-red-500 font-semibold cursor-pointer"
+                                onClick={() => setAdmin(true)}
+                            >
+                                Click here
+                            </span>
+                        </p>
+                        <button
+                            type="submit"
+                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            Sign Up
+                        </button>
+                    </div>
+                    <p className="text-center text-sm text-gray-600">
+                        Already have an account?{' '}
+                        <NavLink to="/login" className="text-blue-500">
+                            Login
+                        </NavLink>
+                    </p>
+                </form>
             </div>
-            <form className="inputs" onSubmit={handleSignUp} >
-                <div className="input">
-                    <img src={user_icon} alt="user_icon" />
-                    <input type="text" placeholder='Name' value={name} onChange={(e) => { setName(e.target.value); }} />
-                </div>
-                <div className="input">
-                    <img src={email_icon} alt="email_icon" />
-                    <input type="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div className="input">
-                    <img src={phone_icon} alt="phone_icon" width="22" height="20" />
-                    <input type="tel" placeholder='Phone' value={phone} onChange={(e) => setPhone(e.target.value)} />
-                </div>
-                <div className="input">
-                    <img src={password_icon} alt="password_icon" />
-                    <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <div className="input">
-                    <img src={year_icon} alt="year_icon" width="22" height="20" />
-                    <input type="number"  placeholder='Year' value={year} onChange={(e) => setYear(e.target.value)} />
-                </div>
-                <div className='input' style={{ padding: '10px' }}>
-                    <div style={{ flex: '1', padding: '10px' }}>
-                        <input type='number' step={0.01} min={50} max={100} placeholder='10th' style={{ width: "100%" }} value={tenth} onChange={(e) => setTenth(e.target.value)}/>
-                    </div>
-                    <div style={{ flex: '1' }}>
-                        <input type='number' step={0.01} min={50} max={100} placeholder='12th' style={{ width: '100%'}} value={tweleth} onChange={(e) => setTweleth(e.target.value)} />
-                    </div>
-                </div>
-                <div className='input'>
-                    <img src={degree_icon} alt="degree_icon" width={28} height={30} />
-                    <input type="text" placeholder='Graduation Degree' value={graduationdegree}  onChange={(e) => setGraduationDegree(e.target.value)}/>
-                </div>
-                <div className='input' style={{ padding: '20px' }}>
-                    <input type="number" min={50} max={100} placeholder='Graduation Marks' value={graduationMarks} onChange={(e) => setGraduationMarks(e.target.value)}/>
-                </div>
-                <div className='input'>
-                    <img src={cv_icon} alt='image-icon' placeholder='Enter Resume Link' width='28' height="30" />
-                    <Input
-                        type='url'
-                        value={resume}
-                        className='cursor-pointer'
-                        onChange={(e) => setResume(e.target.value)}
-                    />
-                </div>
-                <div className='input'>
-                    <img src={image_icon} alt='image-icon' width='23' height="21" />
-                    <Input
-                        accept='image/*'
-                        type='file'
-                        className='cursor-pointer'
-                        onChange={handleImageChange} 
-                    />
-                </div>
-                <div className='text-lg flex items-center gap-3 my-4 ml-9'>
-                    <p className="text-gray-700">Click here for signup</p>
-                    <div
-                        className='text-red-500 cursor-pointer font-semibold'
-                        onClick={() => setAdmin(true)}>
-                        Admin
-                    </div>
-                </div>
-                <div className="submit-container">
-                    <button type="submit" className="submitBtn">
-                        Submit
-                    </button>
-                    <div className={"submit gray"}>
-                        <NavLink to="/login">Login</NavLink>
-                    </div>
-                </div>
-            </form>
         </div>
     );
-}
+};
 
 export default SignupStudent;

@@ -19,7 +19,10 @@ import Blocked from './Components/pages/blocked.jsx';
 import Messages from './Components/pages/messages.jsx';
 import MessageBox from './Components/pages/MessageBox.jsx';
 import JobApplicantsTable from './Components/Homepage/JobApplicantsTable.jsx';
-
+import UserProfile from './Components/pages/UserProfile.jsx';
+import Footer from './Components/pages/Footer.jsx';
+import UserTable from './Components/pages/userTable.jsx';
+import JobTable from './Components/pages/JobTable.jsx';
 function App() {
   const[admin,setAdmin]=useState(false);
     return (
@@ -27,7 +30,7 @@ function App() {
            <Navbar></Navbar>
            
         <Routes>
-        <Route path="/" element={<Protected></Protected>}>
+        {/* <Route path="/" element={<Protected></Protected>}> */}
           <Route path="/" element={<Homepage/> }/>
           <Route path="/jobs/post" element={<JobPost/>}/>
           <Route path="/navbar" element={<Navbar/>}/>
@@ -36,7 +39,11 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/description/:id" element={<JobDescription/>}/>
           <Route path="/message" element={<Messages></Messages>}/>
-        </Route>
+          <Route path="/footer" element={<Footer/>}/>
+          <Route path="/table" element={<UserTable/>}/>
+          <Route path="/jobtable" element={<JobTable/>}/>
+          <Route path="/user/profile/:id" element={<UserProfile/>}/>
+        {/* </Route> */}
         {/* <Route path="" element={ <loginProtected></loginProtected> }> */}
         <Route path='/signup' element={admin?(<SignupAdmin setAdmin={setAdmin}/>):(<SignupStudent setAdmin={setAdmin}/>)}></Route>
           <Route path="/login" element={<Login/>}/>
@@ -45,7 +52,6 @@ function App() {
           <Route path="/blocks" element={<Blocked/>}/>
           <Route path="/messageBox" element={<MessageBox/>}/>
           <Route path="/applicantTable" element={<JobApplicantsTable/>}/>
-
 
         {/* </Route> */}
        </Routes>    

@@ -12,6 +12,7 @@ exports.signup = async (req, res) => {
     try {
     //     console.log("req",req.body.phone);
     //    // console.log(req.file," fole");
+    console.log(req.body);
         let { name, phone, email, year,password,tenth,tweleth,graduationdegree,graduationMarks,resume } = req.body;
         if (!name || !phone || !email || !year || !password||!tenth||!tweleth||!graduationMarks||!graduationdegree||!resume) {
             return res.status(400).json({
@@ -811,6 +812,31 @@ exports.my_application=async(req,res)=>{
             success:false,
             e,
             message:"Something went wrong"
+        })
+    }
+}
+
+exports.user_profile = async (req, res) => {
+    try {
+        const {id} = req.params;
+        console.log(id);
+        const user = await User.findById({ _id:id });
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "User does not exist !"
+            })
+        }
+        user.password=undefined;
+        return res.status(200).json({
+            message: "Profile fetched",
+            user,
+            success: true
+        })
+    } catch (e) {
+        return res.status(400).json({
+            message: "Something went wrong! Please try again",
+            success: false
         })
     }
 }

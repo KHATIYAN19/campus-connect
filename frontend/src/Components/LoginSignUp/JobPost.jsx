@@ -11,22 +11,30 @@ const jobPostSchema = z.object({
     position: z.string().min(3, 'Position must be at least 3 characters'),
     location: z.string().min(3, 'Location must be at least 3 characters'),
     salary: z.string().min(1, 'Salary is required'),
-    numbers: z.string().min(1, 'At least 1 position is required'),  // Changed to string for input handling
-    tenth: z.string().regex(/^\d+$/, '10th marks must be a valid number').min(1, '10th marks are required'),
-    tweleth: z.string().regex(/^\d+$/, '12th marks must be a valid number').min(1, '12th marks are required'),
-    graduationMarks: z.string().regex(/^\d+$/, 'Graduation marks must be a valid number').min(1, 'Graduation marks are required'),
+    numbers: z.string().min(1, 'At least 1 position is required'),
+    tenth: z
+        .number()
+        .min(0, '10th marks must be at least 0')
+        .max(100, '10th marks cannot exceed 100'),
+    tweleth: z
+        .number()
+        .min(0, '12th marks must be at least 0')
+        .max(100, '12th marks cannot exceed 100'),
+    graduationMarks: z
+        .number()
+        .min(0, 'Graduation marks must be at least 0')
+        .max(100, 'Graduation marks cannot exceed 100'),
 });
 
 const JobPost = () => {
     const navigate = useNavigate();
 
-    // Form state variables
     const [formData, setFormData] = useState({
-        description: '',
-        salary: '',
-        position: '',
         company: '',
+        description: '',
+        position: '',
         location: '',
+        salary: '',
         numbers: '',
         tenth: '',
         tweleth: '',
@@ -35,45 +43,44 @@ const JobPost = () => {
 
     const [errors, setErrors] = useState({});
 
-    // Input change handler
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Form submission handler with Zod validation
     const JobPostHandler = async (e) => {
         e.preventDefault();
 
-        // Perform validation
         try {
-            // Validate the form data with Zod schema
-            jobPostSchema.parse(formData);
+            // Parse and validate form data after casting marks fields to numbers
+            const validatedData = jobPostSchema.parse({
+                ...formData,
+                tenth: Number(formData.tenth),
+                tweleth: Number(formData.tweleth),
+                graduationMarks: Number(formData.graduationMarks),
+            });
 
-            // Send POST request if validation passes
-            const response = await axios.post('http://localhost:8080/jobs/post', formData, {
+            const response = await axios.post('http://localhost:8080/jobs/post', validatedData, {
                 headers: {
-                    'Content-Type': 'application/json', // Ensure JSON data is sent
+                    'Content-Type': 'application/json',
                 },
             });
 
             if (response.data.success) {
                 toast.success('Job posted successfully');
-                navigate('/'); // Redirect after success
+                navigate('/');
             } else {
-                console.log(response)
                 toast.error(response.data.message || 'Failed to post the job.');
             }
         } catch (error) {
             if (error instanceof z.ZodError) {
-                // Extract validation errors from Zod and set them to the state
                 const formattedErrors = error.errors.reduce((acc, curr) => {
                     acc[curr.path[0]] = curr.message;
                     return acc;
                 }, {});
                 setErrors(formattedErrors);
             } else {
-                toast.error(error.response.data.message || 'Something went wrong.');
+                toast.error(error.response?.data?.message || 'Something went wrong.');
             }
         }
     };
@@ -113,112 +120,45 @@ const JobPost = () => {
                         {errors.description && <p className="text-xs text-red-500 mt-2">{errors.description}</p>}
                     </div>
 
-                    <div className="mb-4">
-                        <label htmlFor="position" className="block text-sm font-semibold text-gray-700 mb-2">
-                            Job Position
-                        </label>
-                        <input
-                            type="text"
-                            id="position"
-                            name="position"
-                            value={formData.position}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {errors.position && <p className="text-xs text-red-500 mt-2">{errors.position}</p>}
-                    </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="location" className="block text-sm font-semibold text-gray-700 mb-2">
-                            Location
-                        </label>
-                        <input
-                            type="text"
-                            id="location"
-                            name="location"
-                            value={formData.location}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {errors.location && <p className="text-xs text-red-500 mt-2">{errors.location}</p>}
-                    </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="salary" className="block text-sm font-semibold text-gray-700 mb-2">
-                            Salary
-                        </label>
-                        <input
-                            type="text"
-                            id="salary"
-                            name="salary"
-                            value={formData.salary}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {errors.salary && <p className="text-xs text-red-500 mt-2">{errors.salary}</p>}
-                    </div>
-
-                    <div className="flex space-x-4 mb-4">
-                        <div className="w-full">
-                            <label htmlFor="tenth" className="block text-sm font-semibold text-gray-700 mb-2">
-                                10th Marks
+                    {['position', 'location', 'salary', 'numbers'].map((field) => (
+                        <div className="mb-4" key={field}>
+                            <label
+                                htmlFor={field}
+                                className="block text-sm font-semibold text-gray-700 mb-2"
+                            >
+                                {field.charAt(0).toUpperCase() + field.slice(1)}
                             </label>
                             <input
-                                type="number"
-                                id="tenth"
-                                name="tenth"
-                                value={formData.tenth}
+                                type="text"
+                                id={field}
+                                name={field}
+                                value={formData[field]}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            {errors.tenth && <p className="text-xs text-red-500 mt-2">{errors.tenth}</p>}
+                            {errors[field] && <p className="text-xs text-red-500 mt-2">{errors[field]}</p>}
                         </div>
+                    ))}
 
-                        <div className="w-full">
-                            <label htmlFor="tweleth" className="block text-sm font-semibold text-gray-700 mb-2">
-                                12th Marks
+                    {['tenth', 'tweleth', 'graduationMarks'].map((field) => (
+                        <div className="mb-4" key={field}>
+                            <label
+                                htmlFor={field}
+                                className="block text-sm font-semibold text-gray-700 mb-2"
+                            >
+                                {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}
                             </label>
                             <input
                                 type="number"
-                                id="tweleth"
-                                name="tweleth"
-                                value={formData.tweleth}
+                                id={field}
+                                name={field}
+                                value={formData[field]}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            {errors.tweleth && <p className="text-xs text-red-500 mt-2">{errors.tweleth}</p>}
+                            {errors[field] && <p className="text-xs text-red-500 mt-2">{errors[field]}</p>}
                         </div>
-                    </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="graduationMarks" className="block text-sm font-semibold text-gray-700 mb-2">
-                            Graduation Marks
-                        </label>
-                        <input
-                            type="number"
-                            id="graduationMarks"
-                            name="graduationMarks"
-                            value={formData.graduationMarks}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {errors.graduationMarks && <p className="text-xs text-red-500 mt-2">{errors.graduationMarks}</p>}
-                    </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="numbers" className="block text-sm font-semibold text-gray-700 mb-2">
-                            Number of Positions
-                        </label>
-                        <input
-                            type="text"
-                            id="numbers"
-                            name="numbers"
-                            value={formData.numbers}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {errors.numbers && <p className="text-xs text-red-500 mt-2">{errors.numbers}</p>}
-                    </div>
+                    ))}
 
                     <div className="mt-6">
                         <button

@@ -1,30 +1,36 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import JobDetails from './JobDetails';
-import { useState ,useEffect} from 'react';
 import axios from "../LoginSignUp/axios.js"
+
 const Jobs = () => {
-    const[jobArray,setJobArray]=useState([]);
-    useEffect(()=>{
-     axios.get("http://localhost:8080/jobs/getall").then((res)=>{
-        setJobArray(res.data.Jobs);
-        console.log(res.data.Jobs);
-     })
-     
-    },[]);
+    const [jobArray, setJobArray] = useState([]);
+    
+    useEffect(() => {
+        axios.get("http://localhost:8080/jobs/getall").then((res) => {
+            setJobArray(res.data.Jobs);
+            console.log(res.data.Jobs);
+        })
+    }, []);
+    
     return (
-        <div>
-            <div className='max-w-7xl mx-auto mt-5'>
-                <div className='flex gap-5'>
+        <div className="bg-gray-50 min-h-screen py-8">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-bold text-gray-800 mb-4">Available Job Opportunities</h1>
+                    <p className="text-lg text-gray-600">Find your dream job here. Apply now!</p>
+                </div>
+                
+                <div className="flex gap-6 justify-between">
                     {
-                        jobArray.length <= 0 ? <span>Job not available</span> : (
-                            <div className='flex-1 h-[88vh]  overflow-y-auto pb-5'>
-                                <div className='grid grid-cols-3 gap-4'>
-                                    {jobArray.map((item, idx) => (
-                                        <div>
-                                            <JobDetails data={item} />
-                                        </div>
-                                    ))}
-                                </div>
+                        jobArray.length <= 0 ? (
+                            <span className="text-xl text-gray-600">No jobs available at the moment. Please check back later.</span>
+                        ) : (
+                            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {jobArray.map((item, idx) => (
+                                    <div key={idx} className="transition-all transform hover:scale-105 duration-300">
+                                        <JobDetails data={item} />
+                                    </div>
+                                ))}
                             </div>
                         )
                     }

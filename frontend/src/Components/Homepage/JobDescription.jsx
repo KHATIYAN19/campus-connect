@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from '../LoginSignUp/axios.js'
 import { Avatar } from '../ui/avatar'
+import UserTable from '../pages/userTable'
 const JobDescription = () => {
     const [applied, setApplied] = useState('');
     const { id } = useParams();
@@ -15,7 +16,7 @@ const JobDescription = () => {
 
     const [showPopup, setShowPopup] = useState(false);
     const [studentData] = useState(JSON.parse(localStorage.getItem('user')));
-
+    const[users,setUser]=useState('');
     const fetchApplications = async () => {
         console.log(user);
         try {
@@ -27,17 +28,20 @@ const JobDescription = () => {
     };
     // let isallow=false;
     const findAllow = () => {
-        console.log(job.tenth, "  ", user.profile.tenth)
-        console.log(job.tweleth, "  ", user.profile.tweleth)
-        console.log(job.graduationMarks, " ", user.profile.graduationMarks)
-        if (job.tenth <= user.profile.tenth && job.tweleth <= user.profile.tweleth && job.graduationMarks <= user.profile.graduationMarks) {
-            console.log("true");
-            setIsallow(true);
-        }
+        // console.log(job.tenth, "  ", user.profile.tenth)
+        // console.log(job.tweleth, "  ", user.profile.tweleth)
+        // console.log(job.graduationMarks, " ", user.profile.graduationMarks)
+        // if (job.tenth <= user.profile.tenth && job.tweleth <= user.profile.tweleth && job.graduationMarks <= user.profile.graduationMarks) {
+        //     console.log("true");
+        //     setIsallow(true);
+        // }
     }
     const fetchJobDetails = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/jobs/${id}`);
+            const response2=await axios.get(`jobs/applications/${id}`);
+            console.log(response2.data.data)
+             setUser(response2.data.data);
             setJob(response.data.job);
         } catch (error) {
             console.error('Error fetching job details:', error);
@@ -188,8 +192,14 @@ const JobDescription = () => {
                             </Button>
                         </div>
                     </div>
+                   
                 </div>
             )}
+            <div>
+               {
+                    isAdmin==='admin'?(<UserTable applies={users}/>):(<></>)
+               }
+            </div>
         </div>
     )
 }

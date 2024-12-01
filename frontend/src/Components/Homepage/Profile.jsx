@@ -13,18 +13,26 @@ import { Button } from '../ui/button'
 import UpdateStudent from './UpdateStudent'
 import UpdateAdmin from './UpdateAdmin'
 import PostedJobTable from './PostedJobTable'
+import JobTable from '../pages/JobTable'
 
 const Profile = () => {
     const role=localStorage.getItem('role');
     const[profile,SetProfile]=useState([]);
     const [data,setData]=useState([]);
+    const [adminData,setAdminData]=useState([]);
      useEffect(()=>{
        axios.get("http://localhost:8080/profile").then((res)=>{
        SetProfile(res.data.user);
        setData(res.data.data);
      })
     },[]);
-    
+
+        useEffect(()=>{
+            axios.get("http://localhost:8080/jobs/get/myjobs").then((res)=>{
+                setAdminData(res.data.jobs);
+                console.log(res.data.jobs)
+        })}
+        ,[]);
     const [open, setOpen] = useState(false);
     return (
         <div>
@@ -61,7 +69,7 @@ const Profile = () => {
             </div>
             <div className='max-w-4xl mx-auto bg-white rounded-2x'>
                 {role==='student'?(<h1 className='font-bold text-lg my-5'>Applied Jobs</h1>):(<h1 className='font-bold text-lg my-5'>Posted Jobs</h1>)}
-                {role=='student'?(<AppliedJobTable data={data}/>):(<PostedJobTable data={data}/>)}
+                {role=='student'?(<JobTable admin={false} jobData={data}/>):(<JobTable admin={true} jobData={adminData}/>)}
             </div>
            
             <UpdateAdmin open={role === 'admin' && open} setOpen={setOpen} />
@@ -69,4 +77,4 @@ const Profile = () => {
         </div>
     )
 }
-export default Profile
+export default Profile;

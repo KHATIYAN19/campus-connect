@@ -39,7 +39,7 @@ const Blocked = () => {
     try {
       const response = await axios.post(
         "http://localhost:8080/blocked/addUser",
-        { email } // Ensure correct payload structure
+        { email }
       );
 
       const signup = response.data.success;
@@ -80,15 +80,15 @@ const Blocked = () => {
   };
 
   return (
-    <div className="my-10 w-full max-w-2xl mx-auto px-6">
+    <div className="my-10 w-full max-w-4xl mx-auto px-6">
       {/* Block User Form */}
-      <Card>
+      <Card className="bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 shadow-lg rounded-lg">
         <CardHeader>
-          <CardTitle>Block User</CardTitle>
+          <CardTitle className="text-white text-lg font-semibold">Block User</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-white">
           <div className="mb-4">
-            <p className="text-gray-700">Enter the email address to block a user:</p>
+            <p className="text-gray-200 text-sm">Enter the email address to block a user:</p>
           </div>
           <form onSubmit={addHandler} className="flex items-center gap-4">
             <Input
@@ -98,11 +98,11 @@ const Blocked = () => {
               placeholder="Enter Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full max-w-md rounded-lg"
+              className="w-full max-w-md rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             />
             <Button
               type="submit"
-              className="rounded-full w-9 h-9 flex items-center justify-center p-0 bg-yellow-600"
+              className="rounded-full w-10 h-10 flex items-center justify-center p-0 bg-yellow-600 hover:bg-yellow-700 focus:ring-2 focus:ring-yellow-500 transition"
             >
               <GrLinkNext size={20} />
             </Button>
@@ -111,27 +111,27 @@ const Blocked = () => {
       </Card>
 
       {/* Blocked Users List */}
-      <Card className="mt-8">
+      <Card className="mt-8 bg-gray-50 shadow-lg rounded-lg">
         <CardHeader>
-          <CardTitle>All Blocked Users</CardTitle>
+          <CardTitle className="text-xl font-semibold text-gray-800">All Blocked Users</CardTitle>
         </CardHeader>
         <CardContent>
           {user.length === 0 ? (
-            <p className="text-gray-600 text-center">No blocked users found.</p>
+            <p className="text-center text-gray-600 text-lg">No blocked users found.</p>
           ) : (
             <div className="space-y-4">
               {user.map((item, idx) => (
                 <div
                   key={item.email}
-                  className="flex items-center justify-between p-4 bg-gray-100 rounded-lg"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all ease-in-out duration-300 transform hover:scale-105"
                 >
                   <div className="flex items-center gap-4">
-                    <p className="font-medium">{idx + 1}.</p>
-                    <p className="text-gray-700">{item.email}</p>
+                    <p className="font-semibold text-lg text-gray-800">{idx + 1}.</p>
+                    <p className="text-gray-700 text-md">{item.email}</p>
                   </div>
                   <Button
                     variant="destructive"
-                    className="p-2"
+                    className="p-2 bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 transition duration-200"
                     onClick={() => deleteHandler(item.email)}
                   >
                     <MdDelete size={20} />
@@ -145,4 +145,5 @@ const Blocked = () => {
     </div>
   );
 };
+
 export default Blocked;

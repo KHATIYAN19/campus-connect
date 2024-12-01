@@ -260,3 +260,28 @@ exports.jobbyid=async(req,res)=>{
         })
      }
 }
+
+exports.my_jobs=async(req,res)=>{
+  var user_id =req.user.id;
+  try{
+    const  user_data=await User.findOne({_id:user_id});
+    if(!user_data){
+       return res.status(400).json({
+          message:"No User found",
+          success:false
+       })
+    }
+      const jobs = await Job.find({ postby: user_id })
+      return res.status(200).json({
+        message:"Jobs fetched",
+        success:true,
+        jobs
+      })
+  }catch(e){
+     return res.status(400).json({
+      message:"Something went wrong",
+      success:false,
+      e
+     })
+  }
+}
