@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			monrope: ['Monrope', 'sans-serif'], // Add Monrope to the fontFamily
+		  },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
@@ -56,5 +59,19 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("daisyui")],
+ // plugins: [require("tailwindcss-animate")],
+  daisyui: {
+    themes: ["light", "dark", "cupcake"], // Choose themes here
+  },
 }
+
+// module.exports = {
+// 	content: [
+// 	  "./src/**/*.{js,jsx,ts,tsx}",
+// 	],
+// 	theme: {
+// 	  extend: {},
+// 	},
+// 	plugins: [require('daisyui')],
+//   }

@@ -1,7 +1,8 @@
 import React from 'react';
 import { FaTrash, FaClock } from 'react-icons/fa';
 
-const MessageComponent = ({ userImage, userName, collegeName, message, batch, timeAgo, link }) => {
+const MessageComponent = ({ userImage, userName, collegeName, message, batch, timeAgo }) => {
+  const role = localStorage.getItem('role');
   return (
     <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200 w-[60%] min-h-[20rem] mx-auto font-serif transition hover:bg-opacity-90">
       {/* Top Section */}
@@ -21,10 +22,12 @@ const MessageComponent = ({ userImage, userName, collegeName, message, batch, ti
         {/* Time & Delete Icon */}
         <div className="flex items-center space-x-2 text-gray-400">
           <FaClock className="text-gray-500" />
-          <span className="text-sm">{timeAgo}</span>
-          <button className="text-red-500 hover:text-red-700 transition">
-            <FaTrash />
-          </button>
+          <span className="text-sm">{timeAgo} days ago</span>
+          {/* {
+            role==='admin'?(<button className="text-red-500 hover:text-red-700 transition">
+              <FaTrash />
+            </button>):(<></>)
+          } */}
         </div>
       </div>
 
@@ -32,7 +35,7 @@ const MessageComponent = ({ userImage, userName, collegeName, message, batch, ti
       <hr className="my-3 border-gray-300" />
 
       {/* Message */}
-      <p className="text-gray-800 text-lg leading-relaxed mb-3">{message}</p>
+      <p className="text-gray-800 text-lg  min-h-[10rem] leading-relaxed mb-3">{message}</p>
 
      
 

@@ -4,7 +4,6 @@ import { Avatar, AvatarImage } from '../ui/avatar'
 import { Contact, Mail, Pen } from 'lucide-react'
 import { Badge } from '../ui/badge'
 import { Label } from '../ui/label'
-import AppliedJobTable from './AppliedJobTable'
 import { useState,useEffect } from 'react'
 const haveResume = true;
 import axios from '../LoginSignUp/axios.js'
@@ -12,7 +11,6 @@ import App from '@/App'
 import { Button } from '../ui/button'
 import UpdateStudent from './UpdateStudent'
 import UpdateAdmin from './UpdateAdmin'
-import PostedJobTable from './PostedJobTable'
 import JobTable from '../pages/JobTable'
 
 const Profile = () => {

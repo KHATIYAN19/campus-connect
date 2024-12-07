@@ -1,0 +1,16 @@
+
+/* Add to your global CSS or Tailwind config */
+@media (max-width: 768px) {
+    .navbar {
+      display: block;  /* Stack items vertically */
+    }
+  
+    .navbar ul {
+      display: none; /* Hide nav items for small screens */
+    }
+  
+    .navbar .mobile-menu {
+      display: block; /* You can add a hamburger menu here */
+    }
+  }
+  

@@ -108,5 +108,4 @@ const UpdateAdmin = ({ open, setOpen }) => {
         </div>
     )
 }
-
 export default UpdateAdmin;

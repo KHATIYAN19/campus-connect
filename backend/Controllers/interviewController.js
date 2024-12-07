@@ -1,12 +1,12 @@
-const Message = require("../Models/messageModel");
+const Interview = require("../Models/interview");
 const User = require("../Models/userModel");
-exports.post_msg = async (req, res) => {
+
+exports.post_interview = async (req, res) => {
     console.log(req.body,"red");
     try {
         let id = req.user.id;
-        const { msg ,year} = req.body;
-        console.log(msg);
-        if (!msg||!year) {
+        const { title,company,experience} = req.body;
+        if (!title||!company||!experience) {
             return res.status(400).json({
                 message: "All field Required",
                 success: false
@@ -19,41 +19,33 @@ exports.post_msg = async (req, res) => {
                  success:false 
               });
             }
-            const message = new Message({
-              msg,
-              year,
-              postby: id
+            let interview = new Interview({
+               title,
+               company,
+               description:experience,
+               postby: id
             });
-            await message.save();
-            user.messages.push(message._id);
-            await user.save();
+              await interview.save();
+            interview=await Interview.findById(interview._id).populate('postby').exec();
             res.status(201).json({
                 success:"true",
-                message:"Message Posted"
+                message:"Interview Upload",
+                interview
             });
           } catch (err) {
             console.error(err);
-            res.status(500).json({ message: 'Error posting message' });
+            res.status(500).json({ message: 'Error posting Interview' });
           }    
 }
-exports.getallmsg = async (req, res) => {
+exports.getAll = async (req, res) => {
     try {
         console.log(req.user);
-        let messages = await Message.find({}).sort({ createdAt: -1 }).populate('postby').exec();
-        if(req.user.role==='admin'){
+        let interview = await Interview.find({}).sort({ createdAt: -1 }).populate('postby').exec();
         res.status(200).json({
-            message: "All message fetched",
+            message: "All interview fetched",
             success: true,
-            messages
-        })}else{
-            const year=req.user.year;
-             messages=messages.filter(message=>message.year==year);
-            res.status(200).json({
-                message: "All message fetched",
-                success: true,
-                messages
-            });
-        }
+            interview
+        });
     } catch (e) {
         return res.status(400).json({
             message: "Something went wrong",
@@ -64,10 +56,9 @@ exports.getallmsg = async (req, res) => {
 exports.getmymsg = async (req, res) => {
     try {
         let id = req.user.id;
-        const user_data = await User.findOne({ _id: id }).populate('messages').exec();
-        const data = user_data.messages;
+        const data=await Interview.find({postby:id});
         return res.status(200).json({
-            message: "All message fetched",
+            message: "All interview fetched",
             data,
             success: true
         })

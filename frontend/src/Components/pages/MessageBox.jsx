@@ -1,59 +1,39 @@
 import React, { useState } from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { ScrollArea } from '../ui/scroll-area';
-import { Trash2 } from 'lucide-react'; // Trash icon for deleting messages
+import { useNavigate } from 'react-router-dom';
+import axios from '../LoginSignUp/axios.js';
+import { toast } from 'react-toastify';
 
 const MessageBox = (props) => {
-  const [formData, setFormData] = useState({
-    message: "",
-    batch: "",
-  });
-  const [responseMessage, setResponseMessage] = useState("");
+  const[msg,setMsg]=useState("");
+  const[year,setYear]=useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
+  const navigate=useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setResponseMessage("Submitting...");
-
     try {
-      const response = await fetch("http://localhost:8080/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const response = await axios.post("http://localhost:8080/message/post", {
+        msg,
+        year
       });
-
-      if (response.ok) {
-        setResponseMessage("Form submitted successfully!");
-        setFormData({ message: "", batch: "" });
+      if (response.data.success) {
+           toast.success("Notice Sent");
+           navigate("/notices");
       } else {
-        setResponseMessage("Failed to submit the form.");
+          toast.error(response.error)
       }
     } catch (error) {
-      console.error("Error:", error);
-      setResponseMessage("An error occurred.");
+      toast.error(error.response.data.message)
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br bg-slate-100 flex items-center justify-center p-4">
       <form
         className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-lg border-4 border-transparent transition hover:border-blue-500"
         onSubmit={handleSubmit}
       >
         <h1 className="text-3xl font-bold text-blue-600 text-center mb-6">
-          Send Message
+          Send Notice
         </h1>
 
         {/* Message Field */}
@@ -68,8 +48,8 @@ const MessageBox = (props) => {
             id="message"
             name="message"
             rows="4"
-            value={formData.message}
-            onChange={handleChange}
+            value={msg}
+            onChange={(e)=>setMsg(e.target.value)}
             placeholder="Write your message..."
             className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-blue-400 transition"
           ></textarea>
@@ -87,8 +67,8 @@ const MessageBox = (props) => {
             type="text"
             id="batch"
             name="batch"
-            value={formData.batch}
-            onChange={handleChange}
+            value={year}
+            onChange={(e)=>setYear(e.target.value)}
             placeholder="Enter batch (e.g., 2025)"
             className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-blue-400 transition"
           />
@@ -103,7 +83,7 @@ const MessageBox = (props) => {
         </button>
 
         {/* Response Message */}
-        {responseMessage && (
+        {/* {responseMessage && (
           <p
             className={`mt-4 text-center text-sm ${
               responseMessage.includes("success")
@@ -112,8 +92,8 @@ const MessageBox = (props) => {
             }`}
           >
             {responseMessage}
-          </p>
-        )}
+          </p> */}
+        {/* )} */}
       </form>
     </div>
   );
