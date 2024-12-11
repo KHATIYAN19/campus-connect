@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "../LoginSignUp/axios";
 import { z } from "zod";
 import { toast } from 'react-toastify';
-
+import { useNavigate } from "react-router-dom";
 const InterviewExperiences = ({ show }) => {
   const [experiences, setExperiences] = useState([]);
-  
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get("http://localhost:8080/interview/getall")
@@ -54,6 +54,7 @@ const InterviewExperiences = ({ show }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -107,7 +108,7 @@ const InterviewExperiences = ({ show }) => {
       <div className="">
         {experiencesToDisplay.map((experience, index) => (
           <div
-            key={experience.id}
+            key={experience._id}
             className="my-8 flex flex-col bg-white shadow-xl p-6 hover:scale-105 transition-transform duration-300 max-w-3xl mx-auto rounded-2xl"
           >
             <div className="flex justify-between items-start mb-4">
@@ -117,7 +118,7 @@ const InterviewExperiences = ({ show }) => {
               </div>
             </div>
             <div className="mb-4">
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-4 cursor-pointer" onClick={()=>navigate(`/user/profile/${experience.postby._id}`)} >
                 <img
                   src={experience.postby.image}
                   alt="User"
@@ -129,16 +130,20 @@ const InterviewExperiences = ({ show }) => {
                 </div>
               </div>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">{experience.title}</h3>
-              <p className="text-gray-600 mb-4 line-clamp-3">
-                {expanded === experience.id
-                  ? experience.description
-                  : `${experience.description.slice(0, 100)}...`}
+              <p  className={`text-gray-600 mb-4 ${
+                    expanded === experience._id ? '' : 'line-clamp-3'
+              }`}
+              >
+              {expanded === experience._id
+              ? experience.description
+               : `${experience.description?.slice(0, 100) || ''}...`}
               </p>
+              
               <button
                 className="text-blue-500 hover:underline font-medium"
-                onClick={() => toggleReadMore(experience.id)}
+                onClick={() => toggleReadMore(experience._id)}
               >
-                {expanded === experience.id ? "Read less" : "Read more →"}
+                {expanded === experience._id ? "Read less" : "Read more →"}
               </button>
             </div>
           </div>

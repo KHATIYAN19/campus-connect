@@ -25,6 +25,7 @@ const Navbar = () => {
         localStorage.removeItem("role");
         toast.success("Logout Successfully");
         navigate("/login");
+        window.location.reload();
       }
     } catch (error) {
       toast.error(error.response.data.message);
@@ -43,8 +44,9 @@ const Navbar = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         toast.success("Account Deleted!");
-        navigate("/login");
         setShowPopup(false);
+        navigate("/login");
+        window.location.reload();
       }
     } catch (error) {
       toast.error(error.response.data.message);

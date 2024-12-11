@@ -31,10 +31,10 @@ const JobDescription = () => {
     const fetchJobDetails = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/jobs/${id}`);
-            setJob(response.data.job || {});
-            if (isAdmin) {
-                const applicationsResponse = await axios.get(`http://localhost:8080/jobs/applications/${id}`);
-                setUsers(applicationsResponse.data.data || []);
+            setJob(response.data.job);
+            if (isAdmin === 'admin') {
+                const response2 = await axios.get(`http://localhost:8080/jobs/applications/${id}`);
+                setUser(response2.data.data);
             }
         } catch (error) {
             console.error('Error fetching job details:', error);
@@ -72,11 +72,11 @@ const JobDescription = () => {
     }, []);
 
     useEffect(() => {
-        findAllow();
-    }, [job]);
+        isAdmin==='student'?findAllow():'';
+    });
 
-    const isApplied = applied.includes(job._id);
-
+    const Applied = applied.includes(job._id);
+    
     return (
         <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-100 via-blue-100 to-green-100 rounded-xl shadow-2xl mt-8">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
@@ -117,24 +117,19 @@ const JobDescription = () => {
                     )
                 )}
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-purple-800 border-b-4 border-purple-300 py-2">Job Description</h2>
-            <div className="mt-4 space-y-3 text-gray-800">
-                {Object.entries({
-                    Role: job.position,
-                    Location: job.location,
-                    Description: job.description,
-                    Experience: '0-2 years',
-                    Batch: '2025',
-                    Salary: `${job.salary} LPA`,
-                    'Total Applicants': job.numbers,
-                    '10th Percentage': `Above ${job.tenth}%`,
-                    '12th Percentage': `Above ${job.tweleth}%`,
-                    'Graduation Percentage': `Above ${job.graduationMarks}%`,
-                }).map(([key, value]) => (
-                    <p key={key} className="text-sm sm:text-base">
-                        <strong className="text-purple-700">{key}:</strong> {value}
-                    </p>
-                ))}
+            <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>Job Description </h1>
+            <div className='my-4'>
+                
+                <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{job.position}</span></h1>
+                <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{job.location}</span></h1>
+                <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{job.description}</span></h1>
+                <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>0-2 years</span></h1>
+                <h1 className='font-bold my-1'>Batch: <span className='pl-4 font-normal text-gray-800'>2025</span></h1>
+                <h1 className='font-bold my-1'>Salary: <span className='pl-4 font-normal text-gray-800'>{job.salary} LPA</span></h1>
+                <h1 className='font-bold my-1'>Total Applicants: <span className='pl-4 font-normal text-gray-800'>{job.numbers}</span></h1>
+                <h1 className='font-bold my-1'>10<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tenth}%</span></h1>
+                <h1 className='font-bold my-1'>12<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tweleth}%</span></h1>
+                <h1 className='font-bold my-1'>Graduation Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.graduationMarks}%</span></h1>
             </div>
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
