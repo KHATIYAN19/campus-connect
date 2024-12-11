@@ -2,9 +2,13 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useState,useEffect } from 'react';
 import axios from "../LoginSignUp/axios"
+import { Link } from 'react-router-dom';
 const UserProfile = () => {
+
+  
   const { id } = useParams();
   const [user,setUser]=useState('');
+  const role=localStorage.getItem('role');
   const fetchUser = async () => {
     try {
         const response = await axios.get(`http://localhost:8080/user/profile/${id}`);
@@ -19,7 +23,15 @@ const UserProfile = () => {
     console.log("user",user);
   }, []);
  
-
+  const handleOpenResume = () => {
+    if (user?.profile?.resume) {
+      // Open the resume in a new tab
+      const formattedUrl = user.profile.resume.replace("/view?usp=sharing", "/preview");
+      window.open(formattedUrl, "_blank");
+    } else {
+      alert("No resume link found!");
+    }
+  };
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto my-10 " >
       {/* User Image */}
@@ -41,25 +53,40 @@ const UserProfile = () => {
             <span className="font-medium text-gray-700">College:</span>{" "}
             <span className="text-blue-600">GL BAJAJ INSTITUTE OF TECHNOLOGY AND MANAGEMENT</span>
           </p>
-          <p>
-            <span className="font-medium text-gray-700">10th Marks:</span>{" "}
-            <span className="text-blue-600">{user?.profile?.tenth}</span>
-          </p>
-          <p>
-            <span className="font-medium text-gray-700">12th Marks:</span>{" "}
-            <span className="text-blue-600">{user?.profile?.tweleth}</span>
-          </p>
-          <p>
-            <span className="font-medium text-gray-700">Graduation Degree:</span>{" "}
-            <span className="text-blue-600">{user?.profile?.graduationdegree}</span>
-          </p>
-          <p>
-            <span className="font-medium text-gray-700">Graduation Marks:</span>{" "}
-            <span className="text-blue-600">{user?.profile?.graduationMarks}</span>
-          </p>
+          {
+            user.role==='student'?(<><p>
+              <span className="font-medium text-gray-700">10th Marks:</span>{" "}
+              <span className="text-blue-600">{user?.profile?.tenth}</span>
+            </p>
+            <p>
+              <span className="font-medium text-gray-700">12th Marks:</span>{" "}
+              <span className="text-blue-600">{user?.profile?.tweleth}</span>
+            </p>
+            <p>
+              <span className="font-medium text-gray-700">Graduation Degree:</span>{" "}
+              <span className="text-blue-600">{user?.profile?.graduationdegree}</span>
+            </p>
+            <p>
+              <span className="font-medium text-gray-700">Graduation Marks:</span>{" "}
+              <span className="text-blue-600">{user?.profile?.graduationMarks}</span>
+            </p>
+
+            <p>
+              <span className="font-medium text-gray-700">Resume: </span>{" "}
+              <span className="text-blue-600 cursor-pointer " >{user?.profile?.resume}</span>
+            </p>
+            <button
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        onClick={handleOpenResume}
+      >
+        View Resume
+      </button>
+
+         </>):(<></>)
+          }
         </div>
       </div>
-
+        
       <hr className="my-6 border-gray-300" />
 
       {/* Contact Information */}
