@@ -72,11 +72,11 @@ const JobDescription = () => {
     }, []);
 
     useEffect(() => {
-        isAdmin==='student'?findAllow():'';
+        isAdmin === 'student' ? findAllow() : '';
     });
 
     const Applied = applied.includes(job._id);
-    
+
     return (
         <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-100 via-blue-100 to-green-100 rounded-xl shadow-2xl mt-8">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
@@ -118,8 +118,9 @@ const JobDescription = () => {
                 )}
             </div>
             <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>Job Description </h1>
-            <div className='my-4'>
-                
+            <div>
+                <div className='my-8'>
+
                 <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{job.position}</span></h1>
                 <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{job.location}</span></h1>
                 <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{job.description}</span></h1>
@@ -130,6 +131,12 @@ const JobDescription = () => {
                 <h1 className='font-bold my-1'>10<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tenth}%</span></h1>
                 <h1 className='font-bold my-1'>12<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tweleth}%</span></h1>
                 <h1 className='font-bold my-1'>Graduation Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.graduationMarks}%</span></h1>
+            </div>
+            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-xl shadow-lg">
+                <p className="text-center font-semibold">
+                    Posted by: <a href="#" className="underline hover:text-yellow-300">{job.postedBy || 'N/A'}</a>
+                </p>
+            </div>
             </div>
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
