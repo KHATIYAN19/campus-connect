@@ -32,7 +32,6 @@ function App() {
     return (    
          <div className='font-serif'  data-theme={theme}>
            <Navbar></Navbar>
-           
         <Routes>
 
         <Route path="/login" element={isLogin?(<Homepage/>):(<Login/>)}/><Route/>

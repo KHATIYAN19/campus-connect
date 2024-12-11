@@ -33,7 +33,6 @@ const JobDescription = () => {
         try {
             const response = await axios.get(`http://localhost:8080/jobs/${id}`);
             setJob(response.data.job);
-            console.log(response.data.job); 
             if (isAdmin === 'admin') {
                 const response2 = await axios.get(`http://localhost:8080/jobs/applications/${id}`);
                 setUser(response2.data.data);
@@ -89,11 +88,11 @@ const JobDescription = () => {
     }, []);
 
     useEffect(() => {
-        findAllow();
+        isAdmin==='student'?findAllow():'';
     });
 
     const Applied = applied.includes(job._id);
-
+    
     return (
         <div className='max-w-7xl mx-auto my-10'>
             <div className='flex items-center justify-between'>
@@ -114,6 +113,7 @@ const JobDescription = () => {
             </div>
             <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>Job Description </h1>
             <div className='my-4'>
+                
                 <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{job.position}</span></h1>
                 <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{job.location}</span></h1>
                 <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{job.description}</span></h1>
