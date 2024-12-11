@@ -94,14 +94,14 @@ const JobDescription = () => {
                     isAllow ? (
                         isApplied ? (
                             <Button
-                                className="mt-4 sm:mt-0 bg-gray-400 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed"
+                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-xl cursor-not-allowed"
                                 disabled
                             >
                                 Already Applied
                             </Button>
                         ) : (
                             <Button
-                                className="mt-4 sm:mt-0 bg-gradient-to-r from-yellow-500 to-yellow-700 hover:from-yellow-600 hover:to-yellow-800 text-white font-semibold px-4 py-2 rounded-lg"
+                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 hover:from-pink-600 hover:to-purple-800 text-white font-semibold px-4 py-2 rounded-lg"
                                 onClick={handleApplyClick}
                             >
                                 Apply Now
@@ -109,7 +109,7 @@ const JobDescription = () => {
                         )
                     ) : (
                         <Button
-                            className="mt-4 sm:mt-0 bg-gray-400 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed"
+                            className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed"
                             disabled
                         >
                             Not Allowed
