@@ -1,31 +1,30 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../LoginSignUp/axios.js';
 import { Avatar } from '../ui/avatar';
 import UserTable from '../pages/userTable';
 import { toast } from 'react-toastify';
+
 const JobDescription = () => {
-    const [applied, setApplied] = useState('');
+    const [applied, setApplied] = useState([]);
     const { id } = useParams();
-    const [job, setJob] = useState('');
-    const [isallow, setIsallow] = useState(false);
+    const [job, setJob] = useState({});
+    const [isAllow, setIsAllow] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
-    const isAdmin = JSON.parse(localStorage.getItem('user')).role;
+    const isAdmin = user?.role === 'admin';
     const [showPopup, setShowPopup] = useState(false);
-    const [studentData] = useState(JSON.parse(localStorage.getItem('user')));
-    const [users, setUser] = useState('');
+    const [studentData] = useState(user || {});
+    const [users, setUsers] = useState([]);
     const navigate = useNavigate();
 
     const fetchApplications = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/findapplication_id`);
-            setApplied(response.data.applied);
+            setApplied(response.data.applied || []);
         } catch (error) {
-            console.error('Error fetching job details:', error);
+            console.error('Error fetching applications:', error);
         }
     };
 
@@ -46,41 +45,26 @@ const JobDescription = () => {
         e.preventDefault();
         try {
             const response = await axios.post(`/jobs/apply/${id}`);
-            const posted = response.data.success;
-            if (posted) {
-                applied.push(id);
-                setShowPopup(false);    
-                toast.success("Applied Successfully");
+            if (response.data.success) {
+                setApplied([...applied, id]);
+                setShowPopup(false);
+                toast.success('Applied Successfully');
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
-            toast.error(error.response.data.message);
-            console.log(error.response);
+            toast.error(error.response?.data?.message || 'An error occurred');
         }
-    }
-    const handleApplyClick = () => {
-        setShowPopup(true);
-    };
-
-    const handleCancelClick = () => {
-        setShowPopup(false);
-    };
-
-    const handleConfirmApply = () => {
-        applyHandler(new Event('apply'));
-        setShowPopup(false);
-    };
-
-    const handleEditProfileClick = () => {
-        navigate('/profile');
     };
 
     const findAllow = () => {
         if (job.tenth <= user.profile.tenth && job.tweleth <= user.profile.tweleth && job.graduationMarks <= user.profile.graduationMarks) {
-            setIsallow(true);
+            setIsAllow(true);
         }
     };
+
+    const handleApplyClick = () => setShowPopup(true);
+    const handleCancelClick = () => setShowPopup(false);
 
     useEffect(() => {
         fetchJobDetails();
@@ -88,32 +72,55 @@ const JobDescription = () => {
     }, []);
 
     useEffect(() => {
-        isAdmin==='student'?findAllow():'';
+        isAdmin === 'student' ? findAllow() : '';
     });
 
     const Applied = applied.includes(job._id);
-    
+
     return (
-        <div className='max-w-7xl mx-auto my-10'>
-            <div className='flex items-center justify-between'>
+        <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-100 via-blue-100 to-green-100 rounded-xl shadow-2xl mt-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <div>
-                    <h1 className='font-bold text-xl'>{job.company}</h1>
-                    <div className='flex items-center gap-2 mt-4'>
-                       
-                        <Avatar src={job.logo} alt="Company Logo" className="w-12 h-12 rounded-full object-cover shadow-md" />
-                        
-                        <Badge className="text-yellow-600 font-bold" variant='ghost'>{job.position}</Badge>
-                        <Badge className="text-yellow-600 font-bold" variant='ghost'>{job.location}</Badge>
-                        <Badge className="text-yellow-600 font-bold" variant='ghost'>{job.salary}LPA</Badge>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-purple-900">{job.company}</h1>
+                    <div className="flex flex-wrap items-center gap-3 mt-4">
+                        <Avatar
+                            src={job.logo}
+                            alt="Company Logo"
+                            className="w-16 h-16 rounded-full object-cover shadow-lg border-2 border-purple-300"
+                        />
                     </div>
                 </div>
-                {
-                    isAdmin === 'admin' ? (<></>) : (isallow ? (Applied ? (<Button className='bg-gray-900 text-white rounded-xl ' disabled>Already Applied</Button>) : (<Button className='bg-yellow-700 rounded-xl hover:bg-yellow-800' onClick={handleApplyClick}>Apply Now</Button>)) : (<Button className='bg-slate-900 text-white rounded-xl ' disabled>Not Allow</Button>))
-                }
+                {!isAdmin && (
+                    isAllow ? (
+                        isApplied ? (
+                            <Button
+                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-xl cursor-not-allowed"
+                                disabled
+                            >
+                                Already Applied
+                            </Button>
+                        ) : (
+                            <Button
+                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 hover:from-pink-600 hover:to-purple-800 text-white font-semibold px-4 py-2 rounded-lg"
+                                onClick={handleApplyClick}
+                            >
+                                Apply Now
+                            </Button>
+                        )
+                    ) : (
+                        <Button
+                            className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed"
+                            disabled
+                        >
+                            Not Allowed
+                        </Button>
+                    )
+                )}
             </div>
             <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>Job Description </h1>
-            <div className='my-4'>
-                
+            <div>
+                <div className='my-8'>
+
                 <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{job.position}</span></h1>
                 <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{job.location}</span></h1>
                 <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{job.description}</span></h1>
@@ -125,77 +132,49 @@ const JobDescription = () => {
                 <h1 className='font-bold my-1'>12<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tweleth}%</span></h1>
                 <h1 className='font-bold my-1'>Graduation Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.graduationMarks}%</span></h1>
             </div>
+            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-xl shadow-lg">
+                <p className="text-center font-semibold">
+                    Posted by: <a href="#" className="underline hover:text-yellow-300">{job.postedBy || 'N/A'}</a>
+                </p>
+            </div>
+            </div>
             {showPopup && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-gradient-to-r from-purple-100 to-purple-300 p-8 rounded-3xl shadow-xl max-w-lg w-full">
-                        <h2 className="text-3xl font-bold text-yellow-800 text-center mb-6">Review Your Profile</h2>
-                        <div className="bg-white p-6 rounded-2xl shadow-md max-h-[400px] overflow-y-auto">
-                            <div className="flex flex-col gap-4 mb-4">
-                                <div className="flex justify-between">
-                                    <p className="font-medium text-gray-700">
-                                        <strong>Name:</strong> {studentData?.name || "N/A"}
-                                    </p>
-                                </div>
-                                <div className="flex justify-between">
-                                    <p className="font-medium text-gray-700">
-                                        <strong>Email:</strong> {studentData?.email || "N/A"}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-4 mb-4">
-                                <div className="flex justify-between">
-                                    <p className="font-medium text-gray-700">
-                                        <strong>Phone:</strong> {studentData?.phone || "N/A"}
-                                    </p>
-                                </div>
-                                <div className="flex justify-between">
-                                    <p className="font-medium text-gray-700">
-                                        <strong>Bio:</strong> {studentData?.profile?.bio || "N/A"}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-4 mb-4">
-                                <div className="flex justify-between">
-                                    <p className="font-medium text-gray-700">
-                                        <strong>10th Marks:</strong> {studentData?.profile?.tenth || "N/A"}
-                                    </p>
-                                </div>
-                                <div className="flex justify-between">
-                                    <p className="font-medium text-gray-700">
-                                        <strong>12th Marks:</strong> {studentData?.profile?.tweleth || "N/A"}
-                                    </p>
-                                </div>
-                                <div className="flex justify-between">
-                                    <p className="font-medium text-gray-700">
-                                        <strong>Graduation Marks:</strong> {studentData?.profile?.graduationMarks || "N/A"}
-                                    </p>
-                                </div>
-                            </div>
-                            <p className="font-medium text-gray-700 mb-4">
-                                <strong>Resume:</strong>
-                                <a
-                                    href={studentData?.profile?.resume || "#"}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 ml-2"
-                                >
-                                    View Resume
-                                </a>
-                            </p>
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-2xl max-w-md w-full">
+                        <h2 className="text-xl sm:text-2xl font-bold text-center text-blue-600 mb-4">Review Your Profile</h2>
+                        <div className="mt-4 space-y-2 text-gray-700">
+                            {Object.entries({
+                                Name: studentData.name,
+                                Email: studentData.email,
+                                Phone: studentData.profile?.phone,
+                                Bio: studentData.profile?.bio,
+                                '10th Marks': `${studentData.profile?.tenth || 'N/A'}%`,
+                                '12th Marks': `${studentData.profile?.tweleth || 'N/A'}%`,
+                                'Graduation Marks': `${studentData.profile?.graduationMarks || 'N/A'}%`,
+                            }).map(([key, value]) => (
+                                <p key={key} className="text-sm sm:text-base">
+                                    <strong>{key}:</strong> {value || 'N/A'}
+                                </p>
+                            ))}
                         </div>
-                        <p className="text-sm text-gray-600 mt-4 text-center">
-                            If you want to update your profile, please go to <strong className="cursor-pointer text-blue-600" onClick={handleEditProfileClick}>Edit Profile</strong>.
-                        </p>
-                        <div className="flex justify-center gap-4 mt-6">
-                            <Button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full" onClick={handleCancelClick}>Cancel</Button>
-                            <Button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full" onClick={applyHandler}>Apply</Button>
+                        <div className="flex justify-center mt-6 gap-4">
+                            <Button
+                                className="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-full"
+                                onClick={handleCancelClick}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-full"
+                                onClick={applyHandler}
+                            >
+                                Apply
+                            </Button>
                         </div>
                     </div>
                 </div>
             )}
-            <div>
-                {isAdmin === 'admin' ? (<UserTable applies={users} />) : (<></>)}
-            </div>
+            {isAdmin && <UserTable applies={users} />}
         </div>
     );
 };
