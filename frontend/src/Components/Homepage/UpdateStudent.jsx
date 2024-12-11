@@ -54,10 +54,10 @@ const UpdateStudent = ({ open, setOpen }) => {
             <Dialog open={open} >
                 <DialogContent className='sm:max-w-[420px] bg-white rounded-2xl' onInteractOutside={() => setOpen(false)}>
                     <DialogHeader>
-                        <DialogTitle className='text-center'>Update Profile</DialogTitle>
+                        <DialogTitle className='text-center text-gray-700'>Update Profile</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={submitHandler} action="">
-                        <div className='grid gap-4 py-4'>
+                        <div className='grid gap-4 py-4 text-gray-700'>
                             <div className='grid grid-cols-4 items-center gap-4'>
                                 <Label htmlFor='number' className='text-right'>PhoneNo</Label>
                                 <Input
@@ -142,7 +142,7 @@ const UpdateStudent = ({ open, setOpen }) => {
                         </div>
                         <DialogFooter>
                             {
-                                loading ? <Button className='w-full my-4'><Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type='submit' className='bg-gray-400 w-full my-4'>Update</Button>
+                                loading ? <Button className='w-full my-4'><Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type='submit' className='bg-yellow-700 w-full my-4 text-white hover:text-black'>Update</Button>
                             }
 
                         </DialogFooter>
