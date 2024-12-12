@@ -145,8 +145,8 @@ const Navbar = () => {
                     <AvatarImage src={user.image} alt="@shadcn" />
                   </Avatar>
                   <div>
-                    <h4 className="text-sm font-bold">Welcome to Placement Connect</h4>
-                    <p className="text-sm text-muted-foreground font-normal">Hey {user.name}</p>
+                    <h4 className="text-sm font-bold text-yellow-700">Welcome to Placement Connect</h4>
+                    <p className="text-sm text-muted-foreground font-normal text-yellow-800">Hey {user.name}</p>
                   </div>
                 </div>
                 <div className="flex flex-col my-2 text-gray-600">

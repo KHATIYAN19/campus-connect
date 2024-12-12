@@ -5,7 +5,7 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 
 const LatestJobs = ({ data }) => {
   return (
-    <div className="p-6 rounded-lg shadow-lg  bg-white border border-gray-200 cursor-pointer hover:shadow-xl transition-transform transform hover:-translate-y-1 mt-5 rounded-xl">
+    <div className="p-6 shadow-lg  bg-white border border-gray-200 cursor-pointer hover:shadow-xl transition-transform transform hover:-translate-y-1 mt-5 rounded-xl">
       <NavLink to={`/description/${data._id}`} className="block">
         {/* Header with Avatar and Company Info */}
         <div className="flex items-center gap-4 mb-4">

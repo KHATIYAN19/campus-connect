@@ -7,24 +7,31 @@ import Messages from '../pages/Messages';
 const Homepage = () => {
 
   return (
-    <div>
-      <JobCard />
-      {/* <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white p-4 sm:p-8 space-y-8">
+      {/* JobCard Section */}
+      <div className="bg-blue-50 shadow-lg rounded-2xl p-6">
+        <JobCard />
       </div>
+  
+      {/* InterviewExperiences Section */}
+      <div className="bg-green-50 shadow-lg rounded-2xl p-6">
+        <h2 className="text-center text-2xl sm:text-3xl font-bold text-green-800 mb-4">
+          Interview Experiences
+        </h2>
+        <InterviewExperiences show={false} />
       </div>
-     </div> */}
-     <div> 
-      <InterviewExperiences show={false}/>
-     </div>
-     <div>
-       <h2 className=' text-center text-green-500  bg-gray-100 text-3xl'>Latest Notice</h2>
-       <Messages show={false}/>
-     </div>
-     </div>
-     
+  
+      {/* Latest Notice Section */}
+      <div className="bg-yellow-50 shadow-lg rounded-2xl p-6">
+        <h2 className="text-center text-2xl sm:text-3xl font-bold text-yellow-800 mb-4">
+          Latest Notice
+        </h2>
+        <Messages show={false} />
+      </div>
+    </div>
   );
+  
+  
 };
 
 export default Homepage;
