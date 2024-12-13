@@ -67,8 +67,8 @@ const Navbar = () => {
               alt="@shadcn"
             />
           </Avatar>
-          <h1 className="text-xl md:text-4xl font-bold text-black font-serif">
-            Placement<span className="text-[#c78c06]">Connect</span>
+          <h1 className="text-xl md:text-4xl text-black font-serif">
+            Placement<span className="text-[#66003c] font-bold">Connect</span>
           </h1>
         </div>
 
@@ -171,7 +171,7 @@ const Navbar = () => {
                 </Button>
               </Link>
               <Link to="/signup">
-                <Button className="bg-[#c78c06] hover:bg-[#705820] rounded">
+                <Button className="bg-[#66003c] hover:bg-[#33001e] rounded text-white">
                   Signup
                 </Button>
               </Link>
@@ -197,8 +197,8 @@ const Navbar = () => {
                     />
                   </div>
                   <div className="text-center">
-                    <h4 className="text-sm font-bold text-yellow-700">Welcome to Placement Connect</h4>
-                    <p className="text-sm text-yellow-800 font-normal">Hey {user.name}</p>
+                    <h4 className="text-sm font-bold text-[#4d002d]">Welcome to Placement Connect</h4>
+                    <p className="text-sm text-[#33001e] font-normal">Hey {user.name}</p>
                   </div>
                 </div>
                 <div className="flex flex-col my-2 text-gray-600">

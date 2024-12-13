@@ -105,8 +105,8 @@ const SignupStudent = ({ setAdmin }) => {
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
-            <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-8">
-                <h1 className="text-2xl font-semibold text-center text-gray-800 mb-4">
+            <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-8">
+                <h1 className="text-2xl font-semibold text-center text-[#88004c] mb-4">
                     Sign Up <span className="text-gray-500">(Student)</span>
                 </h1>
                 <form onSubmit={handleSignUp} className="space-y-4">
@@ -161,7 +161,7 @@ const SignupStudent = ({ setAdmin }) => {
                         <p className="text-sm text-gray-500">
                             <span className="text-gray-700">Admin?</span>{' '}
                             <span
-                                className="text-red-500 font-semibold cursor-pointer"
+                                className="text-red-700 font-semibold cursor-pointer"
                                 onClick={() => setAdmin(true)}
                             >
                                 Click here
@@ -169,14 +169,14 @@ const SignupStudent = ({ setAdmin }) => {
                         </p>
                         <button
                             type="submit"
-                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="bg-[#88004c] text-white px-4 py-2 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             Sign Up
                         </button>
                     </div>
                     <p className="text-center text-sm text-gray-600">
                         Already have an account?{' '}
-                        <NavLink to="/login" className="text-blue-500">
+                        <NavLink to="/login" className="text-[#88004c] text-md font-semibold">
                             Login
                         </NavLink>
                     </p>
