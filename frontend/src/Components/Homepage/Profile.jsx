@@ -65,41 +65,44 @@ const Profile = () => {
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                             <Label className="text-md font-medium">Bio:</Label>
-                            {profile.bio ? (
-                                <p className="text-gray-600">{profile.bio}</p>
+                            {profile?.profile?.bio ? (
+                                <p className="text-gray-600">{profile.profile.bio}</p>
                             ) : (
                                 <span className="text-gray-500">NA</span>
                             )}
                         </div>
+                        {
+                            role==='student'?(<div>
+
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-6">
                                 <span className="flex items-center gap-1">
                                     <strong className="font-medium text-gray-700">10th % : </strong>
-                                    <span className="text-gray-600">{profile.tenthMarks || 'NA'}%</span>
+                                    <span className="text-gray-600">{profile?.profile?.tenth || 'NA'}%</span>
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <strong className="font-medium text-gray-700">12th % :</strong>
-                                    <span className="text-gray-600">{profile.twelthMarks || 'NA'}%</span>
+                                    <span className="text-gray-600">{profile?.profile?.tweleth || 'NA'}%</span>
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <strong className="font-medium text-gray-700">Graduation % :</strong>
-                                    <span className="text-gray-600">{profile.graduationMarks || 'NA'}%</span>
+                                    <span className="text-gray-600">{profile?.profile?.graduationMarks || 'NA'}%</span>
                                 </span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
                             <Label className="text-md font-medium">Degree:</Label>
                             {profile.degree ? (
-                                <p className="text-gray-600">{profile.degree}</p>
+                                <p className="text-gray-600">{profile?.profile?.degree}</p>
                             ) : (
                                 <span className="text-gray-500">NA</span>
                             )}
                         </div>
                         <div className="flex items-center gap-2">
                             <Label className="text-md font-medium">Resume:</Label>
-                            {profile.resume ? (
+                            {profile?.profile?.resume ? (
                                 <a
-                                    href={profile.resume}
+                                    href={profile?.profile?.resume}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-500 font-bold hover:underline"
@@ -110,6 +113,8 @@ const Profile = () => {
                                 <span className="text-gray-500">NA</span>
                             )}
                         </div>
+                            </div>):(<></>)
+                        }
                     </div>
                 ) : null}
 

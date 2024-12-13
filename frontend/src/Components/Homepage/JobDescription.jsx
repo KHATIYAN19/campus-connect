@@ -88,6 +88,7 @@ const JobDescription = () => {
                             alt="Company Logo"
                             className="w-16 h-16 rounded-full object-cover shadow-lg border-2 border-purple-300"
                         />
+                        
                     </div>
                 </div>
                 {!isAdmin && (
