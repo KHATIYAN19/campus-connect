@@ -40,7 +40,7 @@ const Messages = ({show}) => {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className="bg-yellow-50 shadow-xl p-4 sm:p-6 rounded-2xl hover:scale-105 transition-transform duration-300"
+                className="bg-white shadow-xl p-4 sm:p-6 rounded-2xl hover:scale-105 transition-transform duration-300"
               >
                 <MessageComponent
                   userImage={msg.postby?.image}

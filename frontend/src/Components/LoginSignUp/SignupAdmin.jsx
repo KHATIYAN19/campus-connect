@@ -78,9 +78,9 @@ const SignupAdmin = ({ setAdmin }) => {
 
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100 p-4'>
-      <div className='w-full max-w-lg bg-white p-8 rounded-lg shadow-lg'>
-        <div className='text-center text-2xl font-semibold text-gray-800 mb-6'>
-          SIGNUP <span className='text-lg'>(Admin)</span>
+      <div className='w-full max-w-lg bg-white p-8 rounded-2xl shadow-lg'>
+        <div className='text-center text-2xl font-semibold text-[#88004c] mb-6'>
+          Sign Up <span className='text-2xl text-gray-600'>(Admin)</span>
         </div>
         <form onSubmit={handleSignUp}>
           <div className='mb-4'>
@@ -153,7 +153,7 @@ const SignupAdmin = ({ setAdmin }) => {
             {errors.adminkey && <p className='text-xs text-red-500 mt-2'>{errors.adminkey}</p>}
           </div>
 
-          <div className='mb-4'>
+          <div className='mb-6'>
             <div className='flex items-center'>
               <img src={image_icon} alt='image_icon' className='w-6 h-6 mr-2' />
               <Input
@@ -166,10 +166,10 @@ const SignupAdmin = ({ setAdmin }) => {
             {errors.image && <p className='text-xs text-red-500 mt-2'>{errors.image}</p>}
           </div>
 
-          <div className='text-lg flex items-center gap-3 my-4'>
+          <div className='text-sm flex items-center gap-2 my-4'>
             <p className='text-gray-700'>Click here for signup</p>
             <div
-              className='text-red-500 cursor-pointer font-semibold'
+              className='text-red-600 cursor-pointer font-semibold'
               onClick={() => setAdmin(false)}
             >
               Student
@@ -179,15 +179,15 @@ const SignupAdmin = ({ setAdmin }) => {
           <div className='flex justify-center items-center'>
             <button
               type='submit'
-              className='w-full bg-blue-600 text-lg rounded-xl py-3 text-white font-bold hover:bg-blue-700 focus:outline-none'
+              className='w-full bg-[#88004c] text-lg rounded-xl py-2 text-white font-bold hover:bg-blue-700 focus:outline-none'
             >
               Submit
             </button>
           </div>
 
           <div className='text-center mt-4'>
-            <NavLink to='/login' className='text-blue-600'>
-              Already have an account? Login
+            <NavLink to='/login' className='text-gray-600 text-sm'>
+              Already have an account? <span className='text-[#88004c] font-semibold'>Login</span>
             </NavLink>
           </div>
         </form>

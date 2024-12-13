@@ -58,9 +58,9 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-sm bg-white p-8 rounded-lg shadow-lg">
-        <div className="text-center text-2xl font-semibold text-gray-800 mb-6">LOGIN</div>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+      <div className="w-full max-w-sm bg-white p-8 rounded-2xl shadow-lg">
+        <div className="text-center text-2xl font-semibold text-[#88004c] mb-6">LOGIN</div>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <div className="flex items-center border-b-2 border-gray-300">
@@ -90,12 +90,12 @@ const Login = () => {
             {errors.password && <p className="text-xs text-red-500 mt-2">{errors.password}</p>}
           </div>
 
-          <div className="text-left text-sm font-medium text-yellow-800 mt-2">
+          <div className="text-left text-sm font-medium text-[#4d002d] mt-2">
             <NavLink to="/reset-password">Forgot Password?</NavLink>
           </div>
 
           <div className="flex justify-center items-center mt-6">
-            <Button className="w-full bg-yellow-600 text-lg rounded-xl py-3 text-white font-bold hover:bg-yellow-500 focus:outline-none">
+            <Button className="w-full bg-[#88004c] text-lg rounded-xl py-3 text-white font-bold hover:bg-[#66003c] focus:outline-none">
               Submit
             </Button>
           </div>
@@ -104,7 +104,7 @@ const Login = () => {
         <div className="text-center mt-4">
           Don't have an account?
           <span
-            className="text-yellow-800 pl-4 cursor-pointer font-semibold hover:text-yellow-600"
+            className="text-[#4d002d] pl-4 cursor-pointer font-semibold hover:text-[#66003c]"
             onClick={() => navigate('/signup')}
           >
             Signup

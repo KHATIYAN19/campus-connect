@@ -4,7 +4,7 @@ import { FaTrash, FaClock } from 'react-icons/fa';
 const MessageComponent = ({ userImage, userName, collegeName, message, batch, timeAgo }) => {
   const role = localStorage.getItem('role');
   return (
-    <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200 w-[60%] min-h-[20rem] mx-auto font-serif transition hover:bg-opacity-90">
+    <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200 w-[90%] min-h-[20rem] mx-auto font-serif transition hover:bg-opacity-90">
       {/* Top Section */}
       <div className="flex items-start justify-between">
         {/* User Info */}
