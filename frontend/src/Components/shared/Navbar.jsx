@@ -54,36 +54,68 @@ const Navbar = () => {
     }
   };
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className="bg-white">
-      <div className="flex items-center justify-between mx-auto max-w-7xl h-20 px-4"> {/* Increased height of navbar */}
+      <div className="flex items-center justify-between mx-auto max-w-7xl h-20 px-4">
         {/* Logo Section */}
         <div className="flex items-center gap-2">
-          <Avatar className="w-8 h-8 md:w-10 md:h-10"> {/* Responsive logo size */}
+          <Avatar className="w-8 h-8 md:w-10 md:h-10">
             <AvatarImage
               src="https://cdn-icons-png.flaticon.com/128/12372/12372496.png"
               alt="@shadcn"
             />
           </Avatar>
-          <h1 className="text-xl md:text-4xl font-bold text-black font-serif"> {/* Logo text resize */}
+          <h1 className="text-xl md:text-4xl font-bold text-black font-serif">
             Placement<span className="text-[#c78c06]">Connect</span>
           </h1>
         </div>
 
+        {/* Hamburger Menu for Mobile */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-gray-700 hover:text-gray-900 focus:outline-none"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
+        </div>
+
         {/* Navigation Links */}
-        <div className="flex items-center gap-6 md:gap-12">
+        <div
+          className={`${
+            isMenuOpen ? 'block' : 'hidden'
+          } md:flex flex-col md:flex-row items-center gap-4 md:gap-12 absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent z-10 shadow-lg md:shadow-none`}
+        >
           {user && (
-            <ul className="flex flex-col md:flex-row md:flex-wrap font-medium items-center gap-4 w-full md:w-auto border-b-2 pb-2 md:border-b-0 md:pb-0">
-              {/* Navigation Links */}
+            <ul className="flex flex-col md:flex-row font-medium items-center gap-4 md:gap-6 w-full md:w-auto">
               {['/', '/Jobs', '/notices', '/experience'].map((path, index) => (
                 <li key={index} className="w-full md:w-auto">
                   <Link
                     to={path}
                     className={`${
-                      location.pathname === path ? 'border-b-2 border-blue-500' : ''
-                    } block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all text-center md:text-left`}
+                      location.pathname === path
+                        ? 'border-b-2 border-blue-500 w-1/2 md:w-auto'
+                        : ''
+                    } block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all text-center`}
                   >
-                    {path === '/' ? 'Home' : path.slice(1).charAt(0).toUpperCase() + path.slice(2)}
+                    {path === '/'
+                      ? 'Home'
+                      : path.slice(1).charAt(0).toUpperCase() + path.slice(2)}
                   </Link>
                 </li>
               ))}
@@ -92,7 +124,11 @@ const Navbar = () => {
                   <li className="w-full md:w-auto">
                     <Link
                       to="/jobs/post"
-                      className={`${location.pathname === '/jobs/post' ? 'border-b-2 border-blue-500' : ''} block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all`}
+                      className={`${
+                        location.pathname === '/jobs/post'
+                          ? 'border-b-2 border-blue-500 w-1/2 md:w-auto'
+                          : ''
+                      } block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all`}
                     >
                       Add-Drive
                     </Link>
@@ -100,7 +136,11 @@ const Navbar = () => {
                   <li className="w-full md:w-auto">
                     <Link
                       to="/blocks"
-                      className={`${location.pathname === '/blocks' ? 'border-b-2 border-blue-500' : ''} block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all`}
+                      className={`${
+                        location.pathname === '/blocks'
+                          ? 'border-b-2 border-blue-500 w-1/2 md:w-auto'
+                          : ''
+                      } block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all`}
                     >
                       Block
                     </Link>
@@ -108,7 +148,11 @@ const Navbar = () => {
                   <li className="w-full md:w-auto">
                     <Link
                       to="/notice/post"
-                      className={`${location.pathname === '/notice/post' ? 'border-b-2 border-blue-500' : ''} block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all`}
+                      className={`${
+                        location.pathname === '/notice/post'
+                          ? 'border-b-2 border-blue-500 w-1/2 md:w-auto'
+                          : ''
+                      } block py-2 px-3 hover:border-b-2 hover:border-blue-500 transition-all`}
                     >
                       Add-Notice
                     </Link>
@@ -135,18 +179,26 @@ const Navbar = () => {
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage src={user.image} alt="@shadcn" />
-                </Avatar>
+                <div className="w-12 h-12 rounded-full overflow-hidden cursor-pointer mx-auto">
+                  <img
+                    className="object-cover w-full h-full"
+                    src={user.image}
+                    alt="@profileImage"
+                  />
+                </div>
               </PopoverTrigger>
-              <PopoverContent className="w-80 rounded-xl bg-white shadow-md"> {/* Solid background for profile popup */}
+              <PopoverContent className="w-80 rounded-xl bg-white shadow-md">
                 <div className="flex gap-4 space-y-2">
-                  <Avatar className="cursor-pointer border-black">
-                    <AvatarImage src={user.image} alt="@shadcn" />
-                  </Avatar>
-                  <div>
-                    <h4 className="text-sm font-bold">Welcome to Placement Connect</h4>
-                    <p className="text-sm text-muted-foreground font-normal">Hey {user.name}</p>
+                  <div className="w-12 h-12 rounded-full overflow-hidden mx-auto">
+                    <img
+                      className="object-cover w-full h-full"
+                      src={user.image}
+                      alt="@profileImage"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <h4 className="text-sm font-bold text-yellow-700">Welcome to Placement Connect</h4>
+                    <p className="text-sm text-yellow-800 font-normal">Hey {user.name}</p>
                   </div>
                 </div>
                 <div className="flex flex-col my-2 text-gray-600">
@@ -202,5 +254,7 @@ const Navbar = () => {
     </div>
   );
 };
+
+
 
 export default Navbar;

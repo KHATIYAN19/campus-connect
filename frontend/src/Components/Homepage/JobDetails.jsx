@@ -40,16 +40,19 @@ const JobDetails = ({ data }) => {
     const handleEditProfileClick = () => navigate('/profile');
 
     return (
-        <div className="p-8 rounded-xl shadow-2xl bg-white border border-gray-200 my-6 hover:scale-100 transition-all duration-200">
+        <div className="p-8 rounded-xl shadow-2xl bg-white border border-gray-200 my-6 hover:scale-100 transition-all duration-200 min-h-[300px]">
             <div className="flex items-center justify-between mb-4">
                 <p className="text-xs text-gray-600">Posted 2 days ago</p>
             </div>
             <div className="flex items-center gap-6 my-6">
-                <Button className="p-3" variant="outline" size="icon">
-                    <Avatar>
-                        <AvatarImage src={data.logo} alt="@companyLogo" />
-                    </Avatar>
-                </Button>
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                    <img
+                        className="object-cover w-full h-full"
+                        src={data.logo}
+                        alt="@companyLogo"
+                    />
+                </div>
+
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-800">{data.company}</h1>
                     <p className="text-sm text-gray-500">{data.location || 'India'}</p>
@@ -57,15 +60,26 @@ const JobDetails = ({ data }) => {
             </div>
             <div className="mb-6">
                 <h1 className="text-xl font-bold text-gray-900 mb-2">{data.position}</h1>
-                <p className="text-base text-gray-600">{data.description.length > 100 ? `${data.description.substring(0, 150)}...` : data.description}</p>
+                <p className="text-base text-gray-600 line-clamp-3">{data.description}</p> {/* line-clamp to limit the text */}
+                {/* "line-clamp-3" limits text to 3 lines */}
             </div>
             <div className="flex items-center gap-6 mt-6">
-                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">{data.numbers} Positions</Badge>
-                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">Internship</Badge>
-                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">{data.salary}</Badge>
+                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">
+                    {data.numbers} Positions
+                </Badge>
+                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">
+                    Internship
+                </Badge>
+                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">
+                    {data.salary}
+                </Badge>
             </div>
             <div className="flex items-center gap-8 mt-8">
-                <Button onClick={() => navigate(`/description/${data._id}`)} variant="outline" className="rounded-lg px-8 py-3 text-gray-700 border-gray-300 hover:bg-gray-100 transition-colors">
+                <Button
+                    onClick={() => navigate(`/description/${data._id}`)}
+                    variant="outline"
+                    className="rounded-lg px-8 py-3 text-gray-700 border-gray-300 hover:bg-gray-100 transition-colors"
+                >
                     View Details
                 </Button>
                 {role === 'student' && (
@@ -116,7 +130,9 @@ const JobDetails = ({ data }) => {
                         </div>
                         <p className="text-sm text-gray-600 mt-4 text-center">
                             Want to update your profile? Visit{' '}
-                            <strong className="cursor-pointer text-blue-600" onClick={handleEditProfileClick}>Edit Profile</strong>.
+                            <strong className="cursor-pointer text-blue-600" onClick={handleEditProfileClick}>
+                                Edit Profile
+                            </strong>.
                         </p>
                         <div className="flex justify-center gap-4 mt-6">
                             <Button className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-full" onClick={handleCancelClick}>Cancel</Button>
@@ -125,11 +141,10 @@ const JobDetails = ({ data }) => {
                     </div>
                 </div>
             )}
-
-
-
         </div>
     );
+
+
 };
 
 export default JobDetails;
