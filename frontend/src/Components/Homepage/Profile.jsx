@@ -33,7 +33,7 @@ const Profile = () => {
     const [open, setOpen] = useState(false);
     return (
         <div>
-            <div className='max-w-4xl mx-auto bg-white border border-gray-200 shadow-lg rounded-2xl my-5 p-8'>
+            <div className='max-w-4xl mx-auto bg-white border border-[#88004c] shadow-lg rounded-2xl my-5 p-8'>
                 <div className='flex justify-between'>
                     <div className='flex items-center gap-4'>
                         <div className="w-24 h-24 rounded-full overflow-hidden">

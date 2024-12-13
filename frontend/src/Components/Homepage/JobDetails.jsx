@@ -64,13 +64,13 @@ const JobDetails = ({ data }) => {
                 {/* "line-clamp-3" limits text to 3 lines */}
             </div>
             <div className="flex items-center gap-6 mt-6">
-                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">
+                <Badge className="text-[#4d002d] font-semibold px-4 py-2 bg-pink-50 rounded-lg" variant="outline">
                     {data.numbers} Positions
                 </Badge>
-                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">
+                <Badge className="text-[#4d002d] font-semibold px-4 py-2 bg-pink-50 rounded-lg" variant="outline">
                     Internship
                 </Badge>
-                <Badge className="text-yellow-600 font-semibold px-4 py-2 bg-yellow-50 rounded-lg" variant="outline">
+                <Badge className="text-[#4d002d] font-semibold px-4 py-2 bg-pink-50 rounded-lg" variant="outline">
                     {data.salary}
                 </Badge>
             </div>
@@ -86,7 +86,7 @@ const JobDetails = ({ data }) => {
                     <Button
                         disabled={isApplied}
                         onClick={handleApplyClick}
-                        className={`rounded-lg px-8 py-3 ${isApplied ? 'bg-gray-500 cursor-not-allowed' : 'bg-yellow-600 hover:bg-yellow-700 text-white'}`}
+                        className={`rounded-lg px-8 py-3 ${isApplied ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#4d002d] hover:bg-[#99005b] text-white'}`}
                     >
                         {isApplied ? 'Applied' : 'Apply'}
                     </Button>

@@ -13,7 +13,7 @@ const JobTable = ({jobData,admin}) => {
     
     <div className="bg-blue-50 flex items-center justify-center p-4 rounded-2xl shadow-lg">
   <div className={`w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden ${jobData && jobData.length > 0 ? '' : 'h-screen flex items-center justify-center'}`}>
-    <div className="p-6 bg-blue-600 text-white text-center rounded-2xl">
+    <div className="p-6 bg-[#88004c] text-white text-center rounded-2xl">
       <h1 className="text-2xl font-bold">Job Listings</h1>
       <p className="text-sm mt-1">{admin ? (`Your Posted Jobs`) : (`Your Applied Jobs`)}</p>
     </div>

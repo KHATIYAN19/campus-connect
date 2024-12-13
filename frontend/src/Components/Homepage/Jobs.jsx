@@ -20,7 +20,7 @@ const Jobs = () => {
                     <p className="text-lg text-gray-600">Find your dream job here. Apply now!</p>
                 </div>
                 
-                <div className="flex gap-6 justify-between">
+                <div className="flex flex-col gap-6 justify-center items-center h-full">
                     {
                         jobArray.length <= 0 ? (
                             <span className="text-xl text-gray-600">No jobs available at the moment. Please check back later.</span>

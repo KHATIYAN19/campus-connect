@@ -23,6 +23,7 @@ import JobTable from './Components/pages/JobTable.jsx';
 import InterviewExperiences from './Components/pages/InterviewExperiences.jsx';
 import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute.jsx';
 import ThemeOptions from './Components/shared/ThemeOptions.jsx';
+import Main from './Components/pages/Main.jsx';
 function App() {
   const[admin,setAdmin]=useState(false);
   const isLogin = localStorage.getItem('isLogin');
@@ -101,6 +102,9 @@ function App() {
 
           <Route path="/applicantTable" element={<JobApplicantsTable/>}/>
           <Route path="/jobtable" element={<JobTable/>}/>
+
+          <Route path="/main" element={<Main/>} />
+          <Route path="/homepage" element={<Homepage/>} />
          
        </Routes>    
        </div>
