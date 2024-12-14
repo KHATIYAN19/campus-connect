@@ -100,7 +100,7 @@ const JobPost = () => {
                             name="company"
                             value={formData.company}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {errors.company && <p className="text-xs text-red-500 mt-2">{errors.company}</p>}
                     </div>
@@ -115,7 +115,7 @@ const JobPost = () => {
                             value={formData.description}
                             onChange={handleChange}
                             rows="4"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         ></textarea>
                         {errors.description && <p className="text-xs text-red-500 mt-2">{errors.description}</p>}
                     </div>
@@ -134,7 +134,7 @@ const JobPost = () => {
                                 name={field}
                                 value={formData[field]}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors[field] && <p className="text-xs text-red-500 mt-2">{errors[field]}</p>}
                         </div>
@@ -154,7 +154,7 @@ const JobPost = () => {
                                 name={field}
                                 value={formData[field]}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors[field] && <p className="text-xs text-red-500 mt-2">{errors[field]}</p>}
                         </div>

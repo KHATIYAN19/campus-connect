@@ -75,9 +75,9 @@ const Profile = () => {
                             role==='student'?(<div>
 
                         <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-10">
                                 <span className="flex items-center gap-1">
-                                    <strong className="font-medium text-gray-700">10th % : </strong>
+                                    <Label className="text-md font-medium text-gray-700">10th % : </Label>
                                     <span className="text-gray-600">{profile?.profile?.tenth || 'NA'}%</span>
                                 </span>
                                 <span className="flex items-center gap-1">
