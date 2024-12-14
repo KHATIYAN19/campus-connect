@@ -20,7 +20,7 @@ const Jobs = () => {
         <div className="bg-blue-50 min-h-screen py-10 rounded-xl">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-gray-800 mb-4">Available Job Opportunities</h1>
+                    <h1 className="text-3xl font-bold text-[#003166] mb-4">Available Job Opportunities</h1>
                     <p className="text-lg text-gray-600">Find your dream job here. Apply now!</p>
                 </div>
 

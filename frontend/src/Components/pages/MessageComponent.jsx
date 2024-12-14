@@ -4,7 +4,7 @@ import { FaTrash, FaClock } from 'react-icons/fa';
 const MessageComponent = ({ userImage, userName, collegeName, message, batch, timeAgo }) => {
   const role = localStorage.getItem('role');
   return (
-    <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200 w-[90%] min-h-[20rem] mx-auto font-serif transition hover:bg-opacity-90">
+    <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200 w-[90%] min-h-[20rem] mx-auto font-serif hover:scale-105 transition-transform duration-300">
       {/* Top Section */}
       <div className="flex items-start justify-between">
         {/* User Info */}
@@ -20,8 +20,8 @@ const MessageComponent = ({ userImage, userName, collegeName, message, batch, ti
           </div>
         </div>
         {/* Time & Delete Icon */}
-        <div className="flex items-center space-x-2 text-gray-400">
-          <FaClock className="text-gray-500" />
+        <div className="flex items-center space-x-2 text-gray-600">
+          <FaClock className="text-[#98652e]" />
           <span className="text-sm">{timeAgo} days ago</span>
           {/* {
             role==='admin'?(<button className="text-red-500 hover:text-red-700 transition">
@@ -44,7 +44,7 @@ const MessageComponent = ({ userImage, userName, collegeName, message, batch, ti
 
       {/* Bottom Section */}
       <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
+        <span className="text-sm text-white bg-[#98652e] px-3 py-1 rounded-full border border-gray-200">
           Batch: {batch}
         </span>
       </div>
