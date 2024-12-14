@@ -86,9 +86,9 @@ const JobPost = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-            <div className="w-full max-w-lg bg-white p-6 rounded-lg shadow-lg">
-                <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Post a New Job</h2>
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
+            <div className="w-full max-w-lg bg-white p-6 rounded-2xl shadow-lg">
+                <h2 className="text-2xl font-semibold text-center text-[#80004c] mb-6">Post a New Job</h2>
                 <form onSubmit={JobPostHandler}>
                     <div className="mb-4">
                         <label htmlFor="company" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -100,7 +100,7 @@ const JobPost = () => {
                             name="company"
                             value={formData.company}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {errors.company && <p className="text-xs text-red-500 mt-2">{errors.company}</p>}
                     </div>
@@ -115,7 +115,7 @@ const JobPost = () => {
                             value={formData.description}
                             onChange={handleChange}
                             rows="4"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         ></textarea>
                         {errors.description && <p className="text-xs text-red-500 mt-2">{errors.description}</p>}
                     </div>
@@ -134,7 +134,7 @@ const JobPost = () => {
                                 name={field}
                                 value={formData[field]}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors[field] && <p className="text-xs text-red-500 mt-2">{errors[field]}</p>}
                         </div>
@@ -154,7 +154,7 @@ const JobPost = () => {
                                 name={field}
                                 value={formData[field]}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             {errors[field] && <p className="text-xs text-red-500 mt-2">{errors[field]}</p>}
                         </div>
@@ -163,7 +163,7 @@ const JobPost = () => {
                     <div className="mt-6">
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full bg-[#80004c] text-white py-2 rounded-xl hover:bg-[#b3006a] focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             Post Job
                         </button>

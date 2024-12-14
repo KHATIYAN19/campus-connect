@@ -1,12 +1,13 @@
-import React from "react";
-import { Badge } from "../ui/badge";
-import { NavLink } from "react-router-dom";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { Avatar, AvatarImage } from '../ui/avatar';
+import { Badge } from '../ui/badge';
+
 
 const LatestJobs = ({ data }) => {
   return (
-    <div className="p-6 shadow-lg  bg-white border border-gray-200 cursor-pointer hover:shadow-xl transition-transform transform hover:-translate-y-1 mt-5 rounded-xl">
-      <NavLink to={`/description/${data._id}`} className="block">
+    <div className="bg-white shadow-lg rounded-2xl p-6 flex flex-col h-full">
+      <NavLink to={`/description/${data._id}`} className="block h-full">
         {/* Header with Avatar and Company Info */}
         <div className="flex items-center gap-4 mb-4">
           <Avatar className="w-14 h-14">
@@ -21,9 +22,9 @@ const LatestJobs = ({ data }) => {
         </div>
 
         {/* Job Details */}
-        <div>
+        <div className="flex-1">
           <h2 className="font-bold text-lg text-gray-900 mb-2">
-            {data.position}
+            {data.position.length > 25 ? `${data.position.substring(0, 25)}...` : data.position}
           </h2>
           <p className="text-sm text-gray-600 leading-relaxed">
             {data.description.length > 100
@@ -38,10 +39,10 @@ const LatestJobs = ({ data }) => {
             {data.numbers} Positions
           </Badge>
           <Badge className="bg-blue-100 text-blue-700 font-semibold px-3 py-1 rounded-md">
-            {data.position}
+            {data.position.length > 25 ? `${data.position.substring(0, 25)}...` : data.position}
           </Badge>
           <Badge className="bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-md">
-            ₹{data.salary} per annum
+            ₹{data.salary.length > 10 ? `${data.salary.substring(0, 10)}...` : data.salary} per annum
           </Badge>
         </div>
       </NavLink>

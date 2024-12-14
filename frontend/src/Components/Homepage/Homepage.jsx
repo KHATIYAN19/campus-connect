@@ -9,7 +9,7 @@ const Homepage = () => {
   return (
     <div className="min-h-screen bg-white p-4 sm:p-8 space-y-8">
       {/* JobCard Section */}
-      <div className="bg-blue-50 shadow-lg rounded-2xl p-6">
+      <div className="bg-pink-50 shadow-lg rounded-2xl p-6">
         <JobCard />
       </div>
   
@@ -23,9 +23,9 @@ const Homepage = () => {
   
       {/* Latest Notice Section */}
       <div className="bg-yellow-50 shadow-lg rounded-2xl p-6">
-        <h2 className="text-center text-2xl sm:text-3xl font-bold text-yellow-800 mb-4">
+        {/* <h2 className="text-center text-2xl sm:text-3xl font-bold text-yellow-800 mb-4">
           Latest Notice
-        </h2>
+        </h2> */}
         <Messages show={false} />
       </div>
     </div>
