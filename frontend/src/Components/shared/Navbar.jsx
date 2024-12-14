@@ -103,7 +103,7 @@ const Navbar = () => {
         >
           {user && (
             <ul className="flex flex-col md:flex-row font-medium items-center gap-4 md:gap-6 w-full md:w-auto">
-              {['/', '/Jobs', '/notices', '/experience'].map((path, index) => (
+              {['/', '/Jobs', '/notices', '/experience','/contact'].map((path, index) => (
                 <li key={index} className="w-full md:w-auto">
                   <Link
                     to={path}
@@ -118,7 +118,9 @@ const Navbar = () => {
                       : path.slice(1).charAt(0).toUpperCase() + path.slice(2)}
                   </Link>
                 </li>
+                
               ))}
+             
               {role === 'admin' && (
                 <>
                   <li className="w-full md:w-auto">

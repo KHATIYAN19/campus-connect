@@ -23,6 +23,7 @@ import JobTable from './Components/pages/JobTable.jsx';
 import InterviewExperiences from './Components/pages/InterviewExperiences.jsx';
 import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute.jsx';
 import ThemeOptions from './Components/shared/ThemeOptions.jsx';
+import ContactForm from './Components/pages/ContactForm.jsx';
 import Main from './Components/pages/Main.jsx';
 function App() {
   const[admin,setAdmin]=useState(false);
@@ -37,7 +38,7 @@ function App() {
 
         <Route path="/login" element={isLogin?(<Homepage/>):(<Login/>)}/><Route/>
         <Route path='/signup' element={isLogin?(<Homepage/>):(admin?(<SignupAdmin setAdmin={setAdmin}/>):(<SignupStudent setAdmin={setAdmin}/>))}></Route>
-        
+        <Route path="/contact" element={<ContactForm/>}/>
      
           <Route path="/verify-email" element={<EmailVerification/>} />
           <Route path="/reset-password" element={<ResetPassword/>}/>
