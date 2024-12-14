@@ -163,7 +163,7 @@ const JobPost = () => {
                     <div className="mt-6">
                         <button
                             type="submit"
-                            className="w-full bg-[#80004c] text-white py-2 rounded-xl hover:bg-[#b3006a] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full bg-gradient-to-r from-[#80004c] to-purple-500 text-white py-2 rounded-xl hover:bg-[#b3006a] focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             Post Job
                         </button>
