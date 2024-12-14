@@ -188,7 +188,7 @@ const Navbar = () => {
                 </div>
               </PopoverTrigger>
               <PopoverContent className="w-80 rounded-xl bg-white shadow-md">
-                <div className="flex gap-4 space-y-2">
+                <div className="flex gap-2 space-y-2">
                   <div className="w-12 h-12 rounded-full overflow-hidden mx-auto">
                     <img
                       className="object-cover w-full h-full"

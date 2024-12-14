@@ -107,7 +107,7 @@ const JobDescription = () => {
                             </Button>
                         ) : (
                             <Button
-                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 hover:from-pink-600 hover:to-purple-800 text-white font-semibold px-4 py-2 rounded-lg"
+                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 hover:from-pink-600 hover:to-purple-800 text-white font-semibold px-4 py-2 rounded-xl"
                                 onClick={handleApplyClick}
                             >
                                 Apply Now
@@ -115,7 +115,7 @@ const JobDescription = () => {
                         )
                     ) : (
                         <Button
-                            className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed"
+                            className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-xl cursor-not-allowed"
                             disabled
                         >
                             Not Allowed
@@ -147,8 +147,8 @@ const JobDescription = () => {
             </div>
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-2xl max-w-md w-full">
-                        <h2 className="text-xl sm:text-2xl font-bold text-center text-blue-600 mb-4">Review Your Profile</h2>
+                    <div className="bg-white p-6 sm:p-8 rounded-xl shadow-2xl max-w-md w-full">
+                        <h2 className="text-xl sm:text-2xl font-bold text-center text-[#80004c] mb-4">Review Your Profile</h2>
                         <div className="mt-4 space-y-2 text-gray-700">
                             {Object.entries({
                                 Name: studentData.name,
@@ -166,13 +166,13 @@ const JobDescription = () => {
                         </div>
                         <div className="flex justify-center mt-6 gap-4">
                             <Button
-                                className="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-full"
+                                className="bg-red-700 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-full"
                                 onClick={handleCancelClick}
                             >
                                 Cancel
                             </Button>
                             <Button
-                                className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-full"
+                                className="bg-[#568203] hover:bg-[#708238] text-white font-bold px-4 py-2 rounded-full"
                                 onClick={applyHandler}
                             >
                                 Apply
