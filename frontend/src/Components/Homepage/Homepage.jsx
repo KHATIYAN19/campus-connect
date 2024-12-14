@@ -9,7 +9,7 @@ const Homepage = () => {
   return (
     <div className="min-h-screen bg-white p-4 sm:p-8 space-y-8">
       {/* JobCard Section */}
-      <div className="bg-blue-50 shadow-lg rounded-2xl p-6">
+      <div className="bg-pink-50 shadow-lg rounded-2xl p-6">
         <JobCard />
       </div>
   
