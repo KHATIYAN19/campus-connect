@@ -82,13 +82,13 @@ const Blocked = () => {
   return (
     <div className="my-10 w-full max-w-4xl mx-auto px-6">
       {/* Block User Form */}
-      <Card className="bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 shadow-lg rounded-lg">
+      <Card className="bg-gradient-to-r from-[#cc0079] via-[#99005b] to-purple-800 shadow-lg rounded-2xl">
         <CardHeader>
           <CardTitle className="text-white text-lg font-semibold">Block User</CardTitle>
         </CardHeader>
         <CardContent className="text-white">
           <div className="mb-4">
-            <p className="text-gray-200 text-sm">Enter the email address to block a user:</p>
+            <p className="text-gray-200 text-md">Enter the email address to block a user :</p>
           </div>
           <form onSubmit={addHandler} className="flex items-center gap-4">
             <Input
@@ -111,7 +111,7 @@ const Blocked = () => {
       </Card>
 
       {/* Blocked Users List */}
-      <Card className="mt-8 bg-gray-50 shadow-lg rounded-lg">
+      <Card className="mt-8 bg-gray-100 shadow-lg rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-gray-800">All Blocked Users</CardTitle>
         </CardHeader>
@@ -123,15 +123,15 @@ const Blocked = () => {
               {user.map((item, idx) => (
                 <div
                   key={item.email}
-                  className="flex items-center justify-between p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all ease-in-out duration-300 transform hover:scale-105"
+                  className="flex items-center justify-between p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all ease-in-out duration-300 transform hover:scale-105"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 ">
                     <p className="font-semibold text-lg text-gray-800">{idx + 1}.</p>
                     <p className="text-gray-700 text-md">{item.email}</p>
                   </div>
                   <Button
                     variant="destructive"
-                    className="p-2 bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 transition duration-200"
+                    className="p-2 bg-yellow-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 transition duration-200"
                     onClick={() => deleteHandler(item.email)}
                   >
                     <MdDelete size={20} />
