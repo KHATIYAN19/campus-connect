@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';  // Import useLocation
 import Login from './Components/LoginSignUp/Login.jsx';
 import SignupStudent from './Components/LoginSignUp/SignupStudent.jsx';
 import SignupAdmin from './Components/LoginSignUp/SignupAdmin.jsx';
@@ -6,7 +7,6 @@ import Homepage from './Components/Homepage/Homepage.jsx';
 import JobPost from './Components/LoginSignUp/JobPost.jsx';
 import Navbar from './Components/shared/Navbar.jsx';
 import Jobs from './Components/Homepage/Jobs.jsx';
-import { Route,Routes } from 'react-router-dom';
 import ResetPassword from './Components/LoginSignUp/ResetPassword.jsx';
 import AppliedJobs from './Components/Homepage/AppliedJobTable.jsx';
 import Profile from './Components/Homepage/Profile.jsx';
@@ -25,27 +25,40 @@ import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute.jsx';
 import ThemeOptions from './Components/shared/ThemeOptions.jsx';
 import ContactForm from './Components/pages/ContactForm.jsx';
 import Main from './Components/pages/Main.jsx';
+
 function App() {
-  const[admin,setAdmin]=useState(false);
+  const [admin, setAdmin] = useState(false);
   const isLogin = localStorage.getItem('isLogin');
+  const [theme, setTheme] = useState('light');
+  const location = useLocation();  // Get current route path
 
+  // Check if the current path is '/main', so we can hide the Navbar
+  const hideNavbar = location.pathname === '/main';
 
-  const [theme, setTheme] = useState('light'); 
-    return (    
-         <div className='font-serif'  data-theme={theme}>
-           <Navbar></Navbar>
-        <Routes>
+  return (
+    <div className="font-serif" data-theme={theme}>
+      {/* Conditionally render Navbar based on current route */}
+      {!hideNavbar && <Navbar />}
 
-        <Route path="/login" element={isLogin?(<Homepage/>):(<Login/>)}/><Route/>
-        <Route path='/signup' element={isLogin?(<Homepage/>):(admin?(<SignupAdmin setAdmin={setAdmin}/>):(<SignupStudent setAdmin={setAdmin}/>))}></Route>
-        <Route path="/contact" element={<ContactForm/>}/>
-     
-          <Route path="/verify-email" element={<EmailVerification/>} />
-          <Route path="/reset-password" element={<ResetPassword/>}/>
-          
-           <Route path="/" element={<Homepage />} />
-        
-           <Route path="/themes" element={<ThemeOptions setTheme={setTheme} />} />
+      <Routes>
+        <Route path="/login" element={isLogin ? <Homepage /> : <Login />} />
+        <Route
+          path="/signup"
+          element={
+            isLogin ? (
+              <Homepage />
+            ) : admin ? (
+              <SignupAdmin setAdmin={setAdmin} />
+            ) : (
+              <SignupStudent setAdmin={setAdmin} />
+            )
+          }
+        />
+        <Route path="/contact" element={<ContactForm />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/" element={<Homepage />} />
+        <Route path="/themes" element={<ThemeOptions setTheme={setTheme} />} />
 
         <Route
           path="/applied-jobs"
@@ -83,10 +96,8 @@ function App() {
           path="/experience"
           element={<ProtectedRoute element={<InterviewExperiences show={true} />} />}
         />
-          
 
-
-          <Route
+        <Route
           path="/jobs/post"
           element={<AdminProtectedRoute element={<JobPost />} />}
         />
@@ -98,18 +109,15 @@ function App() {
           path="/notice/post"
           element={<AdminProtectedRoute element={<MessageBox />} />}
         />
-     
-          
 
-          <Route path="/applicantTable" element={<JobApplicantsTable/>}/>
-          <Route path="/jobtable" element={<JobTable/>}/>
+        <Route path="/applicantTable" element={<JobApplicantsTable />} />
+        <Route path="/jobtable" element={<JobTable />} />
 
-          <Route path="/main" element={<Main/>} />
-          <Route path="/homepage" element={<Homepage/>} />
-         
-       </Routes>    
-       </div>
-    );
+        <Route path="/main" element={<Main />} />
+        <Route path="/homepage" element={<Homepage />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;
