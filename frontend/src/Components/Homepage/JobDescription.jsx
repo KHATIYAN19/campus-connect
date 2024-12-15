@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Badge } from '../ui/badge';
+import { HiUserGroup } from "react-icons/hi";
 import { Button } from '../ui/button';
 import { useParams } from 'react-router-dom';
 import axios from '../LoginSignUp/axios.js';
@@ -17,10 +18,10 @@ const JobDescription = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [studentData] = useState(user || {});
     const [users, setUsers] = useState([]);
-
+    const[count,SetCount]=useState (0);
     const fetchApplications = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/jobs/applications/${id}`);
+            const response = await axios.get(`http://localhost:8080/jobs/applications/${id}`);          
             setUsers(response.data.data || []);
         } catch (error) {
             console.error('Error fetching applications:', error);
@@ -30,6 +31,10 @@ const JobDescription = () => {
     const fetchJobDetails = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/jobs/${id}`);
+            console.log(response.data.job);
+            const response2 = await axios.get(`http://localhost:8080/findapplication_id`);
+            setApplied(response2.data.applied);
+             SetCount(response.data.job.applicants.length)
             setJob(response.data.job);
             if (isAdmin) {
                 fetchApplications();
@@ -40,11 +45,15 @@ const JobDescription = () => {
     };
 
     const applyHandler = async (e) => {
+        console.log(applied)
+        console.log(job);
+        console.log(users)
         e.preventDefault();
         try {
             const response = await axios.post(`/jobs/apply/${id}`);
             if (response.data.success) {
                 setApplied([...applied, id]);
+                SetCount(count+1);
                 setShowPopup(false);
                 toast.success('Applied Successfully');
             } else {
@@ -79,7 +88,7 @@ const JobDescription = () => {
     }, [job]);
 
     const isApplied = applied.includes(job._id);
-
+    
     return (
         <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-100 via-[#eab3c4] to-[#eb82fd] rounded-xl shadow-2xl mt-8">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
@@ -95,6 +104,16 @@ const JobDescription = () => {
                     />
                     {/* Company Name */}
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-700 ml-7">{job.company}</h1>
+                   
+                </div>
+                <div className='flex items-center gap-4 border p-4 rounded-2xl text-white bg-[#80004c] '>
+                    <div className='text-3xl'> 
+                        <HiUserGroup />
+                    </div>
+                    <div className='flex gap-x-0 flex-col'>
+                        <p>Applied</p>
+                        <p className='flex items-center justify-center'>{count}</p>
+                    </div>
                 </div>
                 {!isAdmin && (
                     isAllow ? (
@@ -129,8 +148,8 @@ const JobDescription = () => {
                     <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{job.position}</span></h1>
                     <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{job.location}</span></h1>
                     <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{job.description}</span></h1>
-                    <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>0-2 years</span></h1>
-                    <h1 className='font-bold my-1'>Batch: <span className='pl-4 font-normal text-gray-800'>2025</span></h1>
+                    <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>Freshers</span></h1>
+                    {/* <h1 className='font-bold my-1'>Batch: <span className='pl-4 font-normal text-gray-800'>2025</span></h1> */}
                     <h1 className='font-bold my-1'>Salary: <span className='pl-4 font-normal text-gray-800'>{job.salary} LPA</span></h1>
                     <h1 className='font-bold my-1'>Total Applicants: <span className='pl-4 font-normal text-gray-800'>{job.numbers}</span></h1>
                     <h1 className='font-bold my-1'>10<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tenth}%</span></h1>
