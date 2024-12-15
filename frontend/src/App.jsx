@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';  // Import useLocation
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';  // Import Navigate
 import Login from './Components/LoginSignUp/Login.jsx';
 import SignupStudent from './Components/LoginSignUp/SignupStudent.jsx';
 import SignupAdmin from './Components/LoginSignUp/SignupAdmin.jsx';
@@ -41,6 +41,7 @@ function App() {
       {!hideNavbar && <Navbar />}
 
       <Routes>
+        <Route path="/" element={<Navigate to="/main" replace />} />
         <Route path="/login" element={isLogin ? <Homepage /> : <Login />} />
         <Route
           path="/signup"
@@ -57,7 +58,6 @@ function App() {
         <Route path="/contact" element={<ContactForm />} />
         <Route path="/verify-email" element={<EmailVerification />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/" element={<Homepage />} />
         <Route path="/themes" element={<ThemeOptions setTheme={setTheme} />} />
 
         <Route
