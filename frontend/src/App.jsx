@@ -117,7 +117,7 @@ function App() {
           path="/notice/post"
           element={<AdminProtectedRoute element={<MessageBox />} />}
         />
-
+        <Route path="/footer" element={< Footer />} />
         <Route path="/contact" element={<ContactForm />} />
         <Route path="/themes" element={<ThemeOptions setTheme={setTheme} />} />
         <Route path="/homepage" element={<ProtectedRoute element={<Homepage />} />} />
