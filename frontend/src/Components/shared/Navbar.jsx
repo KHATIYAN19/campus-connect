@@ -102,7 +102,7 @@ const Navbar = () => {
           } md:flex flex-col md:flex-row items-center gap-4 md:gap-12 absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent z-10 shadow-lg md:shadow-none`}
         >
           {user && (
-            <ul className="flex flex-col md:flex-row font-medium items-center gap-4 md:gap-6 w-full md:w-auto">
+            <ul className="flex flex-col md:flex-row font-medium items-center gap-2 md:gap-1 w-full md:w-auto">
               {['/', '/Jobs', '/notices', '/experience','/contact'].map((path, index) => (
                 <li key={index} className="w-full md:w-auto">
                   <Link
