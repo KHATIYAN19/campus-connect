@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Route, Routes, Navigate, useLocation } from 'react-router-dom';  // Import Navigate
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Login from './Components/LoginSignUp/Login.jsx';
 import SignupStudent from './Components/LoginSignUp/SignupStudent.jsx';
 import SignupAdmin from './Components/LoginSignUp/SignupAdmin.jsx';
@@ -28,9 +28,9 @@ import Main from './Components/pages/Main.jsx';
 
 function App() {
   const [admin, setAdmin] = useState(false);
-  const isLogin = localStorage.getItem('isLogin');
+  const isLogin = localStorage.getItem('isLogin'); // Check login status
   const [theme, setTheme] = useState('light');
-  const location = useLocation();  // Get current route path
+  const location = useLocation();
 
   // Check if the current path is '/main', so we can hide the Navbar
   const hideNavbar = location.pathname === '/main';
@@ -41,7 +41,25 @@ function App() {
       {!hideNavbar && <Navbar />}
 
       <Routes>
-        <Route path="/" element={<Navigate to="/main" replace />} />
+        {/* Redirect logged-out users to main page */}
+        <Route
+          path="/"
+          element={isLogin ? <Navigate to="/homepage" replace /> : <Navigate to="/main" replace />}
+        />
+
+        {/* Main page */}
+        <Route
+          path="/main"
+          element={
+            isLogin ? (
+              <Navigate to="/homepage" replace />
+            ) : (
+              <Main />
+            )
+          }
+        />
+
+        {/* Login and Signup Routes */}
         <Route path="/login" element={isLogin ? <Homepage /> : <Login />} />
         <Route
           path="/signup"
@@ -55,18 +73,11 @@ function App() {
             )
           }
         />
-        <Route path="/contact" element={<ContactForm />} />
-        <Route path="/verify-email" element={<EmailVerification />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/themes" element={<ThemeOptions setTheme={setTheme} />} />
 
+        {/* Protected routes for authenticated users */}
         <Route
           path="/applied-jobs"
           element={<ProtectedRoute element={<AppliedJobs />} />}
-        />
-        <Route
-          path="/navbar"
-          element={<ProtectedRoute element={<Navbar />} />}
         />
         <Route
           path="/jobs"
@@ -85,10 +96,6 @@ function App() {
           element={<ProtectedRoute element={<Messages show={true} />} />}
         />
         <Route
-          path="/footer"
-          element={<ProtectedRoute element={<Footer />} />}
-        />
-        <Route
           path="/user/profile/:id"
           element={<ProtectedRoute element={<UserProfile />} />}
         />
@@ -97,6 +104,7 @@ function App() {
           element={<ProtectedRoute element={<InterviewExperiences show={true} />} />}
         />
 
+        {/* Admin-protected routes */}
         <Route
           path="/jobs/post"
           element={<AdminProtectedRoute element={<JobPost />} />}
@@ -110,11 +118,9 @@ function App() {
           element={<AdminProtectedRoute element={<MessageBox />} />}
         />
 
-        <Route path="/applicantTable" element={<JobApplicantsTable />} />
-        <Route path="/jobtable" element={<JobTable />} />
-
-        <Route path="/main" element={<Main />} />
-        <Route path="/homepage" element={<Homepage />} />
+        <Route path="/contact" element={<ContactForm />} />
+        <Route path="/themes" element={<ThemeOptions setTheme={setTheme} />} />
+        <Route path="/homepage" element={<ProtectedRoute element={<Homepage />} />} />
       </Routes>
     </div>
   );
