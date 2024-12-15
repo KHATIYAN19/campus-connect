@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 function UserTable({ applies }) {
   const navigate=useNavigate();
   const appliesArray = Array.isArray(applies) ? applies : [];
-  const bgColor = appliesArray.length > 0 ? "bg-green-100" : "bg-red-100";
+  const bgColor = appliesArray.length > 0 ? "bg-purple-100" : "bg-red-100";
   return (
-    <div className={`p-4 md:p-8 ${bgColor} rounded-lg shadow-md`}>
-      <div className="overflow-x-auto">
+    <div className={`p-4 md:p-8 ${bgColor} rounded-xl shadow-md`}>
+      <div className="overflow-x-auto rounded-xl">
         {appliesArray.length > 0 ? (
           <table className="w-full border-collapse border border-gray-200 text-left">
-            <thead className="bg-gray-100 text-gray-700">
+            <thead className="bg-gray-50 text-gray-700">
               <tr>
                 <th className="p-4 border-b border-gray-300">Image</th>
                 <th className="p-4 border-b border-gray-300">Name</th>

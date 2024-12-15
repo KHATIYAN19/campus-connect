@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from '../LoginSignUp/axios.js';
 import { Avatar } from '../ui/avatar';
 import UserTable from '../pages/userTable';
@@ -17,12 +17,11 @@ const JobDescription = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [studentData] = useState(user || {});
     const [users, setUsers] = useState([]);
-    const navigate = useNavigate();
 
     const fetchApplications = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/findapplication_id`);
-            setApplied(response.data.applied || []);
+            const response = await axios.get(`http://localhost:8080/jobs/applications/${id}`);
+            setUsers(response.data.data || []);
         } catch (error) {
             console.error('Error fetching applications:', error);
         }
@@ -32,9 +31,8 @@ const JobDescription = () => {
         try {
             const response = await axios.get(`http://localhost:8080/jobs/${id}`);
             setJob(response.data.job);
-            if (isAdmin === 'admin') {
-                const response2 = await axios.get(`http://localhost:8080/jobs/applications/${id}`);
-                setUser(response2.data.data);
+            if (isAdmin) {
+                fetchApplications();
             }
         } catch (error) {
             console.error('Error fetching job details:', error);
@@ -58,7 +56,11 @@ const JobDescription = () => {
     };
 
     const findAllow = () => {
-        if (job.tenth <= user.profile.tenth && job.tweleth <= user.profile.tweleth && job.graduationMarks <= user.profile.graduationMarks) {
+        if (
+            job.tenth <= user.profile.tenth &&
+            job.tweleth <= user.profile.tweleth &&
+            job.graduationMarks <= user.profile.graduationMarks
+        ) {
             setIsAllow(true);
         }
     };
@@ -68,28 +70,31 @@ const JobDescription = () => {
 
     useEffect(() => {
         fetchJobDetails();
-        fetchApplications();
     }, []);
 
     useEffect(() => {
-        isAdmin === 'student' ? findAllow() : '';
-    });
+        if (user?.role === 'student') {
+            findAllow();
+        }
+    }, [job]);
 
-    const Applied = applied.includes(job._id);
+    const isApplied = applied.includes(job._id);
 
     return (
-        <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-100 via-blue-100 to-green-100 rounded-xl shadow-2xl mt-8">
+        <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-100 via-[#eab3c4] to-[#eb82fd] rounded-xl shadow-2xl mt-8">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-purple-900">{job.company}</h1>
-                    <div className="flex flex-wrap items-center gap-3 mt-4">
-                        <Avatar
-                            src={job.logo}
-                            alt="Company Logo"
-                            className="w-16 h-16 rounded-full object-cover shadow-lg border-2 border-purple-300"
-                        />
-                        
-                    </div>
+                <div className="flex items-center">
+                    {/* Company Logo */}
+                    <div
+                        className="w-16 h-16 rounded-full object-cover shadow-lg"
+                        style={{
+                            backgroundImage: `url(${job.logo})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                        }}
+                    />
+                    {/* Company Name */}
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-700 ml-7">{job.company}</h1>
                 </div>
                 {!isAdmin && (
                     isAllow ? (
@@ -102,7 +107,7 @@ const JobDescription = () => {
                             </Button>
                         ) : (
                             <Button
-                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 hover:from-pink-600 hover:to-purple-800 text-white font-semibold px-4 py-2 rounded-lg"
+                                className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 hover:from-pink-600 hover:to-purple-800 text-white font-semibold px-4 py-2 rounded-xl"
                                 onClick={handleApplyClick}
                             >
                                 Apply Now
@@ -110,7 +115,7 @@ const JobDescription = () => {
                         )
                     ) : (
                         <Button
-                            className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed"
+                            className="mt-4 sm:mt-0 bg-gradient-to-r from-pink-500 to-purple-700 text-white font-semibold px-4 py-2 rounded-xl cursor-not-allowed"
                             disabled
                         >
                             Not Allowed
@@ -118,31 +123,32 @@ const JobDescription = () => {
                     )
                 )}
             </div>
-            <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>Job Description </h1>
+            <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>Job Description</h1>
             <div>
                 <div className='my-8'>
-
-                <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{job.position}</span></h1>
-                <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{job.location}</span></h1>
-                <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{job.description}</span></h1>
-                <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>0-2 years</span></h1>
-                <h1 className='font-bold my-1'>Batch: <span className='pl-4 font-normal text-gray-800'>2025</span></h1>
-                <h1 className='font-bold my-1'>Salary: <span className='pl-4 font-normal text-gray-800'>{job.salary} LPA</span></h1>
-                <h1 className='font-bold my-1'>Total Applicants: <span className='pl-4 font-normal text-gray-800'>{job.numbers}</span></h1>
-                <h1 className='font-bold my-1'>10<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tenth}%</span></h1>
-                <h1 className='font-bold my-1'>12<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tweleth}%</span></h1>
-                <h1 className='font-bold my-1'>Graduation Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.graduationMarks}%</span></h1>
-            </div>
-            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-xl shadow-lg">
-                <p className="text-center font-semibold">
-                    Posted by: <a href="#" className="underline hover:text-yellow-300">{job.postedBy || 'N/A'}</a>
-                </p>
-            </div>
+                    <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{job.position}</span></h1>
+                    <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{job.location}</span></h1>
+                    <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{job.description}</span></h1>
+                    <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>0-2 years</span></h1>
+                    <h1 className='font-bold my-1'>Batch: <span className='pl-4 font-normal text-gray-800'>2025</span></h1>
+                    <h1 className='font-bold my-1'>Salary: <span className='pl-4 font-normal text-gray-800'>{job.salary} LPA</span></h1>
+                    <h1 className='font-bold my-1'>Total Applicants: <span className='pl-4 font-normal text-gray-800'>{job.numbers}</span></h1>
+                    <h1 className='font-bold my-1'>10<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tenth}%</span></h1>
+                    <h1 className='font-bold my-1'>12<sup>th</sup> Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.tweleth}%</span></h1>
+                    <h1 className='font-bold my-1'>Graduation Percentage: <span className='pl-4 font-normal text-gray-800'>Above {job.graduationMarks}%</span></h1>
+                </div>
+                {!isAdmin && (
+                    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-xl shadow-lg">
+                        <p className="text-center font-semibold">
+                            Posted by: <a href="#" className="underline hover:text-yellow-300">{job.postedBy || 'N/A'}</a>
+                        </p>
+                    </div>
+                )}
             </div>
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-2xl max-w-md w-full">
-                        <h2 className="text-xl sm:text-2xl font-bold text-center text-blue-600 mb-4">Review Your Profile</h2>
+                    <div className="bg-white p-6 sm:p-8 rounded-xl shadow-2xl max-w-md w-full">
+                        <h2 className="text-xl sm:text-2xl font-bold text-center text-[#80004c] mb-4">Review Your Profile</h2>
                         <div className="mt-4 space-y-2 text-gray-700">
                             {Object.entries({
                                 Name: studentData.name,
@@ -160,13 +166,13 @@ const JobDescription = () => {
                         </div>
                         <div className="flex justify-center mt-6 gap-4">
                             <Button
-                                className="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-full"
+                                className="bg-red-700 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-full"
                                 onClick={handleCancelClick}
                             >
                                 Cancel
                             </Button>
                             <Button
-                                className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-full"
+                                className="bg-[#568203] hover:bg-[#708238] text-white font-bold px-4 py-2 rounded-full"
                                 onClick={applyHandler}
                             >
                                 Apply
@@ -175,9 +181,19 @@ const JobDescription = () => {
                     </div>
                 </div>
             )}
-            {isAdmin && <UserTable applies={users} />}
+            {isAdmin && (
+                <div className="mt-8">
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#80004c] text-center mb-4">Applicants</h2>
+                    {users.length > 0 ? (
+                        <UserTable applies={users} />
+                    ) : (
+                        <p className="text-gray-600 text-center">No applicants for this job yet.</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
 
 export default JobDescription;
+

@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import JobDetails from './JobDetails';
-import axios from "../LoginSignUp/axios.js"
+import axios from "../LoginSignUp/axios.js";
 import { NavLink } from 'react-router-dom';
 import { Avatar, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 
-
 const Jobs = () => {
     const [jobArray, setJobArray] = useState([]);
+    const [isStudent, setIsStudent] = useState(false);
 
     useEffect(() => {
+        // Fetch jobs
         axios.get("http://localhost:8080/jobs/getall").then((res) => {
             setJobArray(res.data.Jobs);
             console.log(res.data.Jobs);
-        })
+        });
+
+        // Determine user role
+        axios.get("http://localhost:8080/user/role").then((res) => {
+            setIsStudent(res.data.role === 'student');
+        });
     }, []);
 
     return (
@@ -75,9 +81,11 @@ const Jobs = () => {
                                                 >
                                                     View Details
                                                 </NavLink>
-                                                <button className="bg-[#003166] text-white px-3 py-2 rounded-xl text-center w-full font-semibold hover:bg-green-700 transition-colors text-sm">
-                                                    Apply
-                                                </button>
+                                                {isStudent && (
+                                                    <button className="bg-[#003166] text-white px-3 py-2 rounded-xl text-center w-full font-semibold hover:bg-green-700 transition-colors text-sm">
+                                                        Apply
+                                                    </button>
+                                                )}
                                             </div>
                                         </NavLink>
                                     </div>
@@ -88,9 +96,7 @@ const Jobs = () => {
                 </div>
             </div>
         </div>
-
-
-    )
-}
+    );
+};
 
 export default Jobs;
