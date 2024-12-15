@@ -95,7 +95,7 @@ const Login = () => {
           </div>
 
           <div className="flex justify-center items-center mt-6">
-            <Button className="w-full bg-[#88004c] text-lg rounded-xl py-3 text-white font-bold hover:bg-[#66003c] focus:outline-none">
+            <Button className="w-full bg-gradient-to-r from-[#80004c] to-purple-500 text-lg rounded-xl py-3 text-white font-bold hover:bg-[#66003c] focus:outline-none">
               Submit
             </Button>
           </div>

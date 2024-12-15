@@ -130,7 +130,7 @@ const SignupStudent = ({ setAdmin }) => {
                                     accept={accept}
                                     placeholder={label}
                                     onChange={handleChange}
-                                    className="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                                 {errors[name] && (
                                     <p className="text-xs text-red-500 mt-1">{errors[name]}</p>
@@ -149,7 +149,7 @@ const SignupStudent = ({ setAdmin }) => {
                                     name={name}
                                     placeholder={label}
                                     onChange={handleChange}
-                                    className="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                                 {errors[name] && (
                                     <p className="text-xs text-red-500 mt-1">{errors[name]}</p>
@@ -169,7 +169,7 @@ const SignupStudent = ({ setAdmin }) => {
                         </p>
                         <button
                             type="submit"
-                            className="bg-[#88004c] text-white px-4 py-2 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="bg-gradient-to-r from-[#80004c] to-purple-500 text-white px-6 py-1 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             Sign Up
                         </button>

@@ -32,40 +32,76 @@ const ResetPassword = () => {
         toast.error(error.response.data.message);
     }
   };
-  return (
-    <div className='container'>
-    <div className="header">
-        <div className="text">RESET PASSWORD</div>
-        <div className="underline"></div>
-    </div>
-    <form className="inputs" onSubmit={ResetHandler}  >
-       
-        <div className="input">
-            <img src={email_icon} alt="email_icon" />
-            <input type="email" placeholder='Email Id' value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-       
-        <div className="input">
-            <img src={password_icon} alt="password_icon" />
-            <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <div className="input">
-            <img src={secret_icon} alt="secret_icon" width={28} height={30}/>
-            <input type="text" placeholder='Secret Key' value={key} onChange={(e) => setKey(e.target.value)} />
-        </div>
-        <div className="submit-container">
-        <div className="submit-container">
-                    <button type="submit" className="submitBtn">
-                        Submit
-                    </button>
-                    <div className={"submit gray"}>
-                         <NavLink to="/login">Login</NavLink>
-                    </div>
+    return (
+            <div className="flex flex-col items-center justify-center min-h-screen bg-white px-2 sm:px-6 lg:px-8">
+              <form
+                className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-md space-y-6"
+                onSubmit={ResetHandler}
+              >
+                <div className="mb-4 text-center">
+                  <h1 className="text-3xl sm:text-4xl font-semibold text-[#80004c]">
+                    Reset Password
+                  </h1>
                 </div>
-    </div>
-  </form>
-</div>
-  )
+                <div className="flex items-center border rounded-xl overflow-hidden">
+                  <img
+                    src={email_icon}
+                    alt="Email Icon"
+                    className="p-3 w-10 sm:w-12 h-10 sm:h-12"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email Id"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-3 py-2 outline-none text-gray-700"
+                  />
+                </div>
+                <div className="flex items-center border rounded-xl overflow-hidden">
+                  <img
+                    src={password_icon}
+                    alt="Password Icon"
+                    className="p-3 w-10 sm:w-12 h-10 sm:h-12"
+                  />
+                  <input
+                    type="password"
+                    placeholder="New Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-3 py-2 outline-none text-gray-700"
+                  />
+                </div>
+                <div className="flex items-center border rounded-xl overflow-hidden">
+                  <img
+                    src={secret_icon}
+                    alt="Secret Key Icon"
+                    className="p-3 w-10 sm:w-12 h-10 sm:h-12"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Secret Key"
+                    value={key}
+                    onChange={(e) => setKey(e.target.value)}
+                    className="w-full px-3 py-2 outline-none text-gray-700"
+                  />
+                </div>
+                <div className="flex flex-col items-center space-y-4">
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[#80004c] to-purple-500 text-white font-bold py-2 px-4 rounded-xl shadow-lg transition-transform transform hover:scale-105"
+                  >
+                    Submit
+                  </button>
+                  <NavLink
+                    to="/login"
+                    className="text-[#80004c] hover:underline font-medium"
+                  >
+                    Back to Login
+                  </NavLink>
+                </div>
+              </form>
+            </div>
+          );
 };
 export default ResetPassword;
 

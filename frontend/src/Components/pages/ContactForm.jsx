@@ -38,7 +38,7 @@ const ContactForm = () => {
                     <input
                         type="email"
                         {...register('email')}
-                        className="mt-2 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Enter your email address"
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -48,7 +48,7 @@ const ContactForm = () => {
                     <input
                         type="text"
                         {...register('phone')}
-                        className="mt-2 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Enter your phone number"
                     />
                     {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
@@ -58,7 +58,7 @@ const ContactForm = () => {
                     <textarea
                         {...register('message')}
                         rows={4}
-                        className="mt-2 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Write your message here"
                     />
                     {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}

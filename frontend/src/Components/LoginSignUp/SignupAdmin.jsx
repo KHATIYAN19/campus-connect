@@ -179,7 +179,7 @@ const SignupAdmin = ({ setAdmin }) => {
           <div className='flex justify-center items-center'>
             <button
               type='submit'
-              className='w-full bg-[#88004c] text-lg rounded-xl py-2 text-white font-bold hover:bg-blue-700 focus:outline-none'
+              className='w-full bg-gradient-to-r from-[#80004c] to-purple-500 text-lg rounded-xl py-2 text-white font-bold hover:bg-blue-700 focus:outline-none'
             >
               Submit
             </button>
