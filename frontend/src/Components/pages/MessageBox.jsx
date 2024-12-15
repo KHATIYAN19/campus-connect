@@ -27,12 +27,12 @@ const MessageBox = (props) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br bg-slate-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br bg-white flex items-center justify-center p-4">
       <form
-        className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-lg border-4 border-transparent transition hover:border-[#80004c]"
+        className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg border-4 border-transparent transition hover:border-[#80004c]"
         onSubmit={handleSubmit}
       >
-        <h1 className="text-3xl font-semibold text-[#80004c] text-center mb-6">
+        <h1 className="text-2xl font-bold text-[#80004c] text-center mb-6">
           Send Notice
         </h1>
 
@@ -40,7 +40,7 @@ const MessageBox = (props) => {
         <div className="mb-6">
           <label
             htmlFor="message"
-            className="block text-lg font-medium text-gray-700 mb-2"
+            className="block text-md font-medium text-gray-700 mb-2"
           >
             Message
           </label>
@@ -59,7 +59,7 @@ const MessageBox = (props) => {
         <div className="mb-6">
           <label
             htmlFor="batch"
-            className="block text-lg font-medium text-gray-700 mb-2"
+            className="block text-md font-medium text-gray-700 mb-2"
           >
             Batch
           </label>

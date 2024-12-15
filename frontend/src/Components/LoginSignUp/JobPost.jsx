@@ -86,9 +86,9 @@ const JobPost = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-8">
-            <div className="w-full max-w-lg bg-white p-6 rounded-2xl shadow-lg">
-                <h2 className="text-2xl font-semibold text-center text-[#80004c] mb-6">Post a New Job</h2>
+        <div className="flex justify-center items-center min-h-screen bg-white p-8">
+            <div className="w-full max-w-lg bg-white p-6 rounded-2xl shadow-xl border-4 border-transparent transition hover:border-[#80004c]">
+                <h2 className="text-2xl font-bold text-center text-[#80004c] mb-6">Post a New Job</h2>
                 <form onSubmit={JobPostHandler}>
                     <div className="mb-4">
                         <label htmlFor="company" className="block text-sm font-semibold text-gray-700 mb-2">
