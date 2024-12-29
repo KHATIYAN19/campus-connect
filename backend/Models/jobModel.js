@@ -50,6 +50,11 @@ const jobSchema=mongoose.Schema({
         tweleth:{
             type:Number,
             required:true,
+        },
+        jobid:{
+            type:String,
+            required:true,
+            unique:true
         }
 },{timestamps:true});
 module.exports=mongoose.model("Job",jobSchema);

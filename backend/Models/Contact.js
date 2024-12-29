@@ -9,7 +9,7 @@ const contactSchema=mongoose.Schema({
         required:true,
      },
      phone:{
-        type:Stirng,
+        type:String,
         required:true
      },
      message:{

@@ -8,6 +8,7 @@ const axios = require("axios");
 const sendMail = require("../Utils/MailSender");
 require('dotenv').config();
 const upload =require("../Utils/cloudinary.js")
+const crypto = require('crypto');
 exports.signup = async (req, res) => {
     try {
     //     console.log("req",req.body.phone);
@@ -471,8 +472,9 @@ exports.user_applications = async (req, res) => {
 }
 exports.reset = async (req, res) => {
     try {
-        let { email, password, key } = req.body;
-        if (!email || !password || !key) {
+        
+        let { email} = req.body;
+        if (!email ) {
             return res.status(400).json({
                 success: false,
                 message: "All field required"
@@ -486,33 +488,49 @@ exports.reset = async (req, res) => {
                 message: "No user available",
             })
         }
-        if (user.key !== key) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid Secret Key",
-            })
-        }
-        if (await bcrypt.compare(password, user.password)) {
-            return res.status(400).json({
-                success: false,
-                message: "Cannot change to last password",
-            })
-        }
-        let hashedpass;
-        try {
-            hashedpass = await bcrypt.hash(password, 10);
-        } catch (e) {
-            return res.status(400).json({
-                success: false,
-                message: "Error in Hashing"
-            })
-        }
-        user.password = hashedpass;
-        user.save();
+        const nonce = crypto.randomBytes(16).toString('hex');
+        const token = jwt.sign({ email,nonce},"welcomee", { expiresIn: '1h' });
+        const resetLink = `http://localhost:5173/reset-password/${token}`;
+        const emailContent = `
+        <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Campus Connect</title>
+    <style>
+      /* Include the previous CSS code here */
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td class="email-container">
+          <img src="https://via.placeholder.com/150x50?text=Campus+Connect" alt="Placement Connect Logo" style="max-width: 150px; height: auto; margin-bottom: 20px;">
+          <h1>Welcome to Placement Connect, ${user.name}!</h1>
+          <p class="welcome-message">
+            Hi ${user.name},<br><br>
+        <p>We received a request to reset your password. If you didn't make this request, please ignore this email.</p>
+        <p>Otherwise, you can reset your password using the link below:</p>
+          <a href=${resetLink} className="underline">Reset Password</a>
+          <p class="footer">
+            If you didn’t Send Link, please ignore this email or <a href="placementconnect9@gmail.com">contact support</a>.
+          </p>
+          <p class="footer">
+            © 2024 Campus Connect | <a href="https://placementconnect.com">Visit our Website</a>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>
+    `;
+
+    await sendMail(email, 'Reset Your PassWord', "", emailContent);
 
         return res.status(200).json({
             success: true,
-            message: "Password Reset"
+            message: "Link Sent to your email",
         })
 
     } catch (e) {
@@ -535,7 +553,65 @@ exports.logout = async (req, res) => {
         })
     }
 }
+exports.resetTokenPass=async(req,res)=>{
+    try{
+        const usedNonces = new Set();
+        const{password,confirmPassword}=req.body;
+        let email1=req.body.email;
+        console.log("req",req.body);
+        if(!email1||!password||!confirmPassword){
+            return res.status(400).json({
+                success:false,
+                message:"All field required"
+            })
+        }
+        const { token } = req.params;
+        if (!token) {
+            return res.status(400).json({ message: 'Token is required' });
+        }
+        const decoded = jwt.verify(token, "welcomee");
+        let email = decoded.email;
+         email = email.toLowerCase();
+        email1 = email1.toLowerCase();
+        if(email!=email1){
+            return res.status(400).json({   success: false, message: 'Invalid email' });
+        }
+        console.log("email",email);
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const nonce=decoded.nonce;
+        if (usedNonces.has(nonce)) {
+            return res.status(400).json({ message: 'Reset link is no longer valid' });
+          }
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot change password to the last password"
+            });
+        }
+        try{
+           const hashedpass = await bcrypt.hash(req.body.password, 10);
+              user.password=hashedpass;
+                await user.save();
+        }catch(e){
+            return res.status(400).json({
+                success: false,
+                message: "Error in Hashing"
+            })
+        }
+        usedNonces.add(nonce);
+        return res.status(200).json({   success: true, message: 'Password reset successfully!' });
 
+    }catch(e){
+        return res.status(400).json({
+            success: false,
+            message: "Invalid or expired token"
+        })
+    }
+
+}
 exports.verifytoken = async (req, res) => {
     const { token } = req.query;
     if (!token) {

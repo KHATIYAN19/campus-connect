@@ -18,9 +18,12 @@ const signupSchema = z.object({
   phone: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   adminkey: z.string().min(5, "Admin key must be at least 5 characters"),
-  image: z.instanceof(File).refine((file) => file.size <= 5 * 1024 * 1024, {
-    message: "Image size must be less than 5MB",
-  }),
+  image: z
+    .instanceof(File)
+    .refine((file) => file.size <= 5 * 1024 * 1024, "Image size must be less than 5MB")
+    .refine((file) => ["image/jpeg", "image/png", "image/jpg"].includes(file.type), {
+      message: "Only JPEG, PNG, and JPG formats are allowed",
+    }),
 });
 
 const SignupAdmin = ({ setAdmin }) => {
@@ -33,8 +36,14 @@ const SignupAdmin = ({ setAdmin }) => {
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const handleInputChange = (field, value) => {
+    if (field === 'image') {
+      setImage(value);
+    } else {
+      const setters = { name: setName, email: setEmail, phone: setPhone, password: setPassword, adminkey: setAdminKey };
+      setters[field](value);
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [field]: undefined }));
   };
 
   const handleSignUp = async (e) => {
@@ -83,75 +92,27 @@ const SignupAdmin = ({ setAdmin }) => {
           Sign Up <span className='text-2xl text-gray-600'>(Admin)</span>
         </div>
         <form onSubmit={handleSignUp}>
-          <div className='mb-4'>
-            <div className='flex items-center border-b-2 border-gray-300'>
-              <img src={user_icon} alt='user_icon' className='w-6 h-6 mr-2' />
-              <input
-                type='text'
-                placeholder='Name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className='w-full p-2 border-none focus:outline-none'
-              />
+          {[
+            { label: 'Name', value: name, type: 'text', icon: user_icon, field: 'name' },
+            { label: 'Email', value: email, type: 'email', icon: email_icon, field: 'email' },
+            { label: 'Phone', value: phone, type: 'tel', icon: phone_icon, field: 'phone' },
+            { label: 'Password', value: password, type: 'password', icon: password_icon, field: 'password' },
+            { label: 'Admin Key', value: adminkey, type: 'text', icon: key_icon, field: 'adminkey' },
+          ].map(({ label, value, type, icon, field }) => (
+            <div key={field} className='mb-4'>
+              <div className='flex items-center border-b-2 border-gray-300'>
+                <img src={icon} alt={`${field}_icon`} className='w-6 h-6 mr-2' />
+                <input
+                  type={type}
+                  placeholder={label}
+                  value={value}
+                  onChange={(e) => handleInputChange(field, e.target.value)}
+                  className='w-full p-2 border-none focus:outline-none'
+                />
+              </div>
+              {errors[field] && <p className='text-xs text-red-500 mt-2'>{errors[field]}</p>}
             </div>
-            {errors.name && <p className='text-xs text-red-500 mt-2'>{errors.name}</p>}
-          </div>
-
-          <div className='mb-4'>
-            <div className='flex items-center border-b-2 border-gray-300'>
-              <img src={email_icon} alt='email_icon' className='w-6 h-6 mr-2' />
-              <input
-                type='email'
-                placeholder='Email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className='w-full p-2 border-none focus:outline-none'
-              />
-            </div>
-            {errors.email && <p className='text-xs text-red-500 mt-2'>{errors.email}</p>}
-          </div>
-
-          <div className='mb-4'>
-            <div className='flex items-center border-b-2 border-gray-300'>
-              <img src={phone_icon} alt='phone_icon' className='w-6 h-6 mr-2' />
-              <input
-                type='tel'
-                placeholder='Phone'
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className='w-full p-2 border-none focus:outline-none'
-              />
-            </div>
-            {errors.phone && <p className='text-xs text-red-500 mt-2'>{errors.phone}</p>}
-          </div>
-
-          <div className='mb-4'>
-            <div className='flex items-center border-b-2 border-gray-300'>
-              <img src={password_icon} alt='password_icon' className='w-6 h-6 mr-2' />
-              <input
-                type='password'
-                placeholder='Password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className='w-full p-2 border-none focus:outline-none'
-              />
-            </div>
-            {errors.password && <p className='text-xs text-red-500 mt-2'>{errors.password}</p>}
-          </div>
-
-          <div className='mb-4'>
-            <div className='flex items-center border-b-2 border-gray-300'>
-              <img src={key_icon} alt='key_icon' className='w-6 h-6 mr-2' />
-              <input
-                type='text'
-                placeholder='Admin Key'
-                value={adminkey}
-                onChange={(e) => setAdminKey(e.target.value)}
-                className='w-full p-2 border-none focus:outline-none'
-              />
-            </div>
-            {errors.adminkey && <p className='text-xs text-red-500 mt-2'>{errors.adminkey}</p>}
-          </div>
+          ))}
 
           <div className='mb-6'>
             <div className='flex items-center'>
@@ -160,7 +121,7 @@ const SignupAdmin = ({ setAdmin }) => {
                 accept='image/*'
                 type='file'
                 className='cursor-pointer w-full p-2 border-none focus:outline-none'
-                onChange={handleImageChange}
+                onChange={(e) => handleInputChange('image', e.target.files[0])}
               />
             </div>
             {errors.image && <p className='text-xs text-red-500 mt-2'>{errors.image}</p>}

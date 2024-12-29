@@ -57,6 +57,16 @@ const Login = () => {
     }
   };
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, email: undefined }));
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, password: undefined }));
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
       <div className="w-full max-w-sm bg-white p-8 rounded-2xl shadow-lg">
@@ -69,7 +79,7 @@ const Login = () => {
                 type="text"
                 placeholder="Email Id"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 className="w-full p-2 border-none focus:outline-none"
               />
             </div>
@@ -83,7 +93,7 @@ const Login = () => {
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 className="w-full p-2 border-none focus:outline-none"
               />
             </div>

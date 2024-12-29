@@ -39,6 +39,7 @@ const JobPost = () => {
         tenth: '',
         tweleth: '',
         graduationMarks: '',
+        batch:2025,
     });
 
     const [errors, setErrors] = useState({});
@@ -55,6 +56,7 @@ const JobPost = () => {
             // Parse and validate form data after casting marks fields to numbers
             const validatedData = jobPostSchema.parse({
                 ...formData,
+                batch:Number(formData.batch),
                 tenth: Number(formData.tenth),
                 tweleth: Number(formData.tweleth),
                 graduationMarks: Number(formData.graduationMarks),

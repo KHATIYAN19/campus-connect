@@ -92,8 +92,8 @@ const Profile = () => {
                         </div>
                         <div className="flex items-center gap-2">
                             <Label className="text-md font-medium">Degree:</Label>
-                            {profile.degree ? (
-                                <p className="text-gray-600">{profile?.profile?.degree}</p>
+                            {profile?.profile?.graduationdegree? (
+                                <p className="text-gray-600">{profile?.profile?.graduationdegree}</p>
                             ) : (
                                 <span className="text-gray-500">NA</span>
                             )}

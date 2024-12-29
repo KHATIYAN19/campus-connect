@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from '../LoginSignUp/axios.js';
 import { toast } from 'react-toastify';
 import UserTable from '../pages/userTable';
-
+import { useNavigate } from 'react-router-dom';
 const JobDescription = () => {
     const [applied, setApplied] = useState([]);
     const { id } = useParams();
@@ -17,7 +17,7 @@ const JobDescription = () => {
     const [studentData] = useState(user || {});
     const [users, setUsers] = useState([]);
     const [count, SetCount] = useState(0);
-
+    const navigate = useNavigate();
     const fetchApplications = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/jobs/applications/${id}`);          
@@ -98,7 +98,10 @@ const JobDescription = () => {
                         }}
                     />
                     {/* Company Name */}
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-700 ml-4">{job.company}</h1>
+                   <div  className='flex flex-col'>
+                   <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-700 ml-4">{job.company}</h1>
+                   <p className='text-sm ml-4'> Jobid-{job.jobid}</p>
+                   </div>
                 </div>
                 
                 {/* Applied Count Section */}
@@ -158,7 +161,7 @@ const JobDescription = () => {
                 {/* "Posted by" Information for Students Only */}
                 {user?.role === 'student' && (
                     <div className="mt-4 text-center text-gray-600">
-                        <p className="text-sm font-semibold">Posted by: {job.postedBy || 'N/A'}</p>
+                        <p className="text-sm font-semibold " onClick={()=>{navigate(`/user/profile/${job.postby._id}`)}}>Posted by: <span className='cursor-pointer border-b-2 '>{job?.postby?.name || 'N/A'}</span></p>
                     </div>
                 )}
             </div>

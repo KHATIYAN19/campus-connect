@@ -9,7 +9,7 @@ exports.post_job=async(req,res)=>{
    try{
     let id=req.user.id;
     console.log(req.body);
-    const {company,description,salary,location,position,numbers,tenth,tweleth,graduationMarks}=req.body;
+    const {company,description,salary,location,position,numbers,tenth,tweleth,graduationMarks,batch}=req.body;
     if(!company||!description||!salary||!location||!position||!numbers||!tenth||!tweleth||!graduationMarks){
        return res.status(400).json({
             message:"All feild required",
@@ -23,6 +23,7 @@ exports.post_job=async(req,res)=>{
            success:false,
         })
     }
+    const jobid = company.substring(0, 2).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
     const job=await Job.create({
          company,
          description,
@@ -34,7 +35,9 @@ exports.post_job=async(req,res)=>{
          tenth,
          tweleth,
          graduationMarks,
-         logo:`https://img.logo.dev/${company}.com?token=pk_LhuGWkxESfCNeTIfkWoI8w`
+         logo:`https://img.logo.dev/${company}.com?token=pk_LhuGWkxESfCNeTIfkWoI8w`,
+         jobid,
+         batch
     })
     const emailcontent=`<!DOCTYPE html>
 <html lang="en">
@@ -143,10 +146,9 @@ exports.post_job=async(req,res)=>{
        job
     })
    }catch(e){
-    console.log(e);
+    console.log(e.message);
       return res.status(400).json({
-        
-         message:"Unable to create a job",
+         message:e.message,
          error:e,
          success:false
       })

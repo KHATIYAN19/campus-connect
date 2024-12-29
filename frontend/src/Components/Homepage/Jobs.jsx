@@ -45,8 +45,13 @@ const Jobs = () => {
                                                     <AvatarImage src={item.logo} alt={`${item.company} logo`} />
                                                 </Avatar>
                                                 <div>
-                                                    <h1 className="font-semibold text-xl text-gray-800">{item.company}</h1>
-                                                    <p className="text-sm text-gray-500">{item.location}</p>
+                                                    <div>
+                                                       <h1 className="font-semibold text-xl text-gray-800">{item.company}</h1>
+                                                       <p className="text-sm text-gray-500">{item.location}</p>
+                                                    </div>
+                                                        <div>
+                                                            <p className="text-sm text-gray-500">Jobid: {item.jobid}</p>
+                                                        </div>
                                                 </div>
                                             </div>
 
@@ -69,7 +74,7 @@ const Jobs = () => {
                                                     {item.position.length > 25 ? `${item.position.substring(0, 25)}...` : item.position}
                                                 </Badge>
                                                 <Badge className="bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-md">
-                                                    ₹{item.salary.length > 10 ? `${item.salary.substring(0, 10)}...` : item.salary} per annum
+                                                    ₹{item.salary.length > 10 ? `${item.salary.substring(0, 10)}...` : item.salary}Lakh per annum
                                                 </Badge>
                                             </div>
 

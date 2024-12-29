@@ -57,6 +57,10 @@ const userSchema=mongoose.Schema({
            type:String
          }
       },
+      results:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Result'
+      }],
       Applied:[ { 
         type:mongoose.Schema.Types.ObjectId,
          ref: 'Job' }

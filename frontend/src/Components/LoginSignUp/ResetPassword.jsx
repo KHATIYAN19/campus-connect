@@ -57,7 +57,7 @@ const ResetPassword = () => {
                     className="w-full px-3 py-2 outline-none text-gray-700"
                   />
                 </div>
-                <div className="flex items-center border rounded-xl overflow-hidden">
+                {/* <div className="flex items-center border rounded-xl overflow-hidden">
                   <img
                     src={password_icon}
                     alt="Password Icon"
@@ -84,7 +84,7 @@ const ResetPassword = () => {
                     onChange={(e) => setKey(e.target.value)}
                     className="w-full px-3 py-2 outline-none text-gray-700"
                   />
-                </div>
+                </div> */}
                 <div className="flex flex-col items-center space-y-4">
                   <button
                     type="submit"

@@ -25,6 +25,7 @@ import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute.jsx';
 import ThemeOptions from './Components/shared/ThemeOptions.jsx';
 import ContactForm from './Components/pages/ContactForm.jsx';
 import Main from './Components/pages/Main.jsx';
+import ResetPasswordToken from './Components/LoginSignUp/ResetPasswordToken.jsx';
 
 function App() {
   const [admin, setAdmin] = useState(false);
@@ -58,8 +59,10 @@ function App() {
             )
           }
         />
-
+        <Route path='/verify-email' element={<EmailVerification />} />
         {/* Login and Signup Routes */}
+        <Route path='/reset-password/:token' element={<ResetPasswordToken />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
         <Route path="/login" element={isLogin ? <Homepage /> : <Login />} />
         <Route
           path="/signup"

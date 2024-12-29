@@ -2,7 +2,9 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-
+import { useNavigate } from 'react-router-dom';
+import {toast} from "react-toastify"
+import axios from 'axios';
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),
     email: z.string().email('Invalid email address'),
@@ -11,13 +13,23 @@ const schema = z.object({
 });
 
 const ContactForm = () => {
+    const navigate=useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (data) => {
+          try{ 
+              const response=await axios.post('http://localhost:8080/contact/create',{data});
+                if(response.data.success){
+                    toast.success(response.data.message);
+                    navigate("/");
+          }
+        }catch(error){
+            toast.error(error.response.data.message);
+        }
     };
+
 
     return (
         <div className="max-w-lg mx-auto p-8 mt-8 bg-white rounded-xl shadow-xl border-4 border-transparent transition hover:border-[#80004c]">
