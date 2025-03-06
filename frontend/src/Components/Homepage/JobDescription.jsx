@@ -6,6 +6,8 @@ import axios from '../LoginSignUp/axios.js';
 import { toast } from 'react-toastify';
 import UserTable from '../pages/userTable';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from "xlsx";
+
 const JobDescription = () => {
     const [applied, setApplied] = useState([]);
     const { id } = useParams();
@@ -58,6 +60,13 @@ const JobDescription = () => {
             toast.error(error.response?.data?.message || 'An error occurred');
         }
     };
+    // const exportToExcel = () => {
+    //     console.log(users)
+    //     const worksheet = XLSX.utils.json_to_sheet(users);
+    //     const workbook = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+    //     XLSX.writeFile(workbook, "StudentData.xlsx");
+    //   };
 
     const findAllow = () => {
         if (
@@ -83,9 +92,9 @@ const JobDescription = () => {
     }, [job]);
 
     const isApplied = applied.includes(job._id);
-    
     return (
         <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-100 via-[#eab3c4] to-[#eb82fd] rounded-xl shadow-2xl mt-8">
+       
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                     {/* Company Logo */}

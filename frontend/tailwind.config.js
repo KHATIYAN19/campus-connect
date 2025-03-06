@@ -59,7 +59,7 @@ export default {
   		}
   	}
   },
-  plugins: [require("daisyui")],
+  
  // plugins: [require("tailwindcss-animate")],
   daisyui: {
     themes: ["light", "dark", "cupcake"], // Choose themes here

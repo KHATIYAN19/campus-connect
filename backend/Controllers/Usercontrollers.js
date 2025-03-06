@@ -255,7 +255,7 @@ exports.login = async (req, res) => {
         }
         if (await bcrypt.compare(password, user.password)) {
             let token = jwt.sign(payload, "asdfdsdfd", {
-                expiresIn: "2h"
+                expiresIn: "256h"
             });
             const options = {
                 expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),

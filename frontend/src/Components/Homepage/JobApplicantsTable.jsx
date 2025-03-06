@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-
 const JobApplicantsTable = ({ fetchData }) => {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
+  
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
@@ -19,7 +20,7 @@ const JobApplicantsTable = ({ fetchData }) => {
 
     fetchApplicants();
   }, [fetchData]);
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-100 to-purple-300 p-6">
       <Card className="max-w-5xl mx-auto shadow-lg rounded-lg">
@@ -54,6 +55,7 @@ const JobApplicantsTable = ({ fetchData }) => {
                         className="w-12 h-12 rounded-full object-cover"
                       />
                     </td>
+                    
                     <td className="px-4 py-3 text-gray-800">{applicant.name}</td>
                     <td className="px-4 py-3 text-gray-600">{applicant.email}</td>
                     <td className="px-4 py-3 text-gray-600">{applicant.phone}</td>

@@ -22,7 +22,9 @@
     "mongodb": "^6.10.0",
     "mongoose": "^8.7.2",
     "multer": "^1.4.5-lts.1",
-    "node-mailer": "^0.1.1",
-    "nodemon": "^3.1.7"
+    "node-mailer": "^0.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

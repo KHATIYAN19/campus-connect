@@ -1,22 +1,21 @@
 const mongoose=require("mongoose");
 const resultSchema=mongoose.Schema({
-      student:{
-        required:true,
+     company:{
         type:mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      salary:{
+        ref:'Company',
+        default:null
+     },
+     name:{
+        type:String,
         required:true,
-        type:Number
-      },
-      company:{
+     },
+     salary:{
+        type:Number,
         required:true,
+     },
+     student:{
         type:mongoose.Schema.Types.ObjectId,
-        ref: 'Company'
-      },
-      companyName:{
-        required:true,
-        type:String
-      }
+        required:true
+     }
 },{timestamps:true});
 module.exports=mongoose.model("Result",resultSchema);

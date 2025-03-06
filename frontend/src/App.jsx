@@ -22,10 +22,12 @@ import Footer from './Components/pages/Footer.jsx';
 import JobTable from './Components/pages/JobTable.jsx';
 import InterviewExperiences from './Components/pages/InterviewExperiences.jsx';
 import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute.jsx';
-import ThemeOptions from './Components/shared/ThemeOptions.jsx';
+
 import ContactForm from './Components/pages/ContactForm.jsx';
 import Main from './Components/pages/Main.jsx';
 import ResetPasswordToken from './Components/LoginSignUp/ResetPasswordToken.jsx';
+
+import ContactForms from './Components/Homepage/ContactForms.jsx';
 
 function App() {
   const [admin, setAdmin] = useState(false);
@@ -59,6 +61,8 @@ function App() {
             )
           }
         />
+
+        <Route path='/form' element={<ContactForms/>}/>
         <Route path='/verify-email' element={<EmailVerification />} />
         {/* Login and Signup Routes */}
         <Route path='/reset-password/:token' element={<ResetPasswordToken />} />
@@ -122,7 +126,7 @@ function App() {
         />
         <Route path="/footer" element={< Footer />} />
         <Route path="/contact" element={<ContactForm />} />
-        <Route path="/themes" element={<ThemeOptions setTheme={setTheme} />} />
+        
         <Route path="/homepage" element={<ProtectedRoute element={<Homepage />} />} />
       </Routes>
     </div>
