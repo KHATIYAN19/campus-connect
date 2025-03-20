@@ -17,9 +17,9 @@ const Jobs = () => {
         });
 
         // Determine user role
-        axios.get("http://localhost:8080/user/role").then((res) => {
-            setIsStudent(res.data.role === 'student');
-        });
+        // axios.get("http://localhost:8080/user/role").then((res) => {
+        //     setIsStudent(res.data.role === 'student');
+        // });
     }, []);
 
     return (
@@ -58,7 +58,7 @@ const Jobs = () => {
                                             {/* Job Details */}
                                             <div className="flex-1">
                                                 <h2 className="font-bold text-lg text-gray-900 mb-2">
-                                                    {item.position.length > 25 ? `${item.position.substring(0, 25)}...` : item.position}
+                                                    {item.location.length > 25 ? `${item.location.substring(0, 25)}...` : item.location}
                                                 </h2>
                                                 <p className="text-sm text-gray-600 leading-relaxed">
                                                     {item.description.length > 100 ? `${item.description.substring(0, 100)}...` : item.description}
@@ -68,13 +68,13 @@ const Jobs = () => {
                                             {/* Badges Section */}
                                             <div className="flex flex-wrap items-center gap-3 mt-4">
                                                 <Badge className="bg-yellow-100 text-yellow-700 font-semibold px-3 py-1 rounded-md">
-                                                    {item.numbers} Positions
+                                                    {item.batch} batch 
                                                 </Badge>
                                                 <Badge className="bg-blue-100 text-blue-700 font-semibold px-3 py-1 rounded-md">
                                                     {item.position.length > 25 ? `${item.position.substring(0, 25)}...` : item.position}
                                                 </Badge>
                                                 <Badge className="bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-md">
-                                                    ₹{item.salary.length > 10 ? `${item.salary.substring(0, 10)}...` : item.salary}Lakh per annum
+                                                    ₹{item?.salary}LPA
                                                 </Badge>
                                             </div>
 

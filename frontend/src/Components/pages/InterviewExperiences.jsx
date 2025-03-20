@@ -207,23 +207,23 @@ const InterviewExperiences = ({ show }) => {
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-4">
                     <img
-                      src={experience.postby.image}
+                      src={experience?.postby?.image}
                       alt="User"
                       className="w-14 h-14 rounded-full border-4 border-indigo-100 cursor-pointer hover:border-indigo-200 transition-colors"
-                      onClick={() => navigate(`/user/profile/${experience.postby._id}`)}
+                      onClick={() => navigate(`/user/profile/${experience?.postby?._id}`)}
                     />
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-800">{experience.postby.name}</h3>
+                      <h3 className="text-xl font-semibold text-gray-800">{experience?.postby?.name}</h3>
                       <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
                         <FiCalendar className="text-indigo-500" />
-                        <span>{formatDate(experience.createdAt)}</span>
-                        <span>({calculateDaysAgo(experience.createdAt)} days ago)</span>
+                        <span>{formatDate(experience?.createdAt)}</span>
+                        <span>({calculateDaysAgo(experience?.createdAt)} days ago)</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">
                     <FiBriefcase className="flex-shrink-0" />
-                    <span className="font-medium">{experience.company}</span>
+                    <span className="font-medium">{experience?.company}</span>
                   </div>
                 </div>
 

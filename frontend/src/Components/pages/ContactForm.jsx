@@ -1,90 +1,175 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useNavigate } from 'react-router-dom';
-import {toast} from "react-toastify"
+import React, { useState } from 'react';
 import axios from 'axios';
-const schema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    email: z.string().email('Invalid email address'),
-    message: z.string().min(1, 'Message is required'),
-    phone: z.string().min(10, 'Phone number must be at least 10 digits'),
+import { z } from 'zod';
+import { FiUser, FiMail, FiSmartphone,FiAlertCircle , FiMessageSquare, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
+
+const contactSchema = z.object({
+  name: z.string().min(3, { message: 'Name must be at least 3 characters long' }),
+  email: z.string().email({ message: 'Please enter a valid email' }),
+  phone: z.string().length(10, { message: 'Phone number must be exactly 10 digits' }),
+  message: z.string().min(10, { message: 'Message must be at least 10 characters long' }),
 });
 
 const ContactForm = () => {
-    const navigate=useNavigate();
-    const { register, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(schema),
-    });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-    const onSubmit = async (data) => {
-          try{ 
-              const response=await axios.post('http://localhost:8080/contact/create',{data});
-                if(response.data.success){
-                    toast.success(response.data.message);
-                    navigate("/");
-          }
-        }catch(error){
-            toast.error(error.response.data.message);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      contactSchema.parse(formData);
+      setIsSubmitting(true);
+      await axios.post('http://lc.com', formData);
+      setIsSubmitting(false);
+      setSuccess(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const validationErrors = err.errors.reduce((acc, curr) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setErrors(validationErrors);
+      }
+    }
+  };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
+  };
 
-    return (
-        <div className="max-w-lg mx-auto p-8 mt-8 bg-white rounded-xl shadow-xl border-4 border-transparent transition hover:border-[#80004c]">
-            <h2 className="text-2xl font-bold text-[#80004c] mb-6 text-center">Contact Us</h2>
-            <form  onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                    <input
-                        type="text"
-                        {...register('name')}
-                        className="mt-2 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter your full name"
-                    />
-                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <input
-                        type="email"
-                        {...register('email')}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter your email address"
-                    />
-                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Phone</label>
-                    <input
-                        type="text"
-                        {...register('phone')}
-                        className="mt-1 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter your phone number"
-                    />
-                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Message</label>
-                    <textarea
-                        {...register('message')}
-                        rows={4}
-                        className="mt-1 block w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Write your message here"
-                    />
-                    {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
-                </div>
-                <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-[#80004c] to-purple-500 text-white font-bold p-3 rounded-xl shadow-lg hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    Submit
-                </button>
-            </form>
+  const handleGoHome = () => {
+    window.location.href = '/home';
+  };
+
+  return (
+    <div className="max-w-lg mx-auto p-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl shadow-2xl border border-purple-100">
+      <div className="text-center mb-8">
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          Get in Touch
+        </h2>
+        <p className="text-gray-600 mt-2">We'd love to hear from you!</p>
+      </div>
+
+      {success ? (
+        <div className="text-center p-6 bg-white rounded-xl shadow-lg">
+          <div className="inline-block bg-green-100 p-4 rounded-full mb-4">
+            <FiCheckCircle className="w-12 h-12 text-green-600" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">Message Sent!</h3>
+          <p className="text-gray-600 mb-6">We'll get back to you within 24 hours</p>
+          <button
+            onClick={handleGoHome}
+            className="w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg
+                      hover:from-purple-700 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <FiArrowLeft className="w-5 h-5" />
+            Return Home
+          </button>
         </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="relative">
+            <div className="absolute top-3.5 left-4 text-purple-600">
+              <FiUser className="w-5 h-5" />
+            </div>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="John Doe"
+              className="w-full pl-12 pr-4 py-3 bg-white border-2 border-purple-100 rounded-lg
+                        focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1 ml-1 flex items-center gap-1">
+              <FiAlertCircle className="w-4 h-4" /> {errors.name}
+            </p>}
+          </div>
 
-    );
+          <div className="relative">
+            <div className="absolute top-3.5 left-4 text-purple-600">
+              <FiMail className="w-5 h-5" />
+            </div>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="john@example.com"
+              className="w-full pl-12 pr-4 py-3 bg-white border-2 border-purple-100 rounded-lg
+                        focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1 ml-1 flex items-center gap-1">
+              <FiAlertCircle className="w-4 h-4" /> {errors.email}
+            </p>}
+          </div>
+
+          <div className="relative">
+            <div className="absolute top-3.5 left-4 text-purple-600">
+              <FiSmartphone className="w-5 h-5" />
+            </div>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="1234567890"
+              className="w-full pl-12 pr-4 py-3 bg-white border-2 border-purple-100 rounded-lg
+                        focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+            />
+            {errors.phone && <p className="text-red-500 text-sm mt-1 ml-1 flex items-center gap-1">
+              <FiAlertCircle className="w-4 h-4" /> {errors.phone}
+            </p>}
+          </div>
+
+          <div className="relative">
+            <div className="absolute top-3.5 left-4 text-purple-600">
+              <FiMessageSquare className="w-5 h-5" />
+            </div>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="Your message..."
+              rows="4"
+              className="w-full pl-12 pr-4 py-3 bg-white border-2 border-purple-100 rounded-lg
+                        focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+            />
+            {errors.message && <p className="text-red-500 text-sm mt-1 ml-1 flex items-center gap-1">
+              <FiAlertCircle className="w-4 h-4" /> {errors.message}
+            </p>}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg
+                      hover:from-purple-700 hover:to-blue-700 transition-all duration-300 font-semibold
+                      ${isSubmitting ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-lg'}`}
+          >
+            {isSubmitting ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Sending...
+              </div>
+            ) : (
+              'Send Message'
+            )}
+          </button>
+        </form>
+      )}
+    </div>
+  );
 };
 
 export default ContactForm;

@@ -780,8 +780,9 @@ exports.deleteAcc=async(req,res)=>{
 
 exports.user_update=async(req,res)=>{
     try{
-        let {  email,phone,bio, tenth,tweleth,graduationMarks,resume } = req.body;
-        if ( !phone || !email || !tenth||!tweleth||!graduationMarks||!resume||!bio) {
+        let {  email,phone,bio,graduationMarks,resume } = req.body;
+        console.log(req.body);
+        if ( !phone || !email ||!graduationMarks||!resume||!bio) {
             return res.status(400).json({
                 message: "All Feild required !",
                 success: false
@@ -801,10 +802,8 @@ exports.user_update=async(req,res)=>{
             image = await upload.uploadFile(req.file.path);
         } 
         user.phone=phone;
-        bio, tenth,tweleth,graduationMarks,resume
+        bio,graduationMarks,resume
         user.profile.bio=bio;
-        user.profile.tenth=tenth;
-        user.profile.tweleth=tweleth;
         user.profile.graduationMarks=graduationMarks;
         user.profile.resume=resume;
         if(image!==''){

@@ -12,6 +12,10 @@ const messageSchema=mongoose.Schema({
       year:{
         required:true,
         type:String
+      },
+      topic:{
+        required:true,
+        type:String
       }
 },{timestamps:true});
 module.exports=mongoose.model("Message",messageSchema);

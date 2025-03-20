@@ -9,6 +9,7 @@ const messageRoute=require("./Routes/messageRoute");
 const blockedRoute=require("./Routes/blockedRoute");
 const interviewRoute=require("./Routes/interviewRoute");
 const  contactRoute=require("./Routes/contactRoute");
+const applicationRoute=require("./Routes/applicationRoute");
 const auth=require("./Middlewares/userMiddleware");
 require('dotenv').config();
 
@@ -22,7 +23,7 @@ app.use("/",messageRoute);
 app.use("/blocked",blockedRoute);
 app.use("/",interviewRoute);
 app.use("/contact",contactRoute);
-
+app.use("/application",applicationRoute)
 app.use(express.urlencoded({extended:true}));
 
 

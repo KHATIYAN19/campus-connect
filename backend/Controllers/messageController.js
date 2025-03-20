@@ -4,9 +4,9 @@ exports.post_msg = async (req, res) => {
     console.log(req.body,"red");
     try {
         let id = req.user.id;
-        const { msg ,year} = req.body;
+        const { msg ,year,topic} = req.body;
         console.log(msg);
-        if (!msg||!year) {
+        if (!msg||!year||!topic) {
             return res.status(400).json({
                 message: "All field Required",
                 success: false
@@ -22,7 +22,8 @@ exports.post_msg = async (req, res) => {
             const message = new Message({
               msg,
               year,
-              postby: id
+              postby: id,
+              topic
             });
             await message.save();
             user.messages.push(message._id);

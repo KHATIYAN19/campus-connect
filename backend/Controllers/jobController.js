@@ -9,8 +9,8 @@ exports.post_job=async(req,res)=>{
    try{
     let id=req.user.id;
     console.log(req.body);
-    const {company,description,salary,location,position,numbers,tenth,tweleth,graduationMarks,batch}=req.body;
-    if(!company||!description||!salary||!location||!position||!numbers||!tenth||!tweleth||!graduationMarks){
+    const {company,description,salary,location,position,tenth,tweleth,graduationMarks,batch}=req.body;
+    if(!company||!description||!salary||!location||!position||!tenth||!tweleth||!graduationMarks){
        return res.status(400).json({
             message:"All feild required",
             success:false
@@ -31,7 +31,6 @@ exports.post_job=async(req,res)=>{
          location,
          position,
          postby:id,
-         numbers,
          tenth,
          tweleth,
          graduationMarks,
@@ -118,7 +117,6 @@ exports.post_job=async(req,res)=>{
         <li><span>Position:</span> ${position}</li>
         <li><span>Company:</span> ${company}</li>
         <li><span>Location:</span> ${location}</li>
-        <li><span>Number of Vacancies:</span> ${numbers}</li>
         <li><span>Salary:</span> ${salary} per annum</li>
         <li><span>Job Description:</span> ${description}</li>
       </ul>

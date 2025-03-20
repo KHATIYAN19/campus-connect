@@ -9,7 +9,7 @@ const jobSchema=mongoose.Schema({
             requires:true,
         },
         salary:{
-            type:String,
+            type:Number,
             require:true,
         },
         logo:{
@@ -34,11 +34,6 @@ const jobSchema=mongoose.Schema({
             type:String,
             required:true,
         },
-        numbers:{
-            type:Number,
-            required:true,
-            default:3
-        },
         tenth:{
             type:Number,
             required:true,
@@ -55,6 +50,15 @@ const jobSchema=mongoose.Schema({
             type:String,
             required:true,
             unique:true
+        },
+        batch:{
+            default:2025,
+            type:Number,
+            required:true
+        },
+        closed:{
+            default:false,
+            type:Boolean
         }
 },{timestamps:true});
 module.exports=mongoose.model("Job",jobSchema);

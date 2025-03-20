@@ -23,17 +23,17 @@ function UserTable({ applies }) {
                 <tr key={user.id} className="hover:bg-gray-50" onClick={()=>navigate(`/user/profile/${user._id}`)}>
                   <td className="p-4 border-b border-gray-300">
                     <img
-                      src={user.image}
-                      alt={`${user.name}'s profile`}
+                      src={user?.image}
+                      alt={`${user?.name}'s profile`}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   </td>
-                  <td className="p-4 border-b border-gray-300">{user.name}</td>
-                  <td className="p-4 border-b border-gray-300">{user.email}</td>
-                  <td className="p-4 border-b border-gray-300">{user.phone}</td>
+                  <td className="p-4 border-b border-gray-300">{user?.name}</td>
+                  <td className="p-4 border-b border-gray-300">{user?.email}</td>
+                  <td className="p-4 border-b border-gray-300">{user?.phone}</td>
                   <td className="p-4 border-b border-gray-300">
                     <a
-                      href={user.profile.resume}
+                      href={user?.profile?.resume}
                       className="text-blue-500 hover:underline"
                       target="_blank"
                       rel="noopener noreferrer"

@@ -1,146 +1,184 @@
-import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
+import React from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ImagePlus, Phone, Pencil } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import axios from '../LoginSignUp/axios';
+import axios from '../LoginSignUp/axios'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { login } from '../redux/authSlice'
+import { X } from "lucide-react";
 
-const UpdateAdmin = ({ open, setOpen }) => {
-    const [loading, setLoading] = useState(false);
-    //const { user } = useSelector(store => store.LoginSignUp);
-    const user = JSON.parse(localStorage.getItem('user'));
-    const [bio, setBio] = useState(user?.profile?.bio);
-    const [phone, setPhone] = useState(user.phone);
-    const [image, setImage] = useState('');
-    const dispatch = useDispatch();
-    const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
-        console.log(image);
-    };
+const formSchema = z.object({
+  phone: z.string()
+    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+  bio: z.string().optional(),
+})
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append("phone", phone);
-        formData.append("bio", bio);
-        formData.append("email", user.email);
-        formData.append('image', image);
-        try {
-            const response = await axios.post('http://localhost:8080/update/admin', formData);
-            console.log(response, "res");
-            if (response.data.success) {
-                toast.success(response.data.message);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
-                setOpen(false);
-                window.location.reload();
+const UpdateAdmin = ({ open, setOpen,setUser }) => {
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.auth.user)
+  const [image, setImage] = React.useState(null)
+  const [loading, setLoading] = React.useState(false)
+  const initialValues = React.useRef({ phone: '', bio: '' })
 
-            }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            toast.error(error.response.data.message);
-        }
-        setOpen(false);
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      phone: user?.phone || '',
+      bio: user?.profile?.bio || ''
+    }
+  })
+
+  React.useEffect(() => {
+    if (open && user) {
+      initialValues.current = {
+        phone: user.phone || '',
+        bio: user.profile?.bio || ''
+      }
+    }
+  }, [open, user])
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0])
+  }
+
+  const hasChanges = (values) => {
+    return (
+      values.phone !== initialValues.current.phone ||
+      values.bio !== initialValues.current.bio ||
+      image !== null
+    )
+  }
+
+  const onSubmit = async (values) => {
+    if (!hasChanges(values)) {
+      toast.error('No changes detected')
+      return
     }
 
-    return (
-        <div>
-            {open && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-                    <div
-                        role="dialog"
-                        aria-labelledby="dialog-title"
-                        aria-describedby="dialog-description"
-                        className="sm:max-w-[420px] bg-white rounded-2xl p-6 relative shadow-lg w-full max-w-md"
-                    >
-                        {/* Dialog Header */}
-                        <div className="flex flex-col items-center">
-                            <h2
-                                id="dialog-title"
-                                className="text-center text-[#4d002d] text-lg font-bold mb-6"
-                            >
-                                Update Profile
-                            </h2>
-                            <button
-                                className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
-                                onClick={() => setOpen(false)}
-                                aria-label="Close"
-                            >
-                                ✕
-                            </button>
-                        </div>
+    setLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append("phone", values.phone)
+      formData.append("bio", values.bio)
+      formData.append("email", user.email)
+      if (image) formData.append('image', image)
 
-                        <form onSubmit={submitHandler}>
-                            <div className="grid gap-4 py-4 text-gray-800">
-                                {/* Phone Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="number" className="text-right">
-                                        PhoneNo
-                                    </Label>
-                                    <Input
-                                        id="number"
-                                        name="phone"
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                        type="text"
-                                    />
-                                </div>
-                                {/* Bio Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="bio" className="text-right">
-                                        Bio
-                                    </Label>
-                                    <Input
-                                        id="bio"
-                                        name="bio"
-                                        value={bio}
-                                        onChange={(e) => setBio(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                        type="text"
-                                    />
-                                </div>
-                                {/* Image Upload */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="image" className="text-right">
-                                        Image
-                                    </Label>
-                                    <Input
-                                        id="image"
-                                        name="image"
-                                        accept="image/*"
-                                        type="file"
-                                        onChange={handleImageChange}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
-                            </div>
+      const response = await axios.post('/update/admin', formData)
+      console.log(response.data.user)
+      
+      if (response.data.success) {
+        setUser(response.data.user);
+        toast.success('Profile updated successfully! 🌟')
+        dispatch(login({
+          user: response.data.user,
+          token: response.data.token || localStorage.getItem("token")
+        }))
+        setOpen(false)
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Update failed 😢')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-                            {/* Dialog Footer */}
-                            <div className="mt-6">
-                                {loading ? (
-                                    <Button className="w-full bg-gray-500 text-white py-2 rounded-xl flex items-center justify-center">
-                                        <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                                        Please wait
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        type="submit"
-                                        className="w-full bg-[#66003c] text-white py-2 rounded-xl"
-                                    >
-                                        Update
-                                    </Button>
-                                )}
-                            </div>
-                        </form>
-                    </div>
-                </div>
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[500px] bg-gradient-to-br from-white to-purple-50 rounded-2xl p-8 shadow-2xl border border-purple-100">
+        <DialogHeader>
+          <DialogTitle className="text-3xl font-bold text-purple-600 text-center mb-6">
+            ✨ Update Profile ✨
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Phone Input */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-purple-600">
+              <Phone className="h-5 w-5" />
+              <Label className="font-medium">Phone Number</Label>
+            </div>
+            <Input
+              {...form.register("phone")}
+              className="rounded-xl border-2 border-purple-100 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 h-12 px-4 text-purple-800"
+              placeholder="Enter 10-digit phone number"
+            />
+            {form.formState.errors.phone && (
+              <p className="text-red-400 text-sm mt-1 ml-1">
+                {form.formState.errors.phone.message}
+              </p>
             )}
-        </div>
+          </div>
 
-    );
+          {/* Bio Input */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-purple-600">
+              <Pencil className="h-5 w-5" />
+              <Label className="font-medium">Bio</Label>
+            </div>
+            <textarea
+              {...form.register("bio")}
+              className="w-full rounded-xl border-2 border-purple-100 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 p-3 h-32 text-purple-800 placeholder-purple-300"
+              placeholder="Share something about yourself..."
+            />
+          </div>
 
+          {/* Image Upload */}
+          <div className="space-y-2">
+            <Label className="text-purple-600 font-medium">Profile Image</Label>
+            <label className="cursor-pointer group">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <div className="flex flex-col items-center justify-center gap-3 p-6 border-2 border-dashed border-purple-100 rounded-xl group-hover:border-purple-300 transition-all">
+                <ImagePlus className="h-8 w-8 text-purple-400 group-hover:text-purple-500" />
+                <p className="text-purple-500 text-center">
+                  {image ? image.name : "Click to upload new image (optional)"}
+                </p>
+                {image && (
+                  <div className="mt-3 relative">
+                    <img 
+                      src={URL.createObjectURL(image)} 
+                      alt="Preview" 
+                      className="h-20 w-20 rounded-full object-cover shadow-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setImage(null)}
+                      className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-sm hover:bg-red-50"
+                    >
+                      <X className="h-5 w-5 text-red-400" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </label>
+          </div>
+
+          <Button 
+            type="submit"
+            className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white h-14 rounded-xl text-lg font-semibold shadow-lg hover:shadow-purple-200 transition-all"
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              'Save Changes 🌈'
+            )}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
 }
-export default UpdateAdmin;
+
+export default UpdateAdmin

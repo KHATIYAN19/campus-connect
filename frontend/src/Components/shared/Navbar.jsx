@@ -1,32 +1,47 @@
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage } from '../ui/avatar';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from '../LoginSignUp/axios.js';
-import { LogOut, Trash2, User2 } from 'lucide-react';
+import { BookOpen, Briefcase, LogOut, Trash2, User2 } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { logout } from "../redux/authSlice";
+import { useDispatch } from 'react-redux';
 
 const Navbar = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const role = localStorage.getItem('role');
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth.user);
+  const role = user?.role;
   const navigate = useNavigate();
   const location = useLocation();
   const [showPopup, setShowPopup] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      setVisible((prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 70) || currentScrollPos < 10);
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [prevScrollPos]);
 
   const logoutHandler = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.get('http://localhost:8080/logout');
       if (response) {
-        localStorage.removeItem("isLogin");
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
+        dispatch(logout());
         toast.success("Logout Successfully");
         navigate("/login");
-        window.location.reload();
       }
     } catch (error) {
       toast.error(error.response.data.message);
@@ -56,20 +71,24 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-blue-200 to-cyan-200 shadow-lg sticky top-0 z-50">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 transform ${
+        visible ? 'translate-y-0' : '-translate-y-full'
+      } bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 shadow-md`}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2">
-              <Avatar className="w-10 h-10 md:w-12 md:h-12 shadow-md border-2 border-white">
+              <Avatar className="w-10 h-10 md:w-12 md:h-12 shadow-xl border-3 border-yellow-400">
                 <AvatarImage
                   src="https://cdn-icons-png.flaticon.com/128/12372/12372496.png"
                   alt="Placement Connect Logo"
                 />
               </Avatar>
-              <h1 className="text-xl md:text-3xl font-bold text-teal-700 font-serif tracking-tight">
-                Placement<span className="text-orange-500">Connect</span>
+              <h1 className="text-xl md:text-3xl font-bold text-white font-serif tracking-tight">
+                Placement<span className="text-yellow-300">Connect</span>
               </h1>
             </Link>
           </div>
@@ -78,7 +97,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-600 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
+              className="text-white hover:text-yellow-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-yellow-300"
               aria-expanded={isMenuOpen}
               aria-controls="mobile-menu"
             >
@@ -116,8 +135,8 @@ const Navbar = () => {
                   <Link
                     key={index}
                     to={path}
-                    className={`text-gray-700 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
-                      location.pathname === path ? 'bg-orange-100 text-teal-700 font-semibold' : ''
+                    className={`text-white hover:bg-purple-300 hover:text-purple-900 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
+                      location.pathname === path ? 'bg-purple-300 text-white font-semibold' : ''
                     }`}
                   >
                     {path === '/'
@@ -129,24 +148,24 @@ const Navbar = () => {
                   <>
                     <Link
                       to="/jobs/post"
-                      className={`text-gray-700 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
-                        location.pathname === '/jobs/post' ? 'bg-orange-100 text-teal-700 font-semibold' : ''
+                      className={`text-white hover:bg-purple-300 hover:text-purple-900 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
+                        location.pathname === '/jobs/post' ? 'bg-purple-300 text-white font-semibold' : ''
                       }`}
                     >
                       Add-Drive
                     </Link>
                     <Link
                       to="/blocks"
-                      className={`text-gray-700 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
-                        location.pathname === '/blocks' ? 'bg-orange-100 text-teal-700 font-semibold' : ''
+                      className={`text-white hover:bg-purple-300 hover:text-purple-900 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
+                        location.pathname === '/blocks' ? 'bg-purple-300 text-white font-semibold' : ''
                       }`}
                     >
                       Block
                     </Link>
                     <Link
                       to="/notice/post"
-                      className={`text-gray-700 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
-                        location.pathname === '/notice/post' ? 'bg-orange-100 text-teal-700 font-semibold' : ''
+                      className={`text-white hover:bg-purple-300 hover:text-purple-900 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ${
+                        location.pathname === '/notice/post' ? 'bg-purple-300 text-white font-semibold' : ''
                       }`}
                     >
                       Add-Notice
@@ -160,12 +179,12 @@ const Navbar = () => {
             {!user ? (
               <div className="flex items-center space-x-3">
                 <Link to="/login">
-                  <Button variant="outline" className="rounded-full text-teal-600 hover:bg-teal-100 hover:text-teal-700 font-semibold">
+                  <Button variant="outline" className="rounded-full text-white hover:bg-purple-300 hover:text-purple-900 font-semibold border-white">
                     Login
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button className="bg-orange-500 hover:bg-orange-600 rounded-full text-white font-semibold">
+                  <Button className="bg-yellow-300 hover:bg-yellow-400 rounded-full text-purple-900 font-semibold">
                     Signup
                   </Button>
                 </Link>
@@ -173,9 +192,9 @@ const Navbar = () => {
             ) : (
               <Popover>
                 <PopoverTrigger asChild>
-                  <button className="rounded-full overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1">
+                  <button className="rounded-full overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-1">
                     <img
-                      className="object-cover w-10 h-10 shadow-md border border-white"
+                      className="object-cover w-10 h-10 shadow-xl border-3 border-yellow-400"
                       src={user.image}
                       alt={user.name}
                     />
@@ -183,7 +202,7 @@ const Navbar = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-80 rounded-md border border-gray-200 bg-white shadow-xl p-4">
                   <div className="flex items-center space-x-3 mb-3">
-                    <div className="rounded-full overflow-hidden w-12 h-12 shadow-md border border-white">
+                    <div className="rounded-full overflow-hidden w-12 h-12 shadow-xl border-3 border-yellow-400">
                       <img
                         className="object-cover w-full h-full"
                         src={user.image}
@@ -191,23 +210,41 @@ const Navbar = () => {
                       />
                     </div>
                     <div>
-                      <h4 className="text-lg font-semibold text-teal-700">Welcome, {user.name}</h4>
+                      <h4 className="text-lg font-semibold text-purple-700">Welcome, {user.name}</h4>
                       <p className="text-sm text-gray-500">Placement Connect User</p>
                     </div>
                   </div>
                   <div className="mt-2">
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 py-2 px-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-teal-700 rounded-md transition duration-150"
+                      className="flex items-center gap-2 py-2 px-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-purple-700 rounded-md transition duration-150"
                     >
-                      <User2 className="w-5 h-5 text-teal-500" />
+                      <User2 className="w-5 h-5 text-purple-500" />
                       View Profile
                     </Link>
+                    {role === 'admin' && (
+                      <>
+                        <Link
+                          to="/student/search"
+                          className="flex items-center gap-2 py-2 px-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-purple-700 rounded-md transition duration-150"
+                        >
+                          <BookOpen className="w-5 h-5 text-purple-500" />
+                          Student Records
+                        </Link>
+                        <Link
+                          to="/company/search"
+                          className="flex items-center gap-2 py-2 px-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-purple-700 rounded-md transition duration-150"
+                        >
+                          <Briefcase className="w-5 h-5 text-purple-500" />
+                          Placed Students
+                        </Link>
+                      </>
+                    )}
                     <button
                       onClick={logoutHandler}
-                      className="flex items-center gap-2 py-2 px-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-teal-700 rounded-md transition duration-150 w-full text-left"
+                      className="flex items-center gap-2 py-2 px-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-purple-700 rounded-md transition duration-150 w-full text-left"
                     >
-                      <LogOut className="w-5 h-5 text-teal-500" />
+                      <LogOut className="w-5 h-5 text-purple-500" />
                       Logout
                     </button>
                     <button
@@ -234,8 +271,8 @@ const Navbar = () => {
                 <Link
                   key={index}
                   to={path}
-                  className={`bg-orange-100 text-teal-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
-                    location.pathname === path ? 'bg-orange-200 font-semibold' : ''
+                  className={`bg-purple-100 text-purple-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
+                    location.pathname === path ? 'bg-purple-200 font-semibold' : ''
                   }`}
                 >
                   {path === '/'
@@ -247,24 +284,24 @@ const Navbar = () => {
                 <>
                   <Link
                     to="/jobs/post"
-                    className={`bg-orange-100 text-teal-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
-                      location.pathname === '/jobs/post' ? 'bg-orange-200 font-semibold' : ''
+                    className={`bg-purple-100 text-purple-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
+                      location.pathname === '/jobs/post' ? 'bg-purple-200 font-semibold' : ''
                     }`}
                   >
                     Add-Drive
                   </Link>
                   <Link
                     to="/blocks"
-                    className={`bg-orange-100 text-teal-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
-                      location.pathname === '/blocks' ? 'bg-orange-200 font-semibold' : ''
+                    className={`bg-purple-100 text-purple-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
+                      location.pathname === '/blocks' ? 'bg-purple-200 font-semibold' : ''
                     }`}
                   >
                     Block
                   </Link>
                   <Link
                     to="/notice/post"
-                    className={`bg-orange-100 text-teal-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
-                      location.pathname === '/notice/post' ? 'bg-orange-200 font-semibold' : ''
+                    className={`bg-purple-100 text-purple-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300 ${
+                      location.pathname === '/notice/post' ? 'bg-purple-200 font-semibold' : ''
                     }`}
                   >
                     Add-Notice
@@ -277,22 +314,22 @@ const Navbar = () => {
             <>
               <Link
                 to="/login"
-                className="text-gray-700 block px-3 py-2 rounded-md text-base font-medium hover:bg-orange-100 hover:text-orange-700 transition duration-300"
+                className="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-purple-300 hover:text-purple-900 transition duration-300"
               >
                 Login
               </Link>
               <Link
                 to="/signup"
-                className="bg-orange-500 text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-orange-600 transition duration-300"
+                className="bg-yellow-300 text-purple-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-yellow-400 transition duration-300"
               >
                 Signup
               </Link>
             </>
           )}
           {user && (
-            <div className="pt-4 pb-3 border-t border-gray-200">
+            <div className="pt-4 pb-3 border-t border-gray-700">
               <div className="flex items-center px-5">
-                <div className="rounded-full overflow-hidden w-10 h-10 shadow-md border border-white">
+                <div className="rounded-full overflow-hidden w-10 h-10 shadow-xl border-3 border-yellow-400">
                   <img
                     className="object-cover w-full h-full"
                     src={user.image}
@@ -300,26 +337,42 @@ const Navbar = () => {
                   />
                 </div>
                 <div className="ml-3">
-                  <div className="text-base font-medium text-teal-700">{user.name}</div>
-                  <div className="text-sm font-medium text-gray-500">User</div>
+                  <div className="text-base font-medium text-white">{user.name}</div>
+                  <div className="text-sm font-medium text-gray-300">User</div>
                 </div>
               </div>
               <div className="mt-3 px-2 space-y-1">
                 <Link
                   to="/profile"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-teal-700 transition duration-300"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-purple-300 hover:text-purple-900 transition duration-300"
                 >
                   View Profile
                 </Link>
+                {role === 'admin' && (
+                  <>
+                    <Link
+                      to="/student/search"
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-purple-300 hover:text-purple-900 transition duration-300"
+                    >
+                      Student Records
+                    </Link>
+                    <Link
+                      to="/company/search"
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-purple-300 hover:text-purple-900 transition duration-300"
+                    >
+                      Placed Students
+                    </Link>
+                  </>
+                )}
                 <button
                   onClick={logoutHandler}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-teal-700 transition duration-300 w-full text-left"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-purple-300 hover:text-purple-900 transition duration-300 w-full text-left"
                 >
                   Logout
                 </button>
                 <button
                   onClick={handleDeleteClick}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 hover:text-red-800 transition duration-300 w-full text-left"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-red-100 hover:text-red-800 transition duration-300 w-full text-left"
                 >
                   Delete Account
                 </button>

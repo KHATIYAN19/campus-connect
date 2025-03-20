@@ -8,13 +8,20 @@ import { toast } from 'react-toastify';
 import { Button } from '../ui/button';
 import { z } from 'zod';
 
-// Zod validation schema for login
+
+
+import { useDispatch } from "react-redux";
+import {login} from "../redux/authSlice";
+
+
 const loginSchema = z.object({
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   password: z.string().min(4, "Password must be at least 4 characters"),
 });
 
 const Login = () => {
+  
+  const dispatch=useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,29 +29,30 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    // Validate inputs using Zod
     try {
       loginSchema.parse({ email, password });
-
-      // If validation passes, make the API request
       const response = await axios.post('http://localhost:8080/login', {
         email,
         password,
       });
 
-      const login = response.data.success;
-      if (login) {
-        localStorage.setItem('isLogin', true);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('role', response.data.user.role);
+      const logind = response.data.success;
+      if (logind) {
+        const { token, user } = response.data;
+        console.log("token",token,user,user)
+        dispatch(login({ token, user }));
+        // localStorage.setItem('isLogin', true);
+        // localStorage.setItem('user', JSON.stringify(response.data.user));
+        // localStorage.setItem('token', response.data.token);
+        // localStorage.setItem('role', response.data.user.role);
         toast.success('WELCOME BACK ' + response.data.user.name.toUpperCase());
         navigate('/');
       } else {
         toast.error(response.data.message);
+       
       }
     } catch (error) {
+      console.log(error)
       if (error instanceof z.ZodError) {
         const formattedErrors = error.errors.reduce((acc, curr) => {
           acc[curr.path[0]] = curr.message;

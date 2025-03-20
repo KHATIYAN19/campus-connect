@@ -1,81 +1,124 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-const JobTable = ({jobData,admin}) => {
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0'); // Add leading zero
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
-  const navigate=useNavigate();
-  return (
-    
-    <div className="bg-blue-50 flex items-center justify-center p-4 rounded-2xl shadow-lg">
-  <div className={`w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden ${jobData && jobData.length > 0 ? '' : 'h-screen flex items-center justify-center'}`}>
-    <div className="p-6 bg-[#88004c] text-white text-center rounded-2xl">
-      <h1 className="text-2xl font-bold">Job Listings</h1>
-      <p className="text-sm mt-1">{admin ? (`Your Posted Jobs`) : (`Your Applied Jobs`)}</p>
-    </div>
-    <div className="overflow-x-auto">
-      {jobData && jobData.length > 0 ? (
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-gray-100 border-b border-gray-200">
-            <tr>
-              <th className="p-4 text-gray-700 font-medium">Logo</th>
-              <th className="p-4 text-gray-700 font-medium">Company Name</th>
-              <th className="p-4 text-gray-700 font-medium">Location</th>
-              <th className="p-4 text-gray-700 font-medium">Salary</th>
-              <th className="p-4 text-gray-700 font-medium">Date Posted</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobData.map((job) => (
-              <tr
-                key={job.id}
-                className="hover:bg-blue-50 cursor-pointer transition duration-200"
-                onClick={() => navigate(`/description/${job._id}`)}
-              >
-                <td className="p-4 border-b border-gray-200">
-                  <img
-                    src={job.logo}
-                    alt={`${job.company} logo`}
-                    className="w-12 h-12 object-contain rounded-full"
-                  />
-                </td>
-                <td className="p-4 border-b border-gray-200">
-                  <span className="font-semibold">{job.company}</span>
-                </td>
-                <td className="p-4 border-b border-gray-200">
-                  {job.location}
-                </td>
-                <td className="p-4 border-b border-gray-200">
-                  <span className="text-green-600 font-semibold">
-                    {job.salary + " LPA"}
-                  </span>
-                </td>
-                <td className="p-4 border-b border-gray-200">
-                  <span className="text-gray-500">{formatDate(job.createdAt)}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className="p-10 text-center">
-          <h2 className="text-xl font-bold text-gray-700">
-            {admin ? (`No Jobs Posted`) : (`Never applied in Jobs`)}
-          </h2>
-          <p className="text-gray-500 mt-2">
-            {admin ? (`Post new Jobs`) : (`Apply in new Jobs`)}
-          </p>
-        </div>
-      )}
-    </div>
-  </div>
-</div>
+import { Briefcase, Calendar, Building, DollarSign } from 'lucide-react';
+import { FaRupeeSign } from "react-icons/fa";
 
-  );
+const JobTable = ({ jobData, admin }) => {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+  };
+  const navigate = useNavigate();
+  return (
+    <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-3xl shadow-xl">
+      <div className="rounded-2xl overflow-hidden bg-white shadow-md">
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 px-6 text-center">
+          <h2 className="text-xl font-semibold">{admin ? 'Your Posted Job Listings' : 'Your Job Applications'}</h2>
+          <p className="text-sm mt-1">{admin ? 'Manage and view your posted opportunities' : 'Track the status of your applications'}</p>
+        </div>
+        <div className="overflow-x-auto">
+          {jobData && jobData.length > 0 ? (
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Logo
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Company
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Location
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Salary
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Applied Date
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {jobData.map((application) => (
+                  <tr
+                    key={application._id}
+                    className="hover:bg-indigo-50 cursor-pointer transition duration-150"
+                    onClick={() => navigate(`/description/${application.company._id}`)}
+                  >
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
+                          <img className="h-full w-full object-contain" src={application.company.logo} alt={`${application.company.company} logo`} />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {application.company.company}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <Building className="h-4 w-4 mr-2 text-indigo-400" />
+                        {application.company.location}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="text-sm text-gray-700 font-semibold flex items-center">
+                        <FaRupeeSign className="h-4 w-4 mr-2 text-green-500" />
+                        {application.company.salary} LPA
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                        {formatDate(application.createdAt)}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        application.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        application.status === 'selected' ? 'bg-green-100 text-green-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {application.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="py-12 px-6 text-center">
+              <Briefcase className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h2 className="text-lg font-semibold text-gray-700">
+                {admin ? 'No Jobs Posted Yet' : 'You haven\'t applied to any jobs yet'}
+              </h2>
+              <p className="mt-2 text-gray-500">
+                {admin ? 'Start posting job opportunities to connect with potential candidates.' : 'Explore available job listings and start applying to your dream roles.'}
+              </p>
+              {!admin && (
+                <button
+                  onClick={() => navigate('/jobs')}
+                  className="mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
+                >
+                  Browse Jobs
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default JobTable;

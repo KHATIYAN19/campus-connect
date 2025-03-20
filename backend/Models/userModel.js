@@ -24,7 +24,9 @@ const userSchema=mongoose.Schema({
         enum:["student","admin"]
       },
       year:{
-        type:Number
+        type:Number,
+        required:true,
+        default:2030
       },
       isVerified:{
         type:Boolean,
@@ -57,10 +59,10 @@ const userSchema=mongoose.Schema({
            type:String
          }
       },
-      Applied:[ { 
-        type:mongoose.Schema.Types.ObjectId,
-         ref: 'Job' }
-      ],
+      maxoffer:{
+        type:Number,
+        default:0
+      },
       messages:[{
         type:mongoose.Schema.Types.ObjectId,
          ref: 'Message'

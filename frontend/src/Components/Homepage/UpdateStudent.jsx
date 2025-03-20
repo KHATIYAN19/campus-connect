@@ -1,220 +1,164 @@
-import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
-import { Label } from '../ui/label'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { Loader2 } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
+import React, { useEffect, useRef, useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Loader2, ImagePlus, FileText, Phone, GraduationCap, User, X } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import axios from '../LoginSignUp/axios';
+import { login } from '../redux/authSlice';
 
-const UpdateStudent = ({ open, setOpen }) => {
-    const [loading, setLoading] = useState(false);
-    const user = JSON.parse(localStorage.getItem('user'));
-    const [tenth, setTenth] = useState(user?.profile?.tenth);
-    const [tweleth, setTweleth] = useState(user?.profile?.tweleth);
-    const [graduationMarks, setGraduationMarks] = useState(user?.profile?.graduationMarks);
-    const [image, setImage] = useState('');
-    const [bio, setBio] = useState(user?.profile?.bio);
-    const [phone, setPhone] = useState(user.phone);
-    const [email, setEmail] = useState(user.email);
-    const [resume, setResume] = useState(user?.profile?.resume);
-    const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
-        console.log(image);
-    };
-    const dispatch = useDispatch();
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        const data = new FormData();
-        data.append('email', email);
-        data.append('phone', phone);
-        data.append('image', image);
-        data.append('resume', resume);
-        data.append('tenth', tenth);
-        data.append('tweleth', tweleth);
-        data.append('graduationMarks', graduationMarks);
-        data.append('bio', bio);
+const formSchema = z.object({
+  phone: z.string().regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+  bio: z.string().min(10, 'Bio must be at least 10 characters').optional(),
+  graduationMarks: z.coerce.number({ required_error: 'Marks are required' }).min(0, { message: 'Marks must be between 0 and 100' }).max(100, { message: 'Marks must be between 0 and 100' }),
+  resume: z.string().url('Invalid URL'),
+});
 
-        try {
-            const response = await axios.post('http://localhost:8080/update/user', data);
-            if (response.data.success) {
-                toast.success(response.data.message);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
-                setOpen(false);
-            }
-        } catch (error) {
-            toast.error(error.response.data.message);
-        }
+const UpdateStudent = ({ open, setOpen, setUser }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const initialValues = useRef({});
 
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      phone: user?.phone || '',
+      bio: user?.profile?.bio || '',
+      graduationMarks: user?.profile?.graduationMarks || '',
+      resume: user?.profile?.resume || '',
+      email: user?.email,
+    },
+  });
+
+  useEffect(() => {
+    if (open && user) {
+      initialValues.current = {
+        phone: user.phone,
+        bio: user.profile?.bio,
+        graduationMarks: user.profile?.graduationMarks,
+        resume: user.profile?.resume,
+        email: user.email,
+      };
+      form.reset(initialValues.current);
+    }
+  }, [open, user, form]);
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const hasChanges = (values) => {
+    return Object.keys(values).some((key) => values[key] !== initialValues.current[key]) || image !== null;
+  };
+
+  const onSubmit = async (values) => {
+    if (!hasChanges(values)) {
+      toast.error('No changes detected');
+      return;
     }
 
-    return (
-        <div>
-            {open && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div
-                        role="dialog"
-                        aria-labelledby="dialog-title"
-                        aria-describedby="dialog-description"
-                        className="bg-white rounded-2xl shadow-lg max-w-lg w-full mx-4 p-6 relative"
-                    >
-                        {/* Dialog Header */}
-                        <div className="text-center mb-6">
-                            <h2
-                                id="dialog-title"
-                                className="text-[#4d002d] text-lg font-bold"
-                            >
-                                Update Profile
-                            </h2>
-                            <button
-                                className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
-                                onClick={() => setOpen(false)}
-                                aria-label="Close"
-                            >
-                                ✕
-                            </button>
-                        </div>
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('phone', values.phone);
+      formData.append('bio', values.bio);
+      formData.append('graduationMarks', values.graduationMarks);
+      formData.append('resume', values.resume);
+      formData.append('email', user.email);
+      if (image) formData.append('image', image);
+      const response = await axios.post('/update/user', formData);
+      if (response.data.success) {
+        toast.success('Profile updated successfully! ✨');
+        setUser(response.data.user);
+        dispatch(
+          login({
+            user: response.data.user,
+            token: response.data.token || localStorage.getItem('token'),
+          })
+        );
+        setOpen(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || 'Update failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                        {/* Form */}
-                        <form onSubmit={submitHandler}>
-                            <div className="grid gap-4 py-4 text-gray-700">
-                                {/* Phone Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="number" className="text-right">
-                                        PhoneNo
-                                    </Label>
-                                    <Input
-                                        id="number"
-                                        name="number"
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[400px] bg-gradient-to-br from-white to-blue-50 rounded-2xl p-6 shadow-xl border border-blue-100">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-blue-600 text-center mb-4">
+            🎓 Update Profile
+          </DialogTitle>
+          <Button variant="ghost" className="absolute right-4 top-4" onClick={() => setOpen(false)}>
+            <X className="h-4 w-4" />
+          </Button>
+        </DialogHeader>
 
-                                {/* Bio Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="bio" className="text-right">
-                                        Bio
-                                    </Label>
-                                    <Input
-                                        id="bio"
-                                        name="bio"
-                                        value={bio}
-                                        onChange={(e) => setBio(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-blue-600">
+              <Phone className="h-4 w-4" />
+              <Label className="font-medium text-sm">Phone</Label>
+            </div>
+            <Input {...form.register('phone')} placeholder="Phone" className="h-10 px-3 rounded-xl border border-blue-200 focus:border-blue-400" />
+            {form.formState.errors.phone && <p className="text-red-500 text-xs mt-1">{form.formState.errors.phone.message}</p>}
+          </div>
 
-                                {/* Tenth Marks Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="10th percentage" className="text-right">
-                                        Tenth
-                                    </Label>
-                                    <Input
-                                        id="10th percentage"
-                                        name="10th percentage"
-                                        type="number"
-                                        min="50"
-                                        max="100"
-                                        value={tenth}
-                                        onChange={(e) => setTenth(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-blue-600">
+              <User className="h-4 w-4" />
+              <Label className="font-medium text-sm">Bio</Label>
+            </div>
+            <textarea {...form.register('bio')} placeholder="Bio" className="w-full rounded-xl border border-blue-200 p-2 h-20 text-xs focus:border-blue-400" />
+            {form.formState.errors.bio && <p className="text-red-500 text-xs mt-1">{form.formState.errors.bio.message}</p>}
+          </div>
 
-                                {/* Twelfth Marks Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="12-score" className="text-right">
-                                        Twelfth
-                                    </Label>
-                                    <Input
-                                        id="12-score"
-                                        name="12-score"
-                                        type="number"
-                                        min="50"
-                                        max="100"
-                                        value={tweleth}
-                                        onChange={(e) => setTweleth(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-blue-600">
+              <GraduationCap className="h-4 w-4" />
+              <Label className="font-medium text-sm">Marks (%)</Label>
+            </div>
+            <Input type="number" {...form.register('graduationMarks')} placeholder="Marks" className="h-10 px-3 rounded-xl border border-blue-200 focus:border-blue-400" />
+            {form.formState.errors.graduationMarks && <p className="text-red-500 text-xs mt-1">{form.formState.errors.graduationMarks.message}</p>}
+          </div>
 
-                                {/* Graduation Marks Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="graduation-score" className="text-right">
-                                        Graduation Marks
-                                    </Label>
-                                    <Input
-                                        id="graduation-score"
-                                        name="graduation-score"
-                                        type="number"
-                                        min="50"
-                                        max="100"
-                                        value={graduationMarks}
-                                        onChange={(e) => setGraduationMarks(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
+          <div className="space-y-2">
+            <Label className="text-blue-600 font-medium text-sm">Image</Label>
+            <label className="cursor-pointer group">
+              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+              <div className="flex items-center gap-2 p-2 rounded-xl border border-dashed border-blue-200 group-hover:border-blue-300 transition-colors text-xs">
+                <ImagePlus className="h-4 w-4 text-blue-400" />
+                <span>{image ? image.name : 'Upload'}</span>
+              </div>
+            </label>
+          </div>
 
-                                {/* Profile Image Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="image" className="text-right">
-                                        Profile
-                                    </Label>
-                                    <Input
-                                        id="image"
-                                        name="image"
-                                        accept="image/*"
-                                        type="file"
-                                        onChange={handleImageChange}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-blue-600">
+              <FileText className="h-4 w-4" />
+              <Label className="font-medium text-sm">Resume URL</Label>
+            </div>
+            <Input {...form.register('resume')} placeholder="Resume URL" className="h-10 px-3 rounded-xl border border-blue-200 focus:border-blue-400" />
+            {form.formState.errors.resume && <p className="text-red-500 text-xs mt-1">{form.formState.errors.resume.message}</p>}
+          </div>
 
-                                {/* Resume Input */}
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="file" className="text-right">
-                                        Resume
-                                    </Label>
-                                    <Input
-                                        id="file"
-                                        name="file"
-                                        type="url"
-                                        value={resume}
-                                        onChange={(e) => setResume(e.target.value)}
-                                        className="col-span-3 rounded-xl border border-gray-300 p-2"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Dialog Footer */}
-                            <div className="mt-6">
-                                {loading ? (
-                                    <button
-                                        disabled
-                                        className="w-full bg-gray-500 text-white py-2 rounded-xl flex items-center justify-center"
-                                    >
-                                        <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                                        Please wait
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="submit"
-                                        className="w-full bg-[#66003c] text-white py-2 rounded-xl hover:bg-[#4d002d]"
-                                    >
-                                        Update
-                                    </button>
-                                )}
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
-
-    )
-}
-
+          <Button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white h-10 rounded-xl text-sm font-semibold shadow-md transition-all" disabled={loading}>
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
 export default UpdateStudent;

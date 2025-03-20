@@ -26,12 +26,15 @@ import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute.jsx';
 import ContactForm from './Components/pages/ContactForm.jsx';
 import Main from './Components/pages/Main.jsx';
 import ResetPasswordToken from './Components/LoginSignUp/ResetPasswordToken.jsx';
+import CompanySearch from './Components/pages/CompanySearch.jsx';
+import StudentSearch from './Components/pages/StudentSearch.jsx';
 
 import ContactForms from './Components/Homepage/ContactForms.jsx';
-
+import { useSelector } from 'react-redux';
 function App() {
+  const isLogin  = useSelector((state) => state.auth.isAuthenticated);
+  const user=useSelector((state)=>state.auth.user);
   const [admin, setAdmin] = useState(false);
-  const isLogin = localStorage.getItem('isLogin'); // Check login status
   const [theme, setTheme] = useState('light');
   const location = useLocation();
 
@@ -40,10 +43,9 @@ function App() {
 
   return (
     <div className="font-serif" data-theme={theme}>
-      {/* Conditionally render Navbar based on current route */}
       {!hideNavbar && <Navbar />}
-
-      <Routes>
+       <div className='pt-16'> 
+       <Routes>
         {/* Redirect logged-out users to main page */}
         <Route
           path="/"
@@ -61,7 +63,7 @@ function App() {
             )
           }
         />
-
+      
         <Route path='/form' element={<ContactForms/>}/>
         <Route path='/verify-email' element={<EmailVerification />} />
         {/* Login and Signup Routes */}
@@ -128,7 +130,14 @@ function App() {
         <Route path="/contact" element={<ContactForm />} />
         
         <Route path="/homepage" element={<ProtectedRoute element={<Homepage />} />} />
+
+        <Route path="/company/search/" element={<CompanySearch/>}/>
+        <Route path="/student/search/" element={<StudentSearch/>}/>
+
+
       </Routes>
+       </div>
+     
     </div>
   );
 }

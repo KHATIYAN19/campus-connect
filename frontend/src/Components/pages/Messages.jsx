@@ -1,71 +1,57 @@
 import React, { useEffect, useState } from "react";
 import axios from "../LoginSignUp/axios";
 import MessageComponent from "./MessageComponent";
+import { FaBullhorn } from "react-icons/fa";
 
 const Messages = ({ show }) => {
-  const role = localStorage.getItem("role");
-  let [messages, setMessages] = useState([]); // Initialize as an empty array
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:8080/message/getall")
       .then((res) => {
-        console.log("Response", res.data.messages);
-        setMessages(res.data.messages || []); // Ensure a fallback to an empty array
+        setMessages(res.data.messages || []);
       })
-      .catch((error) => {
-        console.error("Error fetching messages:", error);
-        setMessages([]); // Fallback to empty array on error
-      });
+      .catch(console.error);
   }, []);
 
   const calculateDaysAgo = (createdDate) => {
-    const currentDate = new Date(); // Get current date
-    const createdDateObj = new Date(createdDate); // Convert createdAt to a Date object
-    const diffInTime = currentDate - createdDateObj; // Difference in milliseconds
-    const diffInDays = Math.floor(diffInTime / (1000 * 60 * 60 * 24)); // Convert to days
-    return diffInDays;
+    return Math.floor(new Date() - new Date(createdDate)) / (1000 * 3600 * 24);
   };
-  messages = !show ? messages.slice(0, 2) : messages;
+
   return (
-    <div>
-      <div className="min-h-screen bg-[#fff9e7] p-4 sm:p-8 rounded-xl">
-        {Array.isArray(messages) && messages.length === 0 ? (
-          // Render when there are no messages
-          <div className="text-center text-gray-500 text-lg">
-            No Notices to display for your batch
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-center gap-3 mb-8 sm:mb-12">
+          <FaBullhorn className="text-3xl sm:text-4xl text-indigo-600" />
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
+            Placement Notice Board
+          </h2>
+        </div>
+
+        {messages.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-xl shadow-sm">
+            <p className="text-gray-500 text-lg">No notices available</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 max-w-3xl mx-auto">
-            {/* Heading for Latest Notices */}
-            <h2 className="text-center text-2xl sm:text-3xl font-bold text-yellow-800 mb-6">
-              Latest Notices
-            </h2>
-
-            {/* Render messages */}
+          <div className="space-y-6">
             {messages.map((msg, index) => (
-              <div
+              <MessageComponent
                 key={index}
-              // className="bg-[#f5f5d1] shadow-xl p-4 sm:p-6 rounded-2xl hover:scale-105 transition-transform duration-300"
-              >
-                <MessageComponent
-                  userImage={msg.postby?.image}
-                  userName={msg.postby?.name}
-                  collegeName={`Gl Bajaj`}
-                  message={msg.msg}
-                  batch={msg.year}
-                  timeAgo={calculateDaysAgo(msg.createdAt)}
-                  link={msg.postby?.image}
-                />
-              </div>
+                topic={msg.topic || "General Notice"}
+                userImage={msg.postby?.image}
+                userName={msg.postby?.name}
+                collegeName="GL Bajaj Institute"
+                message={msg.msg}
+                batch={msg.year}
+                timeAgo={Math.floor(calculateDaysAgo(msg.createdAt))}
+              />
             ))}
           </div>
         )}
       </div>
     </div>
-
   );
-
 };
 
 export default Messages;
