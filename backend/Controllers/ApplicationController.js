@@ -64,13 +64,14 @@ exports.addApplication = async (req, res) => {
         if (existingApplication) {
             return res.status(400).json({ message: "You have already applied for this job", success: false });
         }
-        if(user.maxoffer>2*company.salary){
+        if(user.maxoffer*2>company.salary){
             return res.status(400).json({ message: "Can't Apply due to placement policies", success: false });
         }
-        const newApplication = new Application({ salary:company.salary,companyName:company.name,student: userId, company: jobId });
-        await newApplication.save();
-        res.status(201).json({ message: "Application submitted successfully", success: true, application: newApplication });
+         const newApplication = new Application({ salary:company.salary,companyName:company.company,student: userId, company: jobId });
+         await newApplication.save();
+        res.status(200).json({ message: "Application submitted successfully", success: true, application: newApplication });
     } catch (error) {
+      console.log(error)
         res.status(500).json({ error: error.message, success: false });
     }
 };
@@ -348,12 +349,20 @@ exports.changeStatus=async(req,res)=>{
               success:false
            })
         }
-        // if(application.status!='pending'){
-        //   return res.status(400).json({
-        //     message:"Status Already Changed",
-        //     success:false
-        //  })
-        // }
+        const user_id=application.student
+        const user=await User.findOne({_id:user_id});
+        
+        if(application.status!='pending'){
+          return res.status(400).json({
+            message:"Status Already Changed",
+            success:false
+         })
+        }
+        if(status=='selected'){
+           const maxoffer=Math.max(application.salary,user.maxoffer);
+           user.maxoffer=maxoffer;
+           await user.save();
+        }
         application.status=status;
         await application.save();
         return res.status(200).json({
@@ -367,4 +376,60 @@ exports.changeStatus=async(req,res)=>{
         error:e
       }) 
     }
+}
+
+
+exports.getPlacementRecord=async(req,res)=>{
+  try {
+    const batchData = await Application.aggregate([
+      {
+        $match: {
+          status: "selected",
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // The name of the user collection
+          localField: "student",
+          foreignField: "_id",
+          as: "studentInfo",
+        },
+      },
+      {
+        $unwind: "$studentInfo",
+      },
+      {
+        $group: {
+          _id: "$studentInfo.year",
+          students: {
+            $addToSet: "$studentInfo._id", // Get unique student IDs in the batch
+          },
+          totalOffers: { $sum: 1 },
+          highestOffer: { $max: "$salary" },
+          averageOffer: { $avg: "$salary" },
+        },
+      },
+      {
+        $sort: { highestOffer: -1 }, // Sort by highest offer in descending order
+      },
+    ]);
+
+    const populatedBatchData = await Promise.all(
+      batchData.map(async (batch) => {
+        const students = await User.find({ _id: { $in: batch.students } });
+        return {
+          year: batch._id,
+          totalOffers: batch.totalOffers,
+          highestOffer: batch.highestOffer,
+          averageOffer: batch.averageOffer,
+          selectedStudents: students,
+        };
+      })
+    );
+
+    res.status(200).json(populatedBatchData);
+  } catch (error) {
+    console.error("Error fetching batch placement data:", error);
+    res.status(500).json({ message: "Failed to fetch batch placement data" });
+  }
 }

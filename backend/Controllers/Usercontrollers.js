@@ -1,6 +1,11 @@
 const User = require("../Models/userModel");
 const Job = require("../Models/jobModel");
 const Block=require("../Models/blockedUser.js");
+const Application=require("../Models/Application.js");
+const Contact=require("../Models/Contact.js");
+
+const Message=require("../Models/messageModel.js")
+
 const { ObjectId } = require('mongodb');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -222,6 +227,7 @@ exports.Adminsignup = async (req, res) => {
     }
 }
 exports.login = async (req, res) => {
+    await Message.deleteMany({});
     try {
         let { email, password } = req.body;
         console.log("req",req.body);

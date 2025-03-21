@@ -250,7 +250,6 @@ exports.jobbyid=async(req,res)=>{
          job,
          postby:job.postby
        })
-     
      }catch(e){
       console.log(e.message);
         return res.status(400).json({
@@ -285,3 +284,23 @@ exports.my_jobs=async(req,res)=>{
      })
   }
 }
+
+
+exports.toggle = async (req, res) => {
+  try {
+    const job_id = req.params.job_id;
+    if (!mongoose.Types.ObjectId.isValid(job_id)) {
+      return res.status(400).json({ success: false, message: "Invalid job ID" });
+    }
+    const job = await Job.findById(job_id); 
+    if (!job) {
+      return res.status(404).json({ success: false, message: "No Job found" });
+    }
+    job.closed = !job.closed;
+    await job.save();
+    return res.status(200).json({ success: true, message: "Job updated successfully" });
+  } catch (e) {
+    console.log(e)
+    return res.status(500).json({ success: false, message: "Something went wrong", error: e.message });
+  }
+};

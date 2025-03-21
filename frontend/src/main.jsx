@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import store  from './Components/redux/store'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+
     <BrowserRouter>
       <Provider store={store}>
         <App />
@@ -29,5 +29,5 @@ createRoot(document.getElementById('root')).render(
         transition:Flip
       />
     </BrowserRouter>
-  </StrictMode>,
+ 
 )

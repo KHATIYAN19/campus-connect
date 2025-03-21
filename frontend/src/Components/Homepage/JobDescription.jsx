@@ -68,7 +68,9 @@ const JobDescription = () => {
 
     const toggleJobStatus = async () => {
         try {
+            console.log(id)
             const response = await axios.put(`/jobs/${id}/toggle`);
+            console.log(response)
             setJob(prev => ({ ...prev, closed: !prev.closed }));
             toast.success(`Job ${job.closed ? 'opened' : 'closed'} successfully`);
         } catch (error) {

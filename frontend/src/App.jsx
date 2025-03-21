@@ -30,6 +30,9 @@ import CompanySearch from './Components/pages/CompanySearch.jsx';
 import StudentSearch from './Components/pages/StudentSearch.jsx';
 
 import ContactForms from './Components/Homepage/ContactForms.jsx';
+
+import PlacementRecord from './Components/pages/PlacementRecord.jsx'
+
 import { useSelector } from 'react-redux';
 function App() {
   const isLogin  = useSelector((state) => state.auth.isAuthenticated);
@@ -134,7 +137,7 @@ function App() {
         <Route path="/company/search/" element={<CompanySearch/>}/>
         <Route path="/student/search/" element={<StudentSearch/>}/>
 
-
+        <Route path='/record' element={<PlacementRecord/>}/>
       </Routes>
        </div>
      
