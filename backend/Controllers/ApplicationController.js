@@ -67,7 +67,7 @@ exports.addApplication = async (req, res) => {
         if(user.maxoffer*2>company.salary){
             return res.status(400).json({ message: "Can't Apply due to placement policies", success: false });
         }
-         const newApplication = new Application({ salary:company.salary,companyName:company.company,student: userId, company: jobId });
+         const newApplication = new Application({batch:user.year, salary:company.salary,companyName:company.company,student: userId, company: jobId });
          await newApplication.save();
         res.status(200).json({ message: "Application submitted successfully", success: true, application: newApplication });
     } catch (error) {
@@ -75,7 +75,6 @@ exports.addApplication = async (req, res) => {
         res.status(500).json({ error: error.message, success: false });
     }
 };
-
 exports.applied_user_id = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -90,7 +89,6 @@ exports.applied_user_id = async (req, res) => {
         res.status(500).json({ error: error.message, success: false });
     }
 };
-
 const getSelectedStudents = async () => {
     try {
         const companyName=req.params.company;
@@ -133,46 +131,59 @@ const getSelectedStudents = async () => {
 
 
 exports.getSelectedStudents = async (req, res) => {
-    try {
-        const  jobId  = req.params.company;
-        let job;
-        if (jobId) {
-            job = await Job.findOne({jobid:jobId});
-        }
-        if (!job) {
-            const normalizedCompanyName = jobId.replace(/\s+/g, "").toLowerCase();
-            job = await Job.findOne({
-                company: { $regex: new RegExp(`^${normalizedCompanyName}$`, "i") }
-            });
-        }
+  try {
+      const jobId = req.params.company;
+      let jobs = [];
 
-        if (!job) {
-            return res.status(404).json({ success: false, message: "Job or company not found" });
-        }
+      if (jobId) {
+          jobs = await Job.find({ jobid: jobId });
+      }
+      
+      if (!jobs.length) {
+          const normalizedCompanyName = jobId.replace(/\s+/g, "").toLowerCase();
+          jobs = await Job.find({
+              company: { $regex: new RegExp(`^${normalizedCompanyName}$`, "i") }
+          });
+      }
 
-        const selectedApplications = await Application.find({
-            company: job._id,
-            status: "selected"
-        }).populate("student", "name email phone image ");
+      if (!jobs.length) {
+          return res.status(404).json({ success: false, message: "Job or company not found" });
+      }
 
-        if (selectedApplications.length === 0) {
-            return res.status(200).json({ success: true, message: "No selected students found", data: [] ,job});
-        }
+      let selectedStudents = [];
 
-        const selectedStudents = selectedApplications.map(app => ({
-            id: app.student._id,
-            name: app.student.name,
-            email: app.student.email,
-            phone: app.student.phone,
-            image: app.student.image,
-            year:app.student.year
-        }));
+      for (const job of jobs) {
+          const selectedApplications = await Application.find({
+              company: job._id,
+              status: "selected"
+          }).populate("student", "name email phone image year");
 
-        return res.status(200).json({ success: true, message: "Selected students fetched successfully", data: selectedStudents ,job});
-    } catch (error) {
-        console.error("Error fetching selected students:", error);
-        return res.status(500).json({ success: false, message: "Internal server error" });
-    }
+          if (selectedApplications.length > 0) {
+              selectedStudents.push(
+                  ...selectedApplications.map(app => ({
+                      id: app.student._id,
+                      name: app.student.name,
+                      email: app.student.email,
+                      phone: app.student.phone,
+                      image: app.student.image,
+                      year: app.student.year,
+                      salary: app.salary,
+                      company_name: job.company
+                  }))
+              );
+          }
+      }
+
+      return res.status(200).json({
+          success: true,
+          message: selectedStudents.length ? "Selected students fetched successfully" : "No selected students found",
+          data: selectedStudents,
+          jobs
+      });
+  } catch (error) {
+      console.error("Error fetching selected students:", error);
+      return res.status(500).json({ success: false, message: "Internal server error" });
+  }
 };
 
 exports.getStudentApplications = async (req, res) => {
@@ -208,7 +219,6 @@ exports.getStudentApplications = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
-
 exports.dashboardController = async (req, res) => {
     try {
       // Total number of admin users
@@ -331,8 +341,7 @@ exports.dashboardController = async (req, res) => {
       console.error("Error fetching dashboard data:", error);
       res.status(500).json({ message: "Failed to fetch dashboard data" });
     }
-  };
-  
+};
 exports.changeStatus=async(req,res)=>{
     try{
         const {application_id,status}=req.body;
@@ -377,8 +386,6 @@ exports.changeStatus=async(req,res)=>{
       }) 
     }
 }
-
-
 exports.getPlacementRecord=async(req,res)=>{
   try {
     const batchData = await Application.aggregate([
@@ -432,4 +439,36 @@ exports.getPlacementRecord=async(req,res)=>{
     console.error("Error fetching batch placement data:", error);
     res.status(500).json({ message: "Failed to fetch batch placement data" });
   }
+}
+
+exports.record=async(req,res)=>{
+  try {
+   
+    const applications = await Application.find({ status: "selected" })
+        .populate("student", "name image") // Fetch student name & image
+        .populate("company", "image") // Fetch company image
+        .sort({ salary: -1 }); // Sort applications by salary in descending order
+
+    // Structure data by batch
+    const result = {};
+    applications.forEach(app => {
+        const batch = app.batch;
+        if (!result[batch]) {
+            result[batch] = [];
+        }
+        
+        result[batch].push({
+            studentName: app.student.name,
+            studentImage: app.student.image,
+            companyName: app.companyName,
+            companyImage: app.company?.image || null, // Handle if company image is not present
+            salary: app.salary
+        });
+    });
+    
+    res.status(200).json(result);
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+}
 }

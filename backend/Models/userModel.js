@@ -39,6 +39,7 @@ const userSchema=mongoose.Schema({
       profile:{
          bio:{
             type:String,
+            default:"Not Available"
          },
          address:{
             type:String,

@@ -1,250 +1,260 @@
-import React, { useState } from 'react';
-import { FiSearch, FiBriefcase, FiAward, FiTrendingUp, FiDollarSign, FiUser } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiSearch, FiBriefcase, FiAward, FiTrendingUp, FiDollarSign, FiUser, FiFilter, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import axios from '../LoginSignUp/axios'
 
 const PlacementRecord = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  
-  const dummyPlacementData = [
-    {
-      year: 2023,
-      totalOffers: 10,
-      highestOffer: 1200000,
-      averageOffer: 800000,
-      selectedStudents: Array.from({ length: 10 }, (_, i) => ({
-        _id: `2023-student-${i + 1}`,
-        name: `Student ${i + 1} (2023)`,
-        email: `student${i + 1}@2023.com`,
-        phone: `98765432${i + 1}`,
-        role: 'student',
-        year: 2023,
-        isVerified: true,
-        image: `https://i.pravatar.cc/150?img=${i + 1}`,
-        profile: { 
-          graduationdegree: 'B.Tech', 
-          graduationMarks: 75 + i, 
-          tenth: 80 + i, 
-          tweleth: 85 + i 
-        },
-        companyName: `Company A ${i % 3 + 1}`,
-        salary: 600000 + i * 50000,
-        degree: 'B.Tech',
-      })),
-    },
-    {
-      year: 2024,
-      totalOffers: 10,
-      highestOffer: 1500000,
-      averageOffer: 950000,
-      selectedStudents: Array.from({ length: 10 }, (_, i) => ({
-        _id: `2024-student-${i + 1}`,
-        name: `Student ${i + 1} (2024)`,
-        email: `student${i + 1}@2024.com`,
-        phone: `87654321${i + 1}`,
-        role: 'student',
-        year: 2024,
-        isVerified: true,
-        image: `https://i.pravatar.cc/150?img=${i + 11}`,
-        profile: { 
-          graduationdegree: 'MBA', 
-          graduationMarks: 80 + i, 
-          tenth: 85 + i, 
-          tweleth: 90 + i 
-        },
-        companyName: `Company B ${i % 4 + 1}`,
-        salary: 700000 + i * 60000,
-        degree: 'MBA',
-      })),
-    },
-    {
-      year: 2025,
-      totalOffers: 10,
-      highestOffer: 1800000,
-      averageOffer: 1100000,
-      selectedStudents: Array.from({ length: 10 }, (_, i) => ({
-        _id: `2025-student-${i + 1}`,
-        name: `Student ${i + 1} (2025)`,
-        email: `student${i + 1}@2025.com`,
-        phone: `76543210${i + 1}`,
-        role: 'student',
-        year: 2025,
-        isVerified: true,
-        image: `https://i.pravatar.cc/150?img=${i + 21}`,
-        profile: { 
-          graduationdegree: 'M.Tech', 
-          graduationMarks: 85 + i, 
-          tenth: 90 + i, 
-          tweleth: 95 + i 
-        },
-        companyName: `Company C ${i % 5 + 1}`,
-        salary: 800000 + i * 70000,
-        degree: 'M.Tech',
-      })),
-    },
-    {
-      year: 2026,
-      totalOffers: 10,
-      highestOffer: 2000000,
-      averageOffer: 1300000,
-      selectedStudents: Array.from({ length: 10 }, (_, i) => ({
-        _id: `2026-student-${i + 1}`,
-        name: `Student ${i + 1} (2026)`,
-        email: `student${i + 1}@2026.com`,
-        phone: `65432109${i + 1}`,
-        role: 'student',
-        year: 2026,
-        isVerified: true,
-        image: `https://i.pravatar.cc/150?img=${i + 31}`,
-        profile: { 
-          graduationdegree: 'BCA', 
-          graduationMarks: 70 + i, 
-          tenth: 75 + i, 
-          tweleth: 80 + i 
-        },
-        companyName: `Company D ${i % 3 + 1}`,
-        salary: 550000 + i * 45000,
-        degree: 'BCA',
-      })),
-    },
-    {
-      year: 2027,
-      totalOffers: 10,
-      highestOffer: 2200000,
-      averageOffer: 1500000,
-      selectedStudents: Array.from({ length: 10 }, (_, i) => ({
-        _id: `2027-student-${i + 1}`,
-        name: `Student ${i + 1} (2027)`,
-        email: `student${i + 1}@2027.com`,
-        phone: `54321098${i + 1}`,
-        role: 'student',
-        year: 2027,
-        isVerified: true,
-        image: `https://i.pravatar.cc/150?img=${i + 41}`,
-        profile: { 
-          graduationdegree: 'MCA', 
-          graduationMarks: 88 + i, 
-          tenth: 92 + i, 
-          tweleth: 95 + i 
-        },
-        companyName: `Company E ${i % 4 + 1}`,
-        salary: 900000 + i * 80000,
-        degree: 'MCA',
-      })),
-    },
-  ];
+  const [selectedYear, setSelectedYear] = useState(null);
+  const [minSalary, setMinSalary] = useState('');
+  const [maxSalary, setMaxSalary] = useState('');
+  const [availableYears, setAvailableYears] = useState([]);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [salarySortOrder, setSalarySortOrder] = useState(null); // 'asc' or 'desc'
 
-  const formatCurrency = (amount) => 
-    `₹${(amount / 100000).toFixed(2)} LPA`;
+  const [dummyPlacementData,setDummyPlacementData]= useState([]);
+
+
+
+  useEffect(() => {
+    const fetchPlacementRecords = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/application/placement/records");
+        console.log("Fetched placement records:", response.data);
+        setDummyPlacementData(response.data)
+      } catch (error) {
+        console.error("Error fetching placement records:", error);
+      }
+    };
+
+    fetchPlacementRecords();
+  }, []);
+  useEffect(() => {
+    setAvailableYears(Object.keys(dummyPlacementData).sort().reverse());
+  }, [dummyPlacementData]);
+
+  const formatCurrency = (amount) =>
+    `₹${(amount).toFixed(2)} LPA`;
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  const filteredPlacementData = dummyPlacementData
-    .map(batch => ({
-      ...batch,
-      selectedStudents: batch.selectedStudents.filter(student => {
+  const handleYearFilter = (year) => {
+    setSelectedYear(year);
+  };
+
+  const handleMinSalaryChange = (event) => {
+    setMinSalary(event.target.value);
+  };
+
+  const handleMaxSalaryChange = (event) => {
+    setMaxSalary(event.target.value);
+  };
+
+  const toggleFilterVisibility = () => {
+    setIsFilterVisible(!isFilterVisible);
+  };
+
+  const sortStudents = (students) => {
+    if (salarySortOrder === 'asc') {
+      return [...students].sort((a, b) => a.salary - b.salary);
+    } else if (salarySortOrder === 'desc') {
+      return [...students].sort((a, b) => b.salary - a.salary);
+    }
+    return students;
+  };
+
+  const handleSalarySort = (order) => {
+    setSalarySortOrder(order);
+  };
+
+  const filteredPlacementData = Object.entries(dummyPlacementData)
+    .filter(([year]) => !selectedYear || year === selectedYear)
+    .reduce((acc, [year, students]) => {
+      const filteredStudents = students.filter(student => {
         const searchLower = searchTerm.toLowerCase();
+        const salaryFilter =
+          (minSalary === '' || student.salary >= parseFloat(minSalary)) &&
+          (maxSalary === '' || student.salary <= parseFloat(maxSalary));
+
         return (
-          student.name.toLowerCase().includes(searchLower) ||
+          student.studentName.toLowerCase().includes(searchLower) ||
           (student.companyName?.toLowerCase() || '').includes(searchLower) ||
-          student.degree.toLowerCase().includes(searchLower) ||
           student.salary.toString().includes(searchLower)
-        );
-      })
-    }))
-    .filter(batch => batch.selectedStudents.length > 0);
+        ) && salaryFilter;
+      });
 
+      if (filteredStudents.length > 0) {
+        acc[year] = sortStudents(filteredStudents); // Apply sorting here
+      }
+      return acc;
+    }, {});
 
-    return (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen py-12">
-          <div className="mx-auto px-4 lg:px-8 max-w-7xl"> {/* Increased max-width */}
-            {/* Wider Search Bar */}
-            <div className="mb-12 mx-auto">
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-6 pointer-events-none">
-                  <FiSearch className="h-6 w-6 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" />
-                </div>
+  const hasRecords = Object.keys(filteredPlacementData).length > 0;
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen py-12">
+      <div className="mx-auto px-4 lg:px-8 max-w-7xl"> {/* Increased max-width */}
+        {/* Wider Search Bar and Filter Button */}
+        <div className="mb-8 mx-auto flex items-center justify-between">
+          <div className="relative group w-full md:w-1/2 lg:w-2/3 mr-4">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-6 pointer-events-none">
+              <FiSearch className="h-6 w-6 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search students by name, company, or salary..."
+              className="w-full px-16 py-4 text-lg rounded-2xl border-0 shadow-xl focus:ring-4 focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+          </div>
+
+          {/* Filter Button */}
+          <button
+            onClick={toggleFilterVisibility}
+            className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-colors"
+          >
+            <FiFilter className="h-5 w-5 inline-block mr-2" /> Filter
+          </button>
+        </div>
+
+        {/* Filter Box (conditionally rendered) */}
+        {isFilterVisible && (
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h3 className="text-xl font-semibold text-gray-700 mb-4">Filter Options</h3>
+            <div className="flex flex-wrap gap-4 mb-4">
+              <span className="text-gray-600 font-medium">Filter by Year:</span>
+              {availableYears.map((year) => (
+                <button
+                  key={year}
+                  onClick={() => handleYearFilter(year)}
+                  className={`py-2 px-4 rounded-full text-sm font-semibold ${
+                    selectedYear === year ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  } focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-colors`}
+                >
+                  {year}
+                </button>
+              ))}
+              <button
+                onClick={() => handleYearFilter(null)}
+                className={`py-2 px-4 rounded-full text-sm font-semibold ${
+                  selectedYear === null ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                } focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-colors`}
+              >
+                All Years
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label htmlFor="minSalary" className="block text-gray-700 text-sm font-bold mb-2">
+                  Min Salary (LPA):
+                </label>
                 <input
-                  type="text"
-                  placeholder="Search students by name, company, salary, or degree..."
-                  className="w-full px-16 py-4 text-lg rounded-2xl border-0 shadow-xl focus:ring-4 focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
-                  value={searchTerm}
-                  onChange={handleSearch}
+                  type="number"
+                  id="minSalary"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="e.g., 7"
+                  value={minSalary}
+                  onChange={handleMinSalaryChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="maxSalary" className="block text-gray-700 text-sm font-bold mb-2">
+                  Max Salary (LPA):
+                </label>
+                <input
+                  type="number"
+                  id="maxSalary"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="e.g., 9"
+                  value={maxSalary}
+                  onChange={handleMaxSalaryChange}
                 />
               </div>
             </div>
-    
-            {filteredPlacementData.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="text-2xl text-gray-500 mb-4">No matching records found</div>
-                <div className="text-gray-400">Try searching with different keywords</div>
-              </div>
-            ) : (
-              filteredPlacementData.map((batch) => (
-                <div key={batch.year} className="mb-12">
-                  {/* Wider Batch Header */}
-                  <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl shadow-2xl p-8 mb-8 mx-2">
-                    <h2 className="text-3xl font-bold text-white mb-6">Batch of {batch.year}</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"> {/* Adjusted grid */}
-                      {/* ... [Keep batch stats cards same] ... */}
+
+            {/* Salary Sorting Options */}
+            <div className="flex items-center gap-4">
+              <span className="text-gray-600 font-medium">Sort by Salary:</span>
+              <button
+                onClick={() => handleSalarySort('asc')}
+                className={`py-2 px-3 rounded-md text-sm font-semibold ${
+                  salarySortOrder === 'asc' ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                } focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-colors`}
+              >
+                <FiArrowUp className="h-4 w-4 inline-block mr-1" /> Low to High
+              </button>
+              <button
+                onClick={() => handleSalarySort('desc')}
+                className={`py-2 px-3 rounded-md text-sm font-semibold ${
+                  salarySortOrder === 'desc' ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                } focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-colors`}
+              >
+                <FiArrowDown className="h-4 w-4 inline-block mr-1" /> High to Low
+              </button>
+              <button
+                onClick={() => handleSalarySort(null)}
+                className={`py-2 px-3 rounded-md text-sm font-semibold ${
+                  salarySortOrder === null ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                } focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-colors`}
+              >
+                No Sort
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!hasRecords ? (
+          <div className="text-center py-20">
+            <div className="text-2xl text-gray-500 mb-4">No matching records found</div>
+            <div className="text-gray-400">Try adjusting the filters or search keywords</div>
+          </div>
+        ) : (
+          Object.entries(filteredPlacementData).map(([year, students]) => (
+            <div key={year} className="mb-12">
+              {/* Wider Student Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"> {/* Reduced columns */}
+                {students.map((student, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden relative" // Added relative for absolute positioning
+                    style={{ borderTop: `6px solid #6366f1` }} // Added top border for visual separation
+                  >
+                    <div className="absolute top-4 left-4 bg-indigo-100 text-indigo-700 py-1 px-2 rounded-md text-sm font-semibold">
+                      Batch of {year}
                     </div>
-                  </div>
-    
-                  {/* Wider Student Cards Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"> {/* Reduced columns */}
-                    {batch.selectedStudents.map((student) => (
-                      <div 
-                        key={student._id} 
-                        className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden min-w-[320px]" // Added min-width
-                      >
-                        <div className="p-8"> {/* Increased padding */}
-                          <div className="flex flex-col items-center">
-                            <div className="relative mb-6"> {/* Increased margin */}
-                              <img
-                                src={student.image}
-                                alt={student.name}
-                                className="w-40 h-40 rounded-full object-cover border-4 border-indigo-50 shadow-lg group-hover:border-indigo-100 transition-colors" // Larger image
-                              />
-                              <div className="absolute bottom-0 right-0 bg-indigo-500 text-white px-4 py-2 rounded-full text-sm font-medium"> {/* Larger badge */}
-                                {student.degree}
-                              </div>
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-800 mb-2">{student.name}</h3> {/* Larger text */}
-                            <p className="text-indigo-600 font-semibold mb-3 text-lg">{student.companyName}</p> {/* Larger text */}
-                            <div className="flex items-center space-x-3 bg-green-100 px-4 py-2 rounded-full"> {/* Larger badge */}
-                              <FiDollarSign className="text-green-600 text-lg" />
-                              <span className="text-green-700 font-medium text-lg">
-                                {formatCurrency(student.salary)}
-                              </span>
-                            </div>
-                          </div>
+                    <div className="p-8"> {/* Increased padding */}
+                      <div className="flex flex-col items-center">
+                        <div className="relative mb-6"> {/* Increased margin */}
+                          <img
+                            src={student.studentImage}
+                            alt={student.studentName}
+                            className="w-40 h-40 rounded-full object-cover border-4 border-indigo-50 shadow-lg group-hover:border-indigo-100 transition-colors" // Larger image
+                          />
                         </div>
-                        <div className="bg-gray-50 px-8 py-6 border-t border-gray-100"> {/* Increased padding */}
-                          <div className="grid grid-cols-3 gap-5 text-center text-base"> {/* Larger text */}
-                            <div>
-                              <div className="text-gray-500">10th</div>
-                              <div className="font-medium">{student.profile.tenth}%</div>
-                            </div>
-                            <div>
-                              <div className="text-gray-500">12th</div>
-                              <div className="font-medium">{student.profile.tweleth}%</div>
-                            </div>
-                            <div>
-                              <div className="text-gray-500">Grad</div>
-                              <div className="font-medium">{student.profile.graduationMarks}%</div>
-                            </div>
-                          </div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-1">{student.studentName}</h3> {/* Slightly smaller text */}
+                        <p className="text-indigo-600 font-semibold mb-2 text-lg">{student.companyName}</p> {/* Slightly smaller margin */}
+                        <div className="flex items-center space-x-2 bg-green-100 px-3 py-1.5 rounded-full"> {/* Smaller badge */}
+                          <FiDollarSign className="text-green-600 text-md" />
+                          <span className="text-green-700 font-medium text-md">
+                            {formatCurrency(student.salary)}
+                          </span>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                    {/* The provided data does not have profile information */}
+                    {/* You can add more details or styling here to make the card more attractive */}
                   </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      );
-    };
-    
-    export default PlacementRecord;
-    
+                ))}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PlacementRecord;

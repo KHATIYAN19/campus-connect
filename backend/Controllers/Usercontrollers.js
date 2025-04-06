@@ -921,3 +921,34 @@ exports.user_profile = async (req, res) => {
         })
     }
 }
+
+
+exports.getUserInfo = async (req, res) => {
+    try {
+      const users = await User.find({}, "name email image"); 
+      res.status(200).json({
+        success:true,
+        users
+    });
+    } catch (e) {
+      console.error("Error fetching user info:", e);
+      res.status(500).json({success:false, message: "Internal Server Error" });
+    }
+};
+
+exports.getUserDataByEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+    const user = await User.findOne({ email }).select("-password"); 
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.status(200).json({ success: true, user });
+  } catch (e) {
+    console.error("Error fetching user by email:", e);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};

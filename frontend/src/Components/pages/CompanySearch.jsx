@@ -139,7 +139,7 @@ const CompanySearch = () => {
                       <div className="flex justify-between items-center text-sm px-4">
                         <span className="text-gray-500">Package</span>
                         <span className="text-green-600 font-semibold">
-                          ₹{student.salary?.toLocaleString()} LPA
+                          ₹{student.salary} LPA
                         </span>
                       </div>
                     </div>

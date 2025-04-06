@@ -38,7 +38,7 @@ const JobDescription = () => {
             setUsers(response.data.applications ||[]);
         } catch (error) {
             console.log(error)
-            toast.error('Failed to load applications');
+           // toast.error('Failed to load applications');
         }
     };
 
@@ -51,14 +51,13 @@ const JobDescription = () => {
 
             const { job } = jobResponse.data;
             setJob(job);
-            // Fix: Use the length of the users array for the count
             setCount(users?.length || 0);
 
             if (appliedResponse?.data?.companies) {
                 setApplied(appliedResponse.data.companies);
             }
 
-            await fetchApplications(); // Fetch applications for all users
+            await fetchApplications();
         } catch (error) {
             toast.error('Failed to load job details');
         } finally {
@@ -244,6 +243,7 @@ const JobDescription = () => {
                             ) : (
                                 <div className="bg-amber-100 px-4 py-2 rounded-lg">
                                     <p className="text-amber-600 font-medium">🚫 Eligibility criteria not met</p>
+                                
                                 </div>
                             )}
                         </div>
@@ -314,9 +314,9 @@ const JobDescription = () => {
                             <ProfileDetailItem label="Name" value={user.name} />
                             <ProfileDetailItem label="Email" value={user.email} />
                             <ProfileDetailItem label="Phone" value={user.profile?.phone} />
-                            <ProfileDetailItem label="10th Marks" value={`${user.profile?.tenth}%`} />
+                            {/* <ProfileDetailItem label="10th Marks" value={`${user.profile?.tenth}%`} />
                             <ProfileDetailItem label="12th Marks" value={`${user.profile?.tweleth}%`} />
-                            <ProfileDetailItem label="Graduation" value={`${user.profile?.graduationMarks}%`} />
+                            <ProfileDetailItem label="Graduation" value={`${user.profile?.graduationMarks}%`} /> */}
                         </div>
 
                         <div className="flex gap-4 justify-end">
@@ -401,7 +401,7 @@ const StudentTable = ({ users, onStatusChange, isAdmin }) => {
             <table className="min-w-full divide-y divide-gray-200 rounded-md overflow-hidden">
                 <thead className="bg-gray-100 text-gray-700">
                     <tr>
-                        {['Image', 'Name', 'Email', 'Phone', 'Degree', '10th %', '12th %', 'Graduation', 'Status'].map((header) => (
+                        {['Image', 'Name', 'Email', 'Phone', 'Degree', 'Status'].map((header) => (
                             <th key={header} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                                 {header}
                             </th>
@@ -417,11 +417,11 @@ const StudentTable = ({ users, onStatusChange, isAdmin }) => {
                             </td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{user?.student?.name}</td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{user?.student?.email}</td>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{user?.student?.profile?.phone}</td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{user?.student?.phone}</td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">{user?.student?.profile?.graduationdegree}</td>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-800 text-right">{user?.student?.profile?.tenth}</td>
+                            {/* <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-800 text-right">{user?.student?.profile?.tenth}</td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-800 text-right">{user?.student?.profile?.tweleth}</td>
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-800 text-right">{user?.student?.profile?.graduationMarks}%</td>
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-800 text-right">{user?.student?.profile?.graduationMarks}%</td> */}
                             <td className="px-4 py-3 whitespace-nowrap text-sm">
                                 {isAdmin ? (
                                     <div className="relative">

@@ -32,8 +32,11 @@ import StudentSearch from './Components/pages/StudentSearch.jsx';
 import ContactForms from './Components/Homepage/ContactForms.jsx';
 
 import PlacementRecord from './Components/pages/PlacementRecord.jsx'
+import UserUpdate from './Components/pages/UserUpdate.jsx';
+import NotFoundPage from './Components/pages/NotFound.jsx';
 
 import { useSelector } from 'react-redux';
+import UpdateAdmin from './Components/Homepage/UpdateAdmin.jsx';
 function App() {
   const isLogin  = useSelector((state) => state.auth.isAuthenticated);
   const user=useSelector((state)=>state.auth.user);
@@ -138,6 +141,8 @@ function App() {
         <Route path="/student/search/" element={<StudentSearch/>}/>
 
         <Route path='/record' element={<PlacementRecord/>}/>
+        <Route path="*" element={<NotFoundPage />} />
+         <Route path="/update/user" element={<UserUpdate></UserUpdate>}/>
       </Routes>
        </div>
      

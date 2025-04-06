@@ -10,6 +10,7 @@ import { login } from '../redux/authSlice';
 
 const Profile = () => {
     const user = useSelector((state) => state.auth.user);
+    console.log(user)
     const role = user.role;
     const [profile, setProfile] = useState(user);
     const [data, setData] = useState();
