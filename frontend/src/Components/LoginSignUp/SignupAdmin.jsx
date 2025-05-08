@@ -1,160 +1,237 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import axios from 'axios';
+// import { toast } from 'react-toastify'; // Removed react-toastify
+import toast, { Toaster } from 'react-hot-toast'; // Added react-hot-toast
+import axios from '../LoginSignUp/axios.js'; // Ensure axios path is correct
 import { z } from 'zod';
-import user_icon from '../Assets/person.png';
-import email_icon from '../Assets/email.png';
-import phone_icon from '../Assets/phone.png';
-import password_icon from '../Assets/password.png';
-import key_icon from '../Assets/key.webp';
-import image_icon from '../Assets/photo.png';
-import { Input } from '../ui/input';
+
+// Import Lucide icons
+import {
+    User, Mail, Lock, Phone, KeyRound, Image as ImageIcon, Loader2
+} from 'lucide-react';
 
 // Zod validation schema for SignupAdmin form
 const signupSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  adminkey: z.string().min(5, "Admin key must be at least 5 characters"),
-  image: z
-    .instanceof(File)
-    .refine((file) => file.size <= 5 * 1024 * 1024, "Image size must be less than 5MB")
-    .refine((file) => ["image/jpeg", "image/png", "image/jpg"].includes(file.type), {
-      message: "Only JPEG, PNG, and JPG formats are allowed",
-    }),
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    adminkey: z.string().min(5, "Admin key must be at least 5 characters"),
+    image: z
+    .instanceof(File, { message: 'Profile image is required' })
+    .refine((file) => file?.size <= 2 * 1024 * 1024, `Image size must be less than 2MB.`) // Max size 2MB
+    .refine(
+        (file) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file?.type),
+        "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ), // Valid image types
 });
 
-const SignupAdmin = ({ setAdmin }) => {
-  const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [adminkey, setAdminKey] = useState('');
-  const [image, setImage] = useState(null);
-  const [errors, setErrors] = useState({});
+// --- Helper Components (Defined Outside SignupAdmin) ---
 
-  const handleInputChange = (field, value) => {
-    if (field === 'image') {
-      setImage(value);
-    } else {
-      const setters = { name: setName, email: setEmail, phone: setPhone, password: setPassword, adminkey: setAdminKey };
-      setters[field](value);
-    }
-    setErrors((prevErrors) => ({ ...prevErrors, [field]: undefined }));
-  };
-
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-
-    // Validate form using Zod
-    try {
-      signupSchema.parse({ name, email, phone, password, adminkey, image });
-
-      const data = new FormData();
-      data.append('name', name);
-      data.append('email', email);
-      data.append('password', password);
-      data.append('image', image);
-      data.append('phone', phone);
-      data.append('adminkey', adminkey);
-
-      const response = await axios.post('http://localhost:8080/signup/admin', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      const signup = response.data.success;
-      if (signup) {
-        toast.warning(response.data.Data.name.toUpperCase() + " Verify your Account");
-        navigate("/login");
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const formattedErrors = error.errors.reduce((acc, curr) => {
-          acc[curr.path[0]] = curr.message;
-          return acc;
-        }, {});
-        setErrors(formattedErrors);
-      } else {
-        toast.error(error.response?.data?.message || 'An error occurred.');
-      }
-    }
-  };
-
-  return (
-    <div className='flex justify-center items-center min-h-screen bg-gray-100 p-4'>
-      <div className='w-full max-w-lg bg-white p-8 rounded-2xl shadow-lg'>
-        <div className='text-center text-2xl font-semibold text-[#88004c] mb-6'>
-          Sign Up <span className='text-2xl text-gray-600'>(Admin)</span>
+// Helper component for general input fields with icons
+const InputField = ({ name, label, type = "text", icon: Icon, error, value, onChange, disabled, ...props }) => (
+    <div>
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+        </label>
+        <div className="relative">
+            {Icon && (
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Icon className="h-5 w-5 text-gray-400" />
+                </div>
+            )}
+            <input
+                id={name}
+                name={name}
+                type={type}
+                value={value}
+                onChange={onChange}
+                className={`w-full ${Icon ? 'pl-10' : 'pl-3'} pr-3 py-2.5 border ${error ? 'border-red-400' : 'border-gray-300'} rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-sm transition duration-200 disabled:opacity-70`}
+                disabled={disabled}
+                {...props}
+            />
         </div>
-        <form onSubmit={handleSignUp}>
-          {[
-            { label: 'Name', value: name, type: 'text', icon: user_icon, field: 'name' },
-            { label: 'Email', value: email, type: 'email', icon: email_icon, field: 'email' },
-            { label: 'Phone', value: phone, type: 'tel', icon: phone_icon, field: 'phone' },
-            { label: 'Password', value: password, type: 'password', icon: password_icon, field: 'password' },
-            { label: 'Admin Key', value: adminkey, type: 'text', icon: key_icon, field: 'adminkey' },
-          ].map(({ label, value, type, icon, field }) => (
-            <div key={field} className='mb-4'>
-              <div className='flex items-center border-b-2 border-gray-300'>
-                <img src={icon} alt={`${field}_icon`} className='w-6 h-6 mr-2' />
-                <input
-                  type={type}
-                  placeholder={label}
-                  value={value}
-                  onChange={(e) => handleInputChange(field, e.target.value)}
-                  className='w-full p-2 border-none focus:outline-none'
-                />
-              </div>
-              {errors[field] && <p className='text-xs text-red-500 mt-2'>{errors[field]}</p>}
-            </div>
-          ))}
-
-          <div className='mb-6'>
-            <div className='flex items-center'>
-              <img src={image_icon} alt='image_icon' className='w-6 h-6 mr-2' />
-              <Input
-                accept='image/*'
-                type='file'
-                className='cursor-pointer w-full p-2 border-none focus:outline-none'
-                onChange={(e) => handleInputChange('image', e.target.files[0])}
-              />
-            </div>
-            {errors.image && <p className='text-xs text-red-500 mt-2'>{errors.image}</p>}
-          </div>
-
-          <div className='text-sm flex items-center gap-2 my-4'>
-            <p className='text-gray-700'>Click here for signup</p>
-            <div
-              className='text-red-600 cursor-pointer font-semibold'
-              onClick={() => setAdmin(false)}
-            >
-              Student
-            </div>
-          </div>
-
-          <div className='flex justify-center items-center'>
-            <button
-              type='submit'
-              className='w-full bg-gradient-to-r from-[#80004c] to-purple-500 text-lg rounded-xl py-2 text-white font-bold hover:bg-blue-700 focus:outline-none'
-            >
-              Submit
-            </button>
-          </div>
-
-          <div className='text-center mt-4'>
-            <NavLink to='/login' className='text-gray-600 text-sm'>
-              Already have an account? <span className='text-[#88004c] font-semibold'>Login</span>
-            </NavLink>
-          </div>
-        </form>
-      </div>
+        {error && <p className="text-xs text-red-500 mt-1 px-1">{error}</p>}
     </div>
-  );
+);
+
+// Helper for file input
+const FileInputField = ({ name, label, icon: Icon, error, accept, onChange, disabled, fileName, ...props }) => (
+     <div>
+         <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+             {label}
+         </label>
+         <div className="relative border border-gray-300 rounded-lg bg-gray-50 focus-within:ring-2 focus-within:ring-orange-400 focus-within:border-orange-400 transition duration-200 group">
+            {Icon && (
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                     <Icon className="h-5 w-5 text-gray-400" />
+                </div>
+            )}
+             <input
+                 id={name}
+                 name={name}
+                 type="file"
+                 accept={accept}
+                 onChange={onChange}
+                 // Use Tailwind's file: variant for better styling control
+                 className="relative z-10 block w-full text-sm text-gray-500 pl-10 pr-3 py-2 cursor-pointer
+                     file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0
+                     file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700
+                     hover:file:bg-orange-100 disabled:opacity-70 disabled:pointer-events-none" // Basic file input styling
+                 disabled={disabled}
+                 {...props}
+             />
+             {/* Display selected file name */}
+             {fileName && <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"><span className="text-xs text-gray-500 truncate">{fileName}</span></div>}
+         </div>
+         {error && <p className="text-xs text-red-500 mt-1 px-1">{error}</p>}
+     </div>
+ );
+
+
+// --- Main Signup Component ---
+
+const SignupAdmin = ({ setAdmin }) => { // Pass setAdmin prop
+    const navigate = useNavigate();
+
+    // Use single state object for form data
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        password: '',
+        adminkey: '',
+        image: null,
+    });
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Unified change handler
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        const newValue = files ? files[0] : value;
+        setFormData(prev => ({ ...prev, [name]: newValue }));
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: undefined }));
+        }
+    };
+
+    const handleSignUp = async (e) => {
+        e.preventDefault();
+        setErrors({});
+        setIsSubmitting(true);
+        const loadingToast = toast.loading("Creating admin account...");
+
+        try {
+            const validatedData = signupSchema.parse(formData);
+
+            const data = new FormData();
+            Object.entries(validatedData).forEach(([key, value]) => {
+                 if (value instanceof File) {
+                    data.append(key, value, value.name);
+                } else {
+                    data.append(key, value);
+                }
+            });
+
+            const response = await axios.post('http://localhost:8080/signup/admin', data, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+
+            toast.dismiss(loadingToast);
+
+            if (response.data.success) {
+                // Changed warning to success for account creation notification
+                toast.success(`${response.data.Data?.name?.toUpperCase() || 'Admin'}, please verify your account via email.`);
+                navigate("/login");
+            } else {
+                 toast.error(response.data.message || 'Admin signup failed.');
+            }
+        } catch (error) {
+            toast.dismiss(loadingToast);
+            if (error instanceof z.ZodError) {
+                const formattedErrors = error.errors.reduce((acc, curr) => {
+                    if (curr.path?.[0]) {
+                       acc[curr.path[0]] = curr.message;
+                   }
+                   return acc;
+                }, {});
+                setErrors(formattedErrors);
+                toast.error("Please fix the errors in the form.");
+                console.error("Validation Errors:", formattedErrors);
+            } else {
+                 toast.error(error.response?.data?.message || 'Something went wrong during signup.');
+                 console.error("Signup Error:", error.response || error);
+            }
+        } finally {
+             setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-orange-50 via-gray-50 to-amber-100 p-4 sm:p-6 font-sans">
+            <Toaster position="top-center" reverseOrder={false} />
+            {/* Increased max-width */}
+            <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 border border-gray-200">
+                <h1 className="text-3xl font-bold text-center text-orange-600 mb-2">
+                    Admin Registration
+                </h1>
+                <p className="text-center text-gray-500 text-sm mb-8">
+                    Create an administrative account for Placement Connect.
+                </p>
+
+                <form onSubmit={handleSignUp} className="space-y-5">
+                    {/* Using single column layout with helper components */}
+                    <InputField name="name" label="Full Name" icon={User} error={errors.name} placeholder="Enter admin name" value={formData.name} onChange={handleChange} disabled={isSubmitting} />
+                    <InputField name="email" label="Email Address" type="email" icon={Mail} error={errors.email} placeholder="admin@example.com" value={formData.email} onChange={handleChange} disabled={isSubmitting} />
+                    <InputField name="phone" label="Phone Number" type="tel" icon={Phone} error={errors.phone} placeholder="10-digit mobile number" value={formData.phone} onChange={handleChange} disabled={isSubmitting} />
+                    <InputField name="password" label="Password" type="password" icon={Lock} error={errors.password} placeholder="Min. 6 characters" value={formData.password} onChange={handleChange} disabled={isSubmitting} />
+                    <InputField name="adminkey" label="Admin Secret Key" type="password" icon={KeyRound} error={errors.adminkey} placeholder="Enter the secret key" value={formData.adminkey} onChange={handleChange} disabled={isSubmitting} />
+                    <FileInputField
+                         name="image"
+                         label="Profile Picture"
+                         icon={ImageIcon}
+                         error={errors.image}
+                         accept="image/jpeg, image/png, image/webp, image/jpg"
+                         onChange={handleChange}
+                         disabled={isSubmitting}
+                         fileName={formData.image?.name}
+                    />
+
+                    {/* Footer and Submit */}
+                    <div className="pt-6 space-y-5">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                             <p className="text-sm text-gray-500 order-2 sm:order-1">
+                                 <span className="text-gray-600">Are you a Student?</span>{' '}
+                                 <button
+                                     type="button"
+                                     className="text-orange-600 font-semibold hover:underline focus:outline-none"
+                                     onClick={() => setAdmin && setAdmin(false)} // Use setAdmin prop
+                                 >
+                                     Click here
+                                 </button>
+                             </p>
+                            <button
+                                type="submit"
+                                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-2.5 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-200 ease-in-out disabled:opacity-70 order-1 sm:order-2"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                {isSubmitting ? 'Creating Account...' : 'Create Admin Account'}
+                            </button>
+                        </div>
+
+                        <p className="text-center text-sm text-gray-600">
+                            Already have an account?{' '}
+                            <NavLink to="/login" className="text-orange-600 font-semibold hover:underline">
+                                Login Now
+                            </NavLink>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
 };
 
 export default SignupAdmin;

@@ -28,15 +28,21 @@ import Main from './Components/pages/Main.jsx';
 import ResetPasswordToken from './Components/LoginSignUp/ResetPasswordToken.jsx';
 import CompanySearch from './Components/pages/CompanySearch.jsx';
 import StudentSearch from './Components/pages/StudentSearch.jsx';
-
+import PostDetailPage from './Components/pages/PostDetailPage.jsx';
 import ContactForms from './Components/Homepage/ContactForms.jsx';
 
 import PlacementRecord from './Components/pages/PlacementRecord.jsx'
 import UserUpdate from './Components/pages/UserUpdate.jsx';
 import NotFoundPage from './Components/pages/NotFound.jsx';
-
+import Community from './Components/pages/Community.jsx';
 import { useSelector } from 'react-redux';
 import UpdateAdmin from './Components/Homepage/UpdateAdmin.jsx';
+
+import Student from './Components/pages/Student.jsx';
+
+import { MyMocks } from './Components/pages/MyMocks.jsx';
+import AllMocks from './Components/pages/MockInterview.jsx';
+
 function App() {
   const isLogin  = useSelector((state) => state.auth.isAuthenticated);
   const user=useSelector((state)=>state.auth.user);
@@ -50,12 +56,12 @@ function App() {
   return (
     <div className="font-serif" data-theme={theme}>
       {!hideNavbar && <Navbar />}
-       <div className='pt-16'> 
+       <div className=''> 
        <Routes>
         {/* Redirect logged-out users to main page */}
         <Route
           path="/"
-          element={isLogin ? <Navigate to="/homepage" replace /> : <Navigate to="/main" replace />}
+          element={isLogin ? <Navigate to="/homepage" replace /> : <Navigate to="/homepage" replace />}
         />
 
         {/* Main page */}
@@ -65,11 +71,15 @@ function App() {
             isLogin ? (
               <Navigate to="/homepage" replace />
             ) : (
-              <Main />
+              <Navigate to="/homepage" replace />
+
             )
           }
         />
-      
+        <Route path='/mymocks' element={<MyMocks/>}/>
+        <Route path='/mocks' element={<AllMocks />} />
+
+
         <Route path='/form' element={<ContactForms/>}/>
         <Route path='/verify-email' element={<EmailVerification />} />
         {/* Login and Signup Routes */}
@@ -119,7 +129,6 @@ function App() {
           element={<ProtectedRoute element={<InterviewExperiences show={true} />} />}
         />
 
-        {/* Admin-protected routes */}
         <Route
           path="/jobs/post"
           element={<AdminProtectedRoute element={<JobPost />} />}
@@ -135,14 +144,18 @@ function App() {
         <Route path="/footer" element={< Footer />} />
         <Route path="/contact" element={<ContactForm />} />
         
-        <Route path="/homepage" element={<ProtectedRoute element={<Homepage />} />} />
+        <Route path="/homepage" element={ <Homepage/>} />
 
         <Route path="/company/search/" element={<CompanySearch/>}/>
         <Route path="/student/search/" element={<StudentSearch/>}/>
-
-        <Route path='/record' element={<PlacementRecord/>}/>
+        <Route path="/discuss"  element={<Community/>}/>
+        <Route path='/placement-stats' element={<PlacementRecord/>}/>
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/post/description/:postId" element={<PostDetailPage />} />
          <Route path="/update/user" element={<UserUpdate></UserUpdate>}/>
+
+
+         <Route path="/students" element={<Student/>}/>
       </Routes>
        </div>
      

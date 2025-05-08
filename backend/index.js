@@ -11,6 +11,10 @@ const interviewRoute=require("./Routes/interviewRoute");
 const  contactRoute=require("./Routes/contactRoute");
 const applicationRoute=require("./Routes/applicationRoute");
 const auth=require("./Middlewares/userMiddleware");
+const mockInterviewRoute=require("./Routes/MockInterview");
+const postRoute=require("./Routes/PostRoute");
+
+
 require('dotenv').config();
 
 app.use(cors());
@@ -24,6 +28,9 @@ app.use("/blocked",blockedRoute);
 app.use("/",interviewRoute);
 app.use("/contact",contactRoute);
 app.use("/application",applicationRoute)
+app.use("/post",postRoute);
+app.use("/mock",mockInterviewRoute);
+
 app.use(express.urlencoded({extended:true}));
 
 
@@ -39,4 +46,4 @@ app.listen(process.env.PORT,()=>{
 
 Dbconnect();
 
-
+//addMockStudents();

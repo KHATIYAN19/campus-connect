@@ -62,6 +62,10 @@ export default {
  // plugins: [require('@tailwindcss/typography')],
 
  // plugins: [require("tailwindcss-animate")],
+ plugins: [
+   // require('@tailwindcss/typography'),
+    // ... other plugins
+  ],
   daisyui: {
     themes: ["light", "dark", "cupcake"], // Choose themes here
   },

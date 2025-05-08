@@ -1,0 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const mockInterviewController = require('../Controllers/MockInterview');
+const {isStudent,isAdmin,auth} = require('../Middlewares/userMiddleware');
+router.post('/create', auth,isStudent, mockInterviewController.createMock);
+router.get('/all', auth, isStudent,mockInterviewController.getAllAvailableMocks);
+router.get('/my', auth,isStudent, mockInterviewController.getMyMocks);
+router.post('/accept/:id', auth, isStudent,mockInterviewController.acceptMock);
+router.post('/cancel/:id', auth,isStudent, mockInterviewController.cancelMock);
+router.delete('/delete/:id', auth,isStudent, mockInterviewController.deleteMock);
+module.exports = router;

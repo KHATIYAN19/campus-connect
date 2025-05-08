@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.2",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-avatar": "^1.1.1",
@@ -20,9 +21,8 @@
     "@radix-ui/react-scroll-area": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@reduxjs/toolkit": "^2.3.0",
-    "@tailwindcss/typography": "^0.5.16",
     "animate.css": "^4.1.1",
-    "axios": "^1.7.7",
+    "axios": "^1.9.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "daisyui": "^4.12.14",
@@ -34,7 +34,8 @@
     "quill": "^2.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.54.2",
+    "react-hook-form": "^7.55.0",
+    "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-quill": "^2.0.0",
@@ -42,14 +43,17 @@
     "react-router-dom": "^6.28.0",
     "react-spinners": "^0.15.0",
     "react-toastify": "^10.0.6",
+    "remark-gfm": "^4.0.1",
+    "sonner": "^2.0.3",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "theme-change": "^2.5.0",
     "xlsx": "^0.18.5",
-    "zod": "^3.24.2"
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",

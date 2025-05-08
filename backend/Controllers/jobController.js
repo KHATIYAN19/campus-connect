@@ -106,7 +106,6 @@ exports.post_job=async(req,res)=>{
   </style>
 </head>
 <body>
-
   <div class="email-container">
     <h1>Exciting Job Opportunity: ${position}</h1>
     <p>Dear User,</p>
@@ -124,7 +123,7 @@ exports.post_job=async(req,res)=>{
 
     <p>If you meet the qualifications and are eager to join a dynamic team, we encourage you to apply for this exciting role. </p>
     
-      <a href="[Job Application Link]" class="cta-button">Apply Now</a>
+      <a href="http://localhost:5173/Jobs" class="cta-button">Apply Now</a>
     To apply, simply click the button below:
     <p>Best regards,</p>
     <p><strong>The Placement Connect Team</strong></p>
@@ -133,11 +132,11 @@ exports.post_job=async(req,res)=>{
 </html>
 `
   const users = await User.find({}).select('email');
-  // const emails = users.map(user => 
-  //   user.email
-  // );
-  // emails.map(email=>sendEmail(email,"New Job Posted","",emailcontent))
-     //sendEmail(emails,"New Job Posted","",emailcontent);
+  const emails = users.map(user => 
+    user.email
+  );
+  emails.map(email=>sendEmail(email,"New Job Posted","",emailcontent))
+     sendEmail(emails,"New Job Posted","",emailcontent);
     return res.status(200).json({
        message:"Job created Successfully",
        success:true,

@@ -952,3 +952,56 @@ exports.getUserDataByEmail = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+
+exports.getAllStudentUsersSortedByYear = async (req,res) => {
+    try {
+      const students = await User.find({ role: 'student' })
+        .sort({ year: 1 }) 
+        .select('-password'); 
+        res.status(200).json({
+        success: true,
+        data: students,
+       });
+    } catch (error) {
+        res.status(400).json({
+        success: false,
+        message: 'Error fetching admin users',
+        error: error.message,
+        
+      });
+    }
+  };
+
+  exports.getStudentsByName = async (req, res) => {
+    try {
+        const { name } = req.query;
+    
+        if (!name || name.trim() === "") {
+          return res.status(400).json({
+            success: false,
+            message: 'Name query is required',
+          });
+        }
+    
+        // Match any part of name, case-insensitive
+        const students = await User.find({
+          role: 'student',
+          name: { $regex: new RegExp(name, 'i') },
+        }).select('name image email phone batch');
+    
+        res.status(200).json({
+          success: true,
+          data: students,
+        });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          message: 'Server error searching students by name',
+          error: error.message,
+        });
+      }
+  };
+  
+  
+  

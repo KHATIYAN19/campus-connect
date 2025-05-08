@@ -9,7 +9,6 @@ const createTransporter = () => {
     }
   });
 };
-
 const sendEmail = (toEmail, subject, text,htmlContent) => {
   const transporter = createTransporter();  
   const mailOptions = {

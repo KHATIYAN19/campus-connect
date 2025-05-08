@@ -67,7 +67,14 @@ exports.addApplication = async (req, res) => {
         if(user.maxoffer*2>company.salary){
             return res.status(400).json({ message: "Can't Apply due to placement policies", success: false });
         }
-         const newApplication = new Application({batch:user.year, salary:company.salary,companyName:company.company,student: userId, company: jobId });
+        const newApplication = new Application({
+                   batch:user.year,
+                   salary:company.salary,
+                   companyName:company.company,
+                   student: userId,
+                   company: jobId,
+                   companyImage:company.logo       
+        });
          await newApplication.save();
         res.status(200).json({ message: "Application submitted successfully", success: true, application: newApplication });
     } catch (error) {
@@ -106,13 +113,11 @@ const getSelectedStudents = async () => {
             company: company._id,
             status: "selected"
         }).populate("student");
-
-        if (selectedApplications.length === 0) {
-            return { status: 200, success: true, message: "No selected students found", data: [] };
-        }
-        
+       console.log("seelecef",selectedApplications);
+        // if (selectedApplications.length === 0) {
+        //     return { status: 200, success: true, message: "No selected students found", data: [] };
+        // }
         const selectedStudents = selectedApplications.map(app => ({
-     
             id: app.student._id,
             name: app.student.name,
             email: app.student.email,
@@ -122,7 +127,7 @@ const getSelectedStudents = async () => {
 
         
 
-        return { status: 200, success: true, message: "Selected students fetched successfully", data: selectedStudents };
+        return { status: 200, success: true, message: "Selected students fetched successfully", data: selectedApplications };
     } catch (error) {
         console.error("Error fetching selected students:", error);
         return { status: 500, success: false, message: "Internal server error" };
@@ -138,7 +143,7 @@ exports.getSelectedStudents = async (req, res) => {
       if (jobId) {
           jobs = await Job.find({ jobid: jobId });
       }
-      
+
       if (!jobs.length) {
           const normalizedCompanyName = jobId.replace(/\s+/g, "").toLowerCase();
           jobs = await Job.find({
@@ -150,41 +155,46 @@ exports.getSelectedStudents = async (req, res) => {
           return res.status(404).json({ success: false, message: "Job or company not found" });
       }
 
-      let selectedStudents = [];
+      const finalResult = [];
 
       for (const job of jobs) {
           const selectedApplications = await Application.find({
               company: job._id,
               status: "selected"
-          }).populate("student", "name email phone image year");
+          })
+          .populate("student", "name email phone image year profile.graduationdegree");
 
           if (selectedApplications.length > 0) {
-              selectedStudents.push(
-                  ...selectedApplications.map(app => ({
-                      id: app.student._id,
-                      name: app.student.name,
-                      email: app.student.email,
-                      phone: app.student.phone,
-                      image: app.student.image,
-                      year: app.student.year,
-                      salary: app.salary,
-                      company_name: job.company
-                  }))
-              );
+              const users = selectedApplications.map(app => ({
+                  username: app.student.name,
+                  salary: app.salary,
+                  useremail: app.student.email,
+                  userphonenumber: app.student.phone,
+                  userbatch: app.batch,
+                  userdegree: app.student?.profile?.graduationdegree || "Not Provided",
+                  userimage: app.student.image,
+              }));
+
+              finalResult.push({
+                  companyName: selectedApplications[0].companyName,
+                  companyImage: selectedApplications[0].companyImage,
+                  userSelected: users
+              });
           }
       }
 
       return res.status(200).json({
           success: true,
-          message: selectedStudents.length ? "Selected students fetched successfully" : "No selected students found",
-          data: selectedStudents,
-          jobs
+          message: finalResult.length ? "Selected students fetched successfully" : "No selected students found",
+          data: finalResult
       });
+
   } catch (error) {
       console.error("Error fetching selected students:", error);
       return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 exports.getStudentApplications = async (req, res) => {
     try {
@@ -361,12 +371,12 @@ exports.changeStatus=async(req,res)=>{
         const user_id=application.student
         const user=await User.findOne({_id:user_id});
         
-        if(application.status!='pending'){
-          return res.status(400).json({
-            message:"Status Already Changed",
-            success:false
-         })
-        }
+        // if(application.status!='pending'){
+        //   return res.status(400).json({
+        //     message:"Status Already Changed",
+        //     success:false
+        //  })
+        // }
         if(status=='selected'){
            const maxoffer=Math.max(application.salary,user.maxoffer);
            user.maxoffer=maxoffer;
@@ -396,7 +406,7 @@ exports.getPlacementRecord=async(req,res)=>{
       },
       {
         $lookup: {
-          from: "users", // The name of the user collection
+          from: "users", 
           localField: "student",
           foreignField: "_id",
           as: "studentInfo",

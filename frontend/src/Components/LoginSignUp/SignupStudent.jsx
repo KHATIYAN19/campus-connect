@@ -1,47 +1,112 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from "react-router-dom";
-import user_icon from '../Assets/person.png';
-import email_icon from '../Assets/email.png';
-import password_icon from '../Assets/password.png';
-import phone_icon from '../Assets/phone.png';
-import year_icon from '../Assets/year.png';
-import image_icon from '../Assets/photo.png';
-import degree_icon from '../Assets/degree.png';
-import cv_icon from '../Assets/cv.png';
-import { toast } from 'react-toastify';
+import toast, { Toaster } from 'react-hot-toast';
 import { z } from 'zod';
-import axios from 'axios';
+import axios from '../LoginSignUp/axios.js'; // Ensure axios path is correct
+import {
+    User, Mail, Lock, Phone, CalendarDays, GraduationCap,
+    FileText, Image as ImageIcon, Percent, Link as LinkIcon, Loader2
+} from 'lucide-react';
 
-// Zod validation schema
+// Zod validation schema - Refined messages and types
 const signupSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     email: z.string().email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     graduationdegree: z.string().min(1, 'Graduation Degree is required'),
-    year: z.string().refine((val) => parseInt(val) > 0, 'Year must be a valid positive number'),
-    phone: z
-        .string()
-        .regex(/^\d{10}$/, 'Phone number must be 10 digits'),
-    tenth: z
-        .string()
-        .regex(/^\d+$/, '10th marks must be a number')
+    year: z.string()
+        .regex(/^\d{4}$/, 'Enter a valid 4-digit year')
         .transform(Number)
-        .refine((val) => val >= 50 && val <= 100, '10th marks must be between 50 and 100'),
-    tweleth: z
-        .string()
-        .regex(/^\d+$/, '12th marks must be a number')
+        .refine((val) => val >= 1980 && val <= (new Date().getFullYear() + 5), 'Enter a realistic graduation year'),
+    phone: z.string().regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+    tenth: z.string()
+        .regex(/^\d+(\.\d+)?$/, '10th Percentage must be a number')
         .transform(Number)
-        .refine((val) => val >= 50 && val <= 100, '12th marks must be between 50 and 100'),
-    graduationMarks: z
-        .string()
-        .regex(/^\d+$/, 'Graduation marks must be a number')
+        .refine((val) => val >= 30 && val <= 100, '10th Percentage must be between 30 and 100'),
+    tweleth: z.string()
+        .regex(/^\d+(\.\d+)?$/, '12th Percentage must be a number')
         .transform(Number)
-        .refine((val) => val >= 50 && val <= 100, 'Graduation marks must be between 50 and 100'),
-    resume: z.string().url('Resume must be a valid URL'),
-    image: z.instanceof(File, 'Image is required'),
+        .refine((val) => val >= 30 && val <= 100, '12th Percentage must be between 30 and 100'),
+    graduationMarks: z.string()
+        .regex(/^\d+(\.\d+)?$/, 'Graduation Percentage must be a number')
+        .transform(Number)
+        .refine((val) => val >= 30 && val <= 100, 'Graduation Percentage must be between 30 and 100'),
+    resume: z.string().url('Resume link must be a valid URL (e.g., Google Drive, Dropbox)'),
+    image: z.instanceof(File, { message: 'Profile image is required' })
+            .refine((file) => file?.size <= 2 * 1024 * 1024, `Image size must be less than 2MB.`)
+            .refine(
+                (file) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(file?.type),
+                "Only .jpg, .jpeg, .png and .webp formats are supported."
+            ),
 });
 
-const SignupStudent = ({ setAdmin }) => {
+// --- Helper Components (Moved Outside SignupStudent) ---
+
+// Helper component for general input fields with icons
+const InputField = ({ name, label, type = "text", icon: Icon, error, value, onChange, disabled, ...props }) => (
+    <div>
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+        </label>
+        <div className="relative">
+            {Icon && ( // Conditionally render icon if provided
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Icon className="h-5 w-5 text-gray-400" />
+                </div>
+            )}
+            <input
+                id={name}
+                name={name}
+                type={type}
+                value={value} // Receive value via props
+                onChange={onChange} // Receive onChange via props
+                className={`w-full ${Icon ? 'pl-10' : 'pl-3'} pr-3 py-2.5 border ${error ? 'border-red-400' : 'border-gray-300'} rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-sm transition duration-200 disabled:opacity-70`}
+                disabled={disabled} // Receive disabled state via props
+                {...props}
+            />
+        </div>
+        {error && <p className="text-xs text-red-500 mt-1 px-1">{error}</p>}
+    </div>
+);
+
+// Helper for file input
+const FileInputField = ({ name, label, icon: Icon, error, accept, onChange, disabled, fileName, ...props }) => (
+     <div>
+         <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+             {label}
+         </label>
+         <div className="relative border border-gray-300 rounded-lg bg-gray-50 focus-within:ring-2 focus-within:ring-orange-400 focus-within:border-orange-400 transition duration-200 group">
+            {Icon && ( // Conditionally render icon
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                     <Icon className="h-5 w-5 text-gray-400" />
+                </div>
+            )}
+             <input
+                 id={name}
+                 name={name}
+                 type="file"
+                 accept={accept}
+                 onChange={onChange} // Receive onChange via props
+                 className="relative z-10 block w-full text-sm text-gray-500 pl-10 pr-3 py-2 opacity-0 cursor-pointer group-hover:opacity-100" // Hide default input appearance, show on hover maybe?
+                 disabled={disabled} // Receive disabled state via props
+                 {...props}
+             />
+              {/* Custom appearance overlay */}
+              <div className={`absolute inset-0 ${Icon ? 'pl-10' : 'pl-3'} pr-3 flex items-center pointer-events-none`}>
+                <span className={`text-sm ${fileName ? 'text-gray-700' : 'text-gray-500'} truncate`}>
+                  {fileName || 'Choose file...'}
+                </span>
+              </div>
+         </div>
+          {/* Display selected file name if needed */}
+         {/* {fileName && <p className="text-xs text-gray-500 mt-1 px-1 truncate">Selected: {fileName}</p>} */}
+         {error && <p className="text-xs text-red-500 mt-1 px-1">{error}</p>}
+     </div>
+ );
+
+// --- Main Signup Component ---
+
+const SignupStudent = ({ setAdmin }) => { // Assuming setAdmin is used elsewhere
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -59,127 +124,144 @@ const SignupStudent = ({ setAdmin }) => {
     });
 
     const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        setFormData({
-            ...formData,
-            [name]: files ? files[0] : value,
-        });
+        const newValue = files ? files[0] : value;
+        setFormData(prev => ({ ...prev, [name]: newValue })); // More reliable state update
+        // Clear error for the field being edited
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: undefined }));
+        }
     };
 
     const handleSignUp = async (e) => {
         e.preventDefault();
+        setErrors({});
+        setIsSubmitting(true);
+        const loadingToast = toast.loading("Creating account...");
 
         try {
-            // Validate form data
-            signupSchema.parse(formData);
+            const validatedData = signupSchema.parse(formData);
+            console.log("Validated Data:", validatedData); // Log validated data before sending
 
             const data = new FormData();
-            Object.entries(formData).forEach(([key, value]) => {
-                data.append(key, value);
+            Object.entries(validatedData).forEach(([key, value]) => {
+                // Ensure file object is appended correctly
+                if (value instanceof File) {
+                    data.append(key, value, value.name);
+                } else {
+                    data.append(key, value);
+                }
             });
+
+            // Optional: Log FormData contents (for debugging)
+            // for (let pair of data.entries()) {
+            //    console.log(pair[0]+ ', ' + pair[1]);
+            // }
 
             const response = await axios.post('http://localhost:8080/signup/student', data, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: { 'Content-Type': 'multipart/form-data' }, // Keep header for FormData
             });
 
+            toast.dismiss(loadingToast);
+
             if (response.data.success) {
-                toast.warning(`${response.data.Data.name.toUpperCase()} Verify your Account`);
+                toast.success(`${response.data.Data?.name?.toUpperCase() || 'User'}, please verify your account via email.`);
                 navigate("/login");
             } else {
-                toast.error(response.data.message);
+                 toast.error(response.data.message || 'Signup failed. Please try again.');
             }
         } catch (error) {
+            toast.dismiss(loadingToast);
             if (error instanceof z.ZodError) {
                 const formattedErrors = error.errors.reduce((acc, curr) => {
-                    acc[curr.path[0]] = curr.message;
+                     if (curr.path?.[0]) {
+                        acc[curr.path[0]] = curr.message;
+                    }
                     return acc;
                 }, {});
                 setErrors(formattedErrors);
+                toast.error("Please fix the errors in the form.");
+                 console.error("Validation Errors:", formattedErrors); // Log validation errors
             } else {
-                toast.error(error.response?.data?.message || 'Something went wrong.');
+                 toast.error(error.response?.data?.message || 'Something went wrong during signup.');
+                 console.error("Signup Error:", error.response || error); // Log full error response
             }
+        } finally {
+             setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
-            <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-8">
-                <h1 className="text-2xl font-semibold text-center text-[#88004c] mb-4">
-                    Sign Up <span className="text-gray-500">(Student)</span>
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-orange-50 via-gray-50 to-amber-100 p-4 sm:p-6 font-sans">
+             <Toaster position="top-center" reverseOrder={false} />
+            <div className="w-full max-w-3xl bg-white shadow-xl rounded-2xl p-8 sm:p-10 border border-gray-200">
+                <h1 className="text-3xl font-bold text-center text-orange-600 mb-2">
+                    Create Student Account
                 </h1>
-                <form onSubmit={handleSignUp} className="space-y-4">
-                    {[
-                        { label: "Name", icon: user_icon, name: "name", type: "text" },
-                        { label: "Email", icon: email_icon, name: "email", type: "email" },
-                        { label: "Phone", icon: phone_icon, name: "phone", type: "tel" },
-                        { label: "Password", icon: password_icon, name: "password", type: "password" },
-                        { label: "Year", icon: year_icon, name: "year", type: "number" },
-                        { label: "Graduation Degree", icon: degree_icon, name: "graduationdegree", type: "text" },
-                        { label: "Graduation Marks", icon: degree_icon, name: "graduationMarks", type: "number" },
-                        { label: "Resume Link", icon: cv_icon, name: "resume", type: "url" },
-                        { label: "Upload Image", icon: image_icon, name: "image", type: "file", accept: "image/*" },
-                    ].map(({ label, icon, name, type, accept }) => (
-                        <div key={name} className="flex items-center gap-3">
-                            <img src={icon} alt={label} className="w-6 h-6" />
-                            <div className="w-full">
-                                <input
-                                    type={type}
-                                    name={name}
-                                    accept={accept}
-                                    placeholder={label}
-                                    onChange={handleChange}
-                                    className="w-full border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                {errors[name] && (
-                                    <p className="text-xs text-red-500 mt-1">{errors[name]}</p>
-                                )}
-                            </div>
+                <p className="text-center text-gray-500 text-sm mb-8">
+                    Join Placement Connect and kickstart your career journey.
+                </p>
+
+                <form onSubmit={handleSignUp} className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                        <InputField name="name" label="Full Name" icon={User} error={errors.name} placeholder="Enter your full name" value={formData.name} onChange={handleChange} disabled={isSubmitting}/>
+                        <InputField name="email" label="Email Address" type="email" icon={Mail} error={errors.email} placeholder="you@example.com" value={formData.email} onChange={handleChange} disabled={isSubmitting}/>
+                        <InputField name="phone" label="Phone Number" type="tel" icon={Phone} error={errors.phone} placeholder="10-digit mobile number" value={formData.phone} onChange={handleChange} disabled={isSubmitting}/>
+                        <InputField name="password" label="Password" type="password" icon={Lock} error={errors.password} placeholder="Min. 6 characters" value={formData.password} onChange={handleChange} disabled={isSubmitting}/>
+                        <InputField name="year" label="Graduation Year" type="number" icon={CalendarDays} error={errors.year} placeholder="e.g., 2025" value={formData.year} onChange={handleChange} disabled={isSubmitting}/>
+                        <InputField name="graduationdegree" label="Graduation Degree" icon={GraduationCap} error={errors.graduationdegree} placeholder="e.g., B.Tech in CSE" value={formData.graduationdegree} onChange={handleChange} disabled={isSubmitting}/>
+
+                         <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
+                             <InputField name="tenth" label="10th Percentage" type="number" icon={Percent} error={errors.tenth} placeholder="%" step="0.01" min="30" max="100" value={formData.tenth} onChange={handleChange} disabled={isSubmitting}/>
+                             <InputField name="tweleth" label="12th Percentage" type="number" icon={Percent} error={errors.tweleth} placeholder="%" step="0.01" min="30" max="100" value={formData.tweleth} onChange={handleChange} disabled={isSubmitting}/>
+                             <InputField name="graduationMarks" label="Graduation % / CGPA" type="number" icon={Percent} error={errors.graduationMarks} placeholder="%" step="0.01" min="30" max="100" value={formData.graduationMarks} onChange={handleChange} disabled={isSubmitting}/>
                         </div>
-                    ))}
-                    <div className="grid grid-cols-2 gap-4">
-                        {[
-                            { label: "10th Marks", name: "tenth" },
-                            { label: "12th Marks", name: "tweleth" },
-                        ].map(({ label, name }) => (
-                            <div key={name}>
-                                <input
-                                    type="number"
-                                    name={name}
-                                    placeholder={label}
-                                    onChange={handleChange}
-                                    className="w-full border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                {errors[name] && (
-                                    <p className="text-xs text-red-500 mt-1">{errors[name]}</p>
-                                )}
-                            </div>
-                        ))}
+
+                         <InputField name="resume" label="Resume Link (Drive/Dropbox)" type="url" icon={LinkIcon} error={errors.resume} placeholder="https://..." value={formData.resume} onChange={handleChange} disabled={isSubmitting}/>
+                         <FileInputField
+                              name="image"
+                              label="Profile Picture"
+                              icon={ImageIcon}
+                              error={errors.image}
+                              accept="image/jpeg, image/png, image/webp, image/jpg"
+                              onChange={handleChange} // Pass handleChange
+                              disabled={isSubmitting} // Pass disabled state
+                              fileName={formData.image?.name} // Pass file name for display
+                         />
                     </div>
-                    <div className="flex items-center justify-between">
-                        <p className="text-sm text-gray-500">
-                            <span className="text-gray-700">Admin?</span>{' '}
-                            <span
-                                className="text-red-700 font-semibold cursor-pointer"
-                                onClick={() => setAdmin(true)}
+
+                    <div className="pt-6 space-y-5">
+                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                             <p className="text-sm text-gray-500 order-2 sm:order-1">
+                                 <span className="text-gray-600">Are you an Admin?</span>{' '}
+                                 <button
+                                     type="button"
+                                     className="text-orange-600 font-semibold hover:underline focus:outline-none"
+                                     onClick={() => setAdmin && setAdmin(true)}
+                                 >
+                                     Click here
+                                 </button>
+                             </p>
+                            <button
+                                type="submit"
+                                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-2.5 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-200 ease-in-out disabled:opacity-70 order-1 sm:order-2"
+                                disabled={isSubmitting}
                             >
-                                Click here
-                            </span>
+                                {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+                            </button>
+                        </div>
+
+                        <p className="text-center text-sm text-gray-600">
+                            Already have an account?{' '}
+                            <NavLink to="/login" className="text-orange-600 font-semibold hover:underline">
+                                Login Now
+                            </NavLink>
                         </p>
-                        <button
-                            type="submit"
-                            className="bg-gradient-to-r from-[#80004c] to-purple-500 text-white px-6 py-1 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            Sign Up
-                        </button>
                     </div>
-                    <p className="text-center text-sm text-gray-600">
-                        Already have an account?{' '}
-                        <NavLink to="/login" className="text-[#88004c] text-md font-semibold">
-                            Login
-                        </NavLink>
-                    </p>
                 </form>
             </div>
         </div>
