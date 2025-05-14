@@ -37,34 +37,25 @@ import NotFoundPage from './Components/pages/NotFound.jsx';
 import Community from './Components/pages/Community.jsx';
 import { useSelector } from 'react-redux';
 import UpdateAdmin from './Components/Homepage/UpdateAdmin.jsx';
-
 import Student from './Components/pages/Student.jsx';
-
 import { MyMocks } from './Components/pages/MyMocks.jsx';
 import AllMocks from './Components/pages/MockInterview.jsx';
-
 function App() {
   const isLogin  = useSelector((state) => state.auth.isAuthenticated);
   const user=useSelector((state)=>state.auth.user);
   const [admin, setAdmin] = useState(false);
   const [theme, setTheme] = useState('light');
   const location = useLocation();
-
-  // Check if the current path is '/main', so we can hide the Navbar
   const hideNavbar = location.pathname === '/main';
-
   return (
     <div className="font-serif" data-theme={theme}>
       {!hideNavbar && <Navbar />}
        <div className=''> 
        <Routes>
-        {/* Redirect logged-out users to main page */}
         <Route
           path="/"
           element={isLogin ? <Navigate to="/homepage" replace /> : <Navigate to="/homepage" replace />}
         />
-
-        {/* Main page */}
         <Route
           path="/main"
           element={
@@ -78,11 +69,8 @@ function App() {
         />
         <Route path='/mymocks' element={<MyMocks/>}/>
         <Route path='/mocks' element={<AllMocks />} />
-
-
         <Route path='/form' element={<ContactForms/>}/>
         <Route path='/verify-email' element={<EmailVerification />} />
-        {/* Login and Signup Routes */}
         <Route path='/reset-password/:token' element={<ResetPasswordToken />} />
         <Route path='/reset-password' element={<ResetPassword />} />
         <Route path="/login" element={isLogin ? <Homepage /> : <Login />} />
@@ -98,8 +86,6 @@ function App() {
             )
           }
         />
-
-        {/* Protected routes for authenticated users */}
         <Route
           path="/applied-jobs"
           element={<ProtectedRoute element={<AppliedJobs />} />}
@@ -153,8 +139,6 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/post/description/:postId" element={<PostDetailPage />} />
          <Route path="/update/user" element={<UserUpdate></UserUpdate>}/>
-
-
          <Route path="/students" element={<Student/>}/>
       </Routes>
        </div>

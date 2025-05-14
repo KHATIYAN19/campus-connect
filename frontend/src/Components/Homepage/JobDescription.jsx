@@ -181,6 +181,7 @@ const JobDescription = () => {
                     <div className="flex items-center gap-6">
                         <div className="w-24 h-24 rounded-full shadow-lg border-2 border-white bg-white p-2">
                             <img src={job.logo} alt={job.company} className="w-full h-full object-contain rounded-full" />
+                         
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold">{job.company}</h1>
